@@ -1,7 +1,6 @@
 package com.minapp.android.sdk.auth;
 
-import android.support.annotation.Nullable;
-import com.minapp.android.sdk.exception.AuthException;
+import androidx.annotation.Nullable;
 import com.minapp.android.sdk.exception.EmptyResponseException;
 import com.minapp.android.sdk.exception.HttpException;
 import okhttp3.Request;

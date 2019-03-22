@@ -1,6 +1,6 @@
 package com.minapp.android.sdk.storage;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import com.minapp.android.sdk.storage.model.FileMetaResponse;
 import com.minapp.android.sdk.util.Util;
 

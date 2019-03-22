@@ -1,6 +1,6 @@
 package com.minapp.android.sdk.database;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 public interface Callback {
 

@@ -1,7 +1,6 @@
 package com.minapp.android.sdk.auth;
 
-import android.support.annotation.Nullable;
-import android.text.TextUtils;
+import androidx.annotation.Nullable;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.minapp.android.sdk.Const;
@@ -10,12 +9,9 @@ import com.minapp.android.sdk.HttpApi;
 import com.minapp.android.sdk.auth.model.SignUpInByEmailReq;
 import com.minapp.android.sdk.auth.model.SignUpInByUsernameReq;
 import com.minapp.android.sdk.auth.model.SignUpInResp;
-import com.minapp.android.sdk.exception.AuthException;
-import com.minapp.android.sdk.exception.HttpException;
 import com.minapp.android.sdk.util.ContentTypeInterceptor;
 import com.minapp.android.sdk.util.MemoryCookieJar;
 import okhttp3.*;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 

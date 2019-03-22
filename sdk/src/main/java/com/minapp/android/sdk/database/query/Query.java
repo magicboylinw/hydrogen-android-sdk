@@ -1,10 +1,7 @@
 package com.minapp.android.sdk.database.query;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import com.minapp.android.sdk.Global;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 
 public class Query {
 
