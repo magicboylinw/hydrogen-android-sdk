@@ -24,6 +24,8 @@ import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
+import java.lang.Exception
+import java.util.concurrent.Executors
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -37,9 +39,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 openImagePicker()
             else
                 Util.requestPermission(this, OPEN_IMAGE_PICKER, IMAGE_PICKER_PERMISSIONS)*/
-
-            GlobalScope.launch { runCatching {
-            }.onFailure { Log.e(Const.TAG, it.message, it) } }
         }
 
         val toggle = ActionBarDrawerToggle(
@@ -82,7 +81,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
                             val file = File(Matisse.obtainPathResult(data)[0])
                             val uploaded = Storage.uploadFile(file.name, file.readBytes())
-                            val horses = TableObject(66683)
+                            val horses = TableObject("my_horses")
                             val qrCode = horses.createRecord().put("horse_name", "二维马").put("attachment", uploaded).save()
                             Log.d(Const.TAG, "${qrCode.getFile("attachment")?.path}")
 

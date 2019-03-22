@@ -67,7 +67,6 @@ public abstract class Global {
             synchronized (Global.class) {
                 if (GSON == null) {
                     GSON = createGson()
-                            .setPrettyPrinting()
                             .create();
                 }
             }
@@ -79,7 +78,9 @@ public abstract class Global {
         if (GSON_PRINT == null) {
             synchronized (Global.class) {
                 if (GSON_PRINT == null) {
-                    GSON_PRINT = createGson().create();
+                    GSON_PRINT = createGson()
+                            .setPrettyPrinting()
+                            .create();
                 }
             }
         }

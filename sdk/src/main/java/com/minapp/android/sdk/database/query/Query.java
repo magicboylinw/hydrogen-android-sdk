@@ -1,5 +1,6 @@
 package com.minapp.android.sdk.database.query;
 
+import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import com.minapp.android.sdk.Global;
 
@@ -91,7 +92,8 @@ public class Query {
     }
 
     public String getWhereJson() {
-        return Global.gson().toJson(where);
+        String json = Global.gson().toJson(where);
+        return "null".equalsIgnoreCase(json) ? null : json;
     }
 
     /*************************  string  ******************************/

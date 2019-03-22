@@ -29,8 +29,9 @@ public class RecordObject {
         return jsonObject;
     }
 
-    @NonNull Long tableId() {
-        return table != null ? table.getTableId() : -1;
+    @NonNull
+    String tableName() {
+        return table != null ? table.getTableName() : "";
     }
 
     public @Nullable String id() {
@@ -57,7 +58,7 @@ public class RecordObject {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("tableId : ").append(tableId());
+        StringBuilder sb = new StringBuilder("tableName : ").append(tableName());
         if (jsonObject != null) {
             JsonObject clone = jsonObject.deepCopy();
             if (meta != null) {

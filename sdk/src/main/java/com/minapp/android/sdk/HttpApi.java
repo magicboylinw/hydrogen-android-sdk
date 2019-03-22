@@ -68,68 +68,69 @@ public interface HttpApi {
     CheckedCall<SignUpInResp> signInAnonymous(@Body Object body);
 
 
+
     /********************************* Record api ****************************************/
 
 
     /**
      * 写入一条记录
-     * @param tableId
+     * @param tableName
      * @return
      */
-    @POST("hserve/v2.0/table/{table_id}/record/")
+    @POST("hserve/v2.0/table/{table_name}/record/")
     CheckedCall<JsonObject> saveRecord(
-            @Path("table_id") long tableId,
+            @Path("table_name") String tableName,
             @Body JsonObject body
     );
 
 
     /**
      * 更新记录
-     * @param tableId
+     * @param tableName
      * @param recordId
      * @param body
      * @return
      */
-    @PUT("hserve/v2.0/table/{table_id}/record/{record_id}/")
+    @PUT("hserve/v2.0/table/{table_name}/record/{record_id}/")
     CheckedCall<JsonObject> updateRecord(
-            @Path("table_id") long tableId,
+            @Path("table_name") String tableName,
             @Path("record_id") String recordId,
             @Body JsonObject body
     );
 
     /**
      * 删除记录
-     * @param tableId
+     * @param tableName
      * @param recordId
      * @return
      */
-    @DELETE("hserve/v2.0/table/{table_id}/record/{record_id}/")
+    @DELETE("hserve/v2.0/table/{table_name}/record/{record_id}/")
     CheckedCall<Void> deleteRecord(
-            @Path("table_id") long tableId,
+            @Path("table_name") String tableName,
             @Path("record_id") String recordId
     );
 
     /**
      * 获取一条记录
-     * @param tableId
+     * @param tableName
      * @param recordId
      * @return
      */
-    @GET("hserve/v2.0/table/{table_id}/record/{record_id}/")
+    @GET("hserve/v2.0/table/{table_name}/record/{record_id}/")
     CheckedCall<JsonObject> fetchRecord(
-            @Path("table_id") long tableId,
+            @Path("table_name") String tableName,
             @Path("record_id") String recordId
     );
 
 
     /**
      * 查询记录
-     * @param tableId
+     * @param tableName
      * @return
      */
-    @GET("hserve/v2.0/table/{table_id}/record/")
+    @GET("hserve/v2.0/table/{table_name}/record/")
     CheckedCall<PagedListResponse<JsonObject>> queryRecord(
-            @Path("table_id") long tableId,
+            @Path("table_name") String tableName,
             @Query("where") String where,
             @Query("order_by") String orderBy,
             @Query("limit") Long limit,

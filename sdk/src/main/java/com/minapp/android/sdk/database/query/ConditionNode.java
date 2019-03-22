@@ -76,15 +76,17 @@ public class ConditionNode {
                 return context.serialize(src.condition);
             }
 
-            JsonObject root = new JsonObject();
-            if (src.relation != null) {
+            if (src.relation != null && src.children.size() > 1) {
+                JsonObject root = new JsonObject();
                 JsonArray array = new JsonArray();
                 for (ConditionNode child : src.children) {
                     array.add(context.serialize(child));
                 }
                 root.add(src.relation.value, array);
+                return root;
             }
-            return root;
+
+            return JsonNull.INSTANCE;
         }
     }
 }

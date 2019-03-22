@@ -22,14 +22,14 @@ public abstract class Database {
 
             // 新增
             if (record.id() == null) {
-                Response<JsonObject> response = Global.httpApi().saveRecord(record.tableId(), record.toJsonObject()).execute();
+                Response<JsonObject> response = Global.httpApi().saveRecord(record.tableName(), record.toJsonObject()).execute();
                 record.updateByServer(response.body());
 
             } else {
 
                 // 更新
                 Response<JsonObject> response = Global.httpApi().updateRecord(
-                        record.tableId(), record.id(), record.toJsonObject()).execute();
+                        record.tableName(), record.id(), record.toJsonObject()).execute();
                 record.updateByServer(response.body());
             }
         }
@@ -42,7 +42,7 @@ public abstract class Database {
      */
     static void delete(RecordObject record) throws Exception {
         if (record != null && record.id() != null) {
-            Global.httpApi().deleteRecord(record.tableId(), record.id()).execute();
+            Global.httpApi().deleteRecord(record.tableName(), record.id()).execute();
             record.updateByServer(null);
         }
     }
@@ -54,7 +54,7 @@ public abstract class Database {
      */
     static @NonNull RecordObject fetch(@NonNull TableObject table, String recordId) throws Exception {
         Util.assetNotNull(table);
-        Response<JsonObject> response = Global.httpApi().fetchRecord(table.getTableId(), recordId).execute();
+        Response<JsonObject> response = Global.httpApi().fetchRecord(table.getTableName(), recordId).execute();
         RecordObject record = table.createRecord();
         record.updateByServer(response.body());
         return record;
@@ -75,7 +75,7 @@ public abstract class Database {
             String orderBy = query != null ? query.getOrderBy() : null;
             Long limit = query != null ? query.getLimit() : null;
             Long offset = query != null ? query.getOffset() : null;
-            PagedListResponse<JsonObject> body = Global.httpApi().queryRecord(table.getTableId(), where, orderBy, limit, offset).execute().body();
+            PagedListResponse<JsonObject> body = Global.httpApi().queryRecord(table.getTableName(), where, orderBy, limit, offset).execute().body();
 
             PagedListResponse.Meta meta = body.getMeta();
             if (meta != null) {
@@ -83,6 +83,7 @@ public abstract class Database {
                 result.setPrevious(meta.getPrevious());
                 result.setLimit(meta.getLimit());
                 result.setOffset(meta.getOffset());
+                result.setTotalCount(meta.getTotalCount());
             }
 
             List<JsonObject> objects = body.getObjects();
@@ -95,6 +96,8 @@ public abstract class Database {
                     record.updateByServer(object);
                     records.add(record);
                 }
+            } else {
+                result.setRecords(new ArrayList<RecordObject>(0));
             }
 
         }

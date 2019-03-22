@@ -17,4 +17,6 @@ class Horse (
     get() = record.getInt("horse_age")
     set(value) { record.put("horse_age", age) }
 
+    var checked: Boolean = false
+
 }

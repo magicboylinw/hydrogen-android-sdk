@@ -1,16 +1,17 @@
 package com.minapp.android.sdk.database;
 
+import android.text.TextUtils;
 import com.minapp.android.sdk.Global;
 import com.minapp.android.sdk.database.query.Query;
 import com.minapp.android.sdk.database.query.Result;
 
 public class TableObject {
 
-    private Long tableId;
+    private String tableName;
 
 
-    public TableObject(long tableId) {
-        this.tableId = tableId;
+    public TableObject(String tableName) {
+        this.tableName = tableName;
     }
 
     /**
@@ -75,15 +76,15 @@ public class TableObject {
         });
     }
 
-    Long getTableId() {
-        return tableId;
+    String getTableName() {
+        return tableName;
     }
 
     @Override
     public boolean equals( Object obj) {
         if (obj instanceof TableObject) {
             TableObject other = (TableObject) obj;
-            return this.tableId == other.tableId;
+            return TextUtils.equals(this.tableName, other.tableName);
         }
         return false;
     }
