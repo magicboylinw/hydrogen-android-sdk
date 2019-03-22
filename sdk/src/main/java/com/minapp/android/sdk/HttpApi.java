@@ -5,17 +5,16 @@ import com.minapp.android.sdk.auth.*;
 import com.minapp.android.sdk.auth.model.SignUpInByEmailReq;
 import com.minapp.android.sdk.auth.model.SignUpInByUsernameReq;
 import com.minapp.android.sdk.auth.model.SignUpInResp;
-import com.minapp.android.sdk.file.*;
-import com.minapp.android.sdk.file.category.CategoryInfo;
-import com.minapp.android.sdk.file.category.CreateCategoryBody;
-import com.minapp.android.sdk.file.category.UpdateCategoryBody;
-import com.minapp.android.sdk.file.model.FileMetaResponse;
-import com.minapp.android.sdk.file.model.UploadMetaBody;
-import com.minapp.android.sdk.file.model.UploadMetaResponse;
-import com.minapp.android.sdk.file.model.UploadResponse;
+import com.minapp.android.sdk.storage.*;
+import com.minapp.android.sdk.storage.category.CategoryInfo;
+import com.minapp.android.sdk.storage.category.CreateCategoryBody;
+import com.minapp.android.sdk.storage.category.UpdateCategoryBody;
+import com.minapp.android.sdk.storage.model.FileMetaResponse;
+import com.minapp.android.sdk.storage.model.UploadMetaBody;
+import com.minapp.android.sdk.storage.model.UploadMetaResponse;
+import com.minapp.android.sdk.storage.model.UploadResponse;
 import com.minapp.android.sdk.util.PagedListResponse;
 import okhttp3.RequestBody;
-import retrofit2.Call;
 import retrofit2.http.*;
 
 import java.util.Collection;
@@ -61,6 +60,12 @@ public interface HttpApi {
     @POST("hserve/v2.0/login/username/")
     CheckedCall<SignUpInResp> signInByUsername(@Body SignUpInByUsernameReq body);
 
+    /**
+     * 匿名登录
+     * @return
+     */
+    @POST("hserve/v2.0/login/anonymous/")
+    CheckedCall<SignUpInResp> signInAnonymous(@Body Object body);
 
 
     /********************************* Record api ****************************************/
@@ -71,7 +76,7 @@ public interface HttpApi {
      * @param tableId
      * @return
      */
-    @POST("hserve/v1/table/{table_id}/record/")
+    @POST("hserve/v2.0/table/{table_id}/record/")
     CheckedCall<JsonObject> saveRecord(
             @Path("table_id") long tableId,
             @Body JsonObject body
@@ -85,7 +90,7 @@ public interface HttpApi {
      * @param body
      * @return
      */
-    @PUT("oserve/v1/table/{table_id}/record/{record_id}/")
+    @PUT("hserve/v2.0/table/{table_id}/record/{record_id}/")
     CheckedCall<JsonObject> updateRecord(
             @Path("table_id") long tableId,
             @Path("record_id") String recordId,
@@ -98,7 +103,7 @@ public interface HttpApi {
      * @param recordId
      * @return
      */
-    @DELETE("oserve/v1/table/{table_id}/record/{record_id}/")
+    @DELETE("hserve/v2.0/table/{table_id}/record/{record_id}/")
     CheckedCall<Void> deleteRecord(
             @Path("table_id") long tableId,
             @Path("record_id") String recordId
@@ -110,7 +115,7 @@ public interface HttpApi {
      * @param recordId
      * @return
      */
-    @GET("oserve/v1/table/{table_id}/record/{record_id}/")
+    @GET("hserve/v2.0/table/{table_id}/record/{record_id}/")
     CheckedCall<JsonObject> fetchRecord(
             @Path("table_id") long tableId,
             @Path("record_id") String recordId
@@ -122,7 +127,7 @@ public interface HttpApi {
      * @param tableId
      * @return
      */
-    @GET("oserve/v1/table/{table_id}/record/")
+    @GET("hserve/v2.0/table/{table_id}/record/")
     CheckedCall<PagedListResponse<JsonObject>> queryRecord(
             @Path("table_id") long tableId,
             @Query("where") String where,

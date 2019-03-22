@@ -83,6 +83,17 @@ public abstract class Auth {
     }
 
     /**
+     * 匿名登录
+     * @return
+     * @throws Exception
+     */
+    public static SignUpInResp signInAnonymous() throws Exception {
+        SignUpInResp info = Global.httpApi().signInAnonymous(new Object()).execute().body();
+        signIn(info);
+        return info;
+    }
+
+    /**
      * 登录成功后，保存用户信息
      * @param info
      */

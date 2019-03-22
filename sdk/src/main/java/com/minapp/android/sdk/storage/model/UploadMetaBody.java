@@ -1,4 +1,4 @@
-package com.minapp.android.sdk.file.model;
+package com.minapp.android.sdk.storage.model;
 
 import com.google.gson.annotations.SerializedName;
 

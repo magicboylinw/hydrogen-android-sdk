@@ -1,4 +1,4 @@
-package com.minapp.android.sdk.file.category;
+package com.minapp.android.sdk.storage.category;
 
 import com.google.gson.annotations.SerializedName;
 

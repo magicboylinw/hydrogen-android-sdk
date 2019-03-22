@@ -1,4 +1,4 @@
-package com.minapp.android.sdk.file.category;
+package com.minapp.android.sdk.storage.category;
 
 public class UpdateCategoryBody extends CreateCategoryBody {
     public UpdateCategoryBody(String name) {

@@ -1,6 +1,6 @@
-package com.minapp.android.sdk.file;
+package com.minapp.android.sdk.storage;
 
-import com.minapp.android.sdk.file.category.CategoryInfo;
+import com.minapp.android.sdk.storage.category.CategoryInfo;
 
 public class Category {
 

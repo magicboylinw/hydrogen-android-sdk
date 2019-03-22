@@ -7,8 +7,6 @@ import android.content.pm.PackageManager
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.app.LoaderManager.LoaderCallbacks
-import android.content.CursorLoader
-import android.content.Loader
 import android.database.Cursor
 import android.net.Uri
 import android.os.AsyncTask
@@ -23,7 +21,7 @@ import android.widget.TextView
 
 import java.util.ArrayList
 import android.Manifest.permission.READ_CONTACTS
-import android.content.Context
+import android.content.*
 import android.os.Handler
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -61,11 +59,17 @@ class AuthActivity : BaseActivity(), LoaderCallbacks<Cursor> {
     }
 
     fun bindButtons() {
-        val listener = View.OnClickListener { signUpIn(it.id) }
-        email_sign_up_button.setOnClickListener(listener)
-        email_sign_in_button.setOnClickListener(listener)
-        username_sign_up_button.setOnClickListener(listener)
-        username_sign_in_button.setOnClickListener(listener)
+        listOf(email_sign_in_button, email_sign_up_button, username_sign_in_button, username_sign_up_button, anonymous_sign_in_button)
+            .forEach { it.setOnClickListener { signUpIn(it.id) } }
+
+        response_tv.setOnClickListener {
+            val content = response_tv.text
+            if (!TextUtils.isEmpty(content)) {
+                val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                clipboard.primaryClip = ClipData.newPlainText(null, content)
+                Toast.makeText(this, "已复制内容到剪贴板", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     /**
@@ -83,6 +87,7 @@ class AuthActivity : BaseActivity(), LoaderCallbacks<Cursor> {
                     email_sign_in_button.id -> Auth.signInByEmail(name, pwd)
                     username_sign_in_button.id -> Auth.signInByUsername(name, pwd)
                     username_sign_up_button.id -> Auth.signUpByUsername(name, pwd)
+                    anonymous_sign_in_button.id -> Auth.signInAnonymous()
                     else -> null
                 }?.let { Global.gsonPrint().toJson(it) }
                 if (isActive) {

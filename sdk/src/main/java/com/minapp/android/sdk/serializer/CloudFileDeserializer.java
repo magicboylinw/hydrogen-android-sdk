@@ -4,8 +4,8 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
-import com.minapp.android.sdk.file.CloudFile;
-import com.minapp.android.sdk.file.model.FileMetaResponse;
+import com.minapp.android.sdk.storage.CloudFile;
+import com.minapp.android.sdk.storage.model.FileMetaResponse;
 
 import java.lang.reflect.Type;
 

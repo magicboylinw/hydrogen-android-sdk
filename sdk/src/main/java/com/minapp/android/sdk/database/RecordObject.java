@@ -6,7 +6,7 @@ import android.util.Log;
 import com.google.gson.*;
 import com.minapp.android.sdk.Const;
 import com.minapp.android.sdk.Global;
-import com.minapp.android.sdk.file.CloudFile;
+import com.minapp.android.sdk.storage.CloudFile;
 import com.minapp.android.sdk.util.Function;
 import com.minapp.android.sdk.util.Util;
 

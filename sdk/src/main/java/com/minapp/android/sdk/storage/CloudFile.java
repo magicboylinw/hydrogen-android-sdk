@@ -1,14 +1,9 @@
-package com.minapp.android.sdk.file;
+package com.minapp.android.sdk.storage;
 
 import android.support.annotation.NonNull;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
-import com.minapp.android.sdk.file.model.FileMetaResponse;
+import com.minapp.android.sdk.storage.model.FileMetaResponse;
 import com.minapp.android.sdk.util.Util;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 

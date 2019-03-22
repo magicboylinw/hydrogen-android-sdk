@@ -11,13 +11,11 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import com.minapp.android.example.auth.AuthActivity
-import com.minapp.android.example.model.SimpleModel
+import com.minapp.android.example.database.DBActivity
 import com.minapp.android.example.util.Glide4Engine
 import com.minapp.android.example.util.Util
-import com.minapp.android.sdk.auth.Auth
 import com.minapp.android.sdk.database.*
-import com.minapp.android.sdk.file.Storage
-import com.minapp.android.sdk.util.DateUtil
+import com.minapp.android.sdk.storage.Storage
 import com.zhihu.matisse.Matisse
 import com.zhihu.matisse.MimeType
 import kotlinx.android.synthetic.main.activity_main.*
@@ -26,8 +24,6 @@ import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
-import java.lang.Exception
-import java.util.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -56,6 +52,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     fun bindButtons() {
         authBtn.setOnClickListener { startActivity(Intent(this, AuthActivity::class.java)) }
+        dbBtn.setOnClickListener { startActivity(Intent(this, DBActivity::class.java)) }
     }
 
     fun openImagePicker() {

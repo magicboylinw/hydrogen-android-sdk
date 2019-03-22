@@ -1,23 +1,19 @@
-package com.minapp.android.sdk.file;
+package com.minapp.android.sdk.storage;
 
 import com.minapp.android.sdk.Global;
-import com.minapp.android.sdk.exception.SdkException;
-import com.minapp.android.sdk.file.category.CategoryInfo;
-import com.minapp.android.sdk.file.category.CreateCategoryBody;
-import com.minapp.android.sdk.file.category.UpdateCategoryBody;
-import com.minapp.android.sdk.file.model.FileMetaResponse;
-import com.minapp.android.sdk.file.model.UploadMetaBody;
-import com.minapp.android.sdk.file.model.UploadMetaResponse;
-import com.minapp.android.sdk.file.model.UploadResponse;
+import com.minapp.android.sdk.storage.category.CategoryInfo;
+import com.minapp.android.sdk.storage.category.CreateCategoryBody;
+import com.minapp.android.sdk.storage.category.UpdateCategoryBody;
+import com.minapp.android.sdk.storage.model.FileMetaResponse;
+import com.minapp.android.sdk.storage.model.UploadMetaBody;
+import com.minapp.android.sdk.storage.model.UploadMetaResponse;
 import com.minapp.android.sdk.util.Function;
 import com.minapp.android.sdk.util.PagedList;
 import com.minapp.android.sdk.util.PagedListResponse;
 import com.minapp.android.sdk.util.Util;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import retrofit2.Response;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Storage {

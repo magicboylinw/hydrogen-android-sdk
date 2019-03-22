@@ -1,7 +1,7 @@
-package com.minapp.android.sdk.file.model;
+package com.minapp.android.sdk.storage.model;
 
 import com.google.gson.annotations.SerializedName;
-import com.minapp.android.sdk.file.CloudFile;
+import com.minapp.android.sdk.storage.CloudFile;
 
 import java.util.List;
 
