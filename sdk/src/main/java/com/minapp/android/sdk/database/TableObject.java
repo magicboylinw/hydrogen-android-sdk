@@ -58,6 +58,10 @@ public class TableObject {
         return Database.query(this, query);
     }
 
+    public BatchDeleteResp batchDelete(Query query) throws Exception {
+        return Database.batchDelete(this, query);
+    }
+
     public void queryInBackground(final Query query, final QueryCallback callback) {
         Global.submit(new Runnable() {
             @Override

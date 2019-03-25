@@ -5,6 +5,7 @@ import com.minapp.android.sdk.auth.*;
 import com.minapp.android.sdk.auth.model.SignUpInByEmailReq;
 import com.minapp.android.sdk.auth.model.SignUpInByUsernameReq;
 import com.minapp.android.sdk.auth.model.SignUpInResp;
+import com.minapp.android.sdk.database.BatchDeleteResp;
 import com.minapp.android.sdk.storage.*;
 import com.minapp.android.sdk.storage.category.CategoryInfo;
 import com.minapp.android.sdk.storage.category.CreateCategoryBody;
@@ -135,6 +136,22 @@ public interface HttpApi {
             @Query("order_by") String orderBy,
             @Query("limit") Long limit,
             @Query("offset") Long offset
+    );
+
+    /**
+     * 批量删除
+     * @param tableName
+     * @param where
+     * @param offset
+     * @param limit
+     * @return
+     */
+    @DELETE("hserve/v2.0/table/{tableName}/record/")
+    CheckedCall<BatchDeleteResp> batchDelete(
+            @Path("tableName") String tableName,
+            @Query("where") String where,
+            @Query("offset") Long offset,
+            @Query("limit") Long limit
     );
 
 

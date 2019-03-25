@@ -1,16 +1,12 @@
-package com.minapp.android.example.database
+package com.minapp.android.example.database.list.datasource
 
 import android.util.Log
 import androidx.paging.PageKeyedDataSource
 import com.minapp.android.example.Const
-import com.minapp.android.sdk.database.Database
-import com.minapp.android.sdk.database.TableObject
+import com.minapp.android.example.database.dao.Horse
 import com.minapp.android.sdk.database.query.Query
-import com.minapp.android.sdk.database.query.Result
 
 class HorseDataSource: PageKeyedDataSource<Long, Horse>() {
-
-    private val table = TableObject("my_horses")
 
     override fun loadInitial(params: LoadInitialParams<Long>, callback: LoadInitialCallback<Long, Horse>) {
         try {
@@ -18,12 +14,14 @@ class HorseDataSource: PageKeyedDataSource<Long, Horse>() {
             val limit = params.requestedLoadSize.toLong()
             val query = Query().offset(offset).limit(limit)
 
-            val result = table.query(query)
-            val data = result.records.map { Horse(it) }
+            val result = Horse.query(
+                Horse(),
+                query
+            )
             val totalCount = result.totalCount.toInt()
             val nextPage = if (result.totalCount > limit) limit else null
 
-            callback.onResult(data, offset.toInt(), totalCount, null, nextPage)
+            callback.onResult(result.records.toMutableList(), offset.toInt(), totalCount, null, nextPage)
         } catch (e: Exception) {
             Log.e(Const.TAG, e.message, e)
         }
@@ -34,8 +32,11 @@ class HorseDataSource: PageKeyedDataSource<Long, Horse>() {
             val offset = 0L
             val limit = params.key
             val query = Query().offset(offset).limit(limit)
-            val result = table.query(query)
-            callback.onResult(result.records.map { Horse(it) }, if (result.totalCount > limit) limit else null)
+            val result = Horse.query(
+                Horse(),
+                query
+            )
+            callback.onResult(result.records, if (result.totalCount > limit) limit else null)
         } catch (e: Exception) {
             Log.e(Const.TAG, e.message, e)
         }

@@ -104,5 +104,18 @@ public abstract class Database {
         return result;
     }
 
+    /**
+     * 批量删除
+     * @param table
+     * @param query
+     * @return
+     * @throws Exception
+     */
+    static BatchDeleteResp batchDelete(TableObject table, Query query) throws Exception {
+        String where = query != null ? query.getWhereJson() : null;
+        Long limit = query != null ? query.getLimit() : null;
+        Long offset = query != null ? query.getOffset() : null;
+        return Global.httpApi().batchDelete(table.getTableName(), where, offset, limit).execute().body();
+    }
 
 }

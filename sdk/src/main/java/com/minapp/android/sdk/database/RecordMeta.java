@@ -11,29 +11,22 @@ import java.util.List;
 
 class RecordMeta {
 
-    static final String ID = "id";
-    static final String CREATED_AT = "created_at";
-    static final String CREATED_BY = "created_by";
-    static final String UPDATED_AT = "updated_at";
-    static final String WRITE_PERM = "write_perm";
-    static final String READ_PERM = "read_perm";
-
-    @SerializedName(ID)
+    @SerializedName(RecordObject.ID)
     private String id;
 
-    @SerializedName(CREATED_AT)
+    @SerializedName(RecordObject.CREATED_AT)
     private Long createdAt;
 
-    @SerializedName(CREATED_BY)
+    @SerializedName(RecordObject.CREATED_BY)
     private Long createdBy;
 
-    @SerializedName(UPDATED_AT)
+    @SerializedName(RecordObject.UPDATED_AT)
     private Long updatedAt;
 
-    @SerializedName(WRITE_PERM)
+    @SerializedName(RecordObject.WRITE_PERM)
     private List<String> writePerm;
 
-    @SerializedName(READ_PERM)
+    @SerializedName(RecordObject.READ_PERM)
     private List<String> readPerm;
 
 

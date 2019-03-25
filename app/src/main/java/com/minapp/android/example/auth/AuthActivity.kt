@@ -5,7 +5,6 @@ import android.animation.AnimatorListenerAdapter
 import android.annotation.TargetApi
 import android.content.pm.PackageManager
 import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AppCompatActivity
 import android.app.LoaderManager.LoaderCallbacks
 import android.database.Cursor
 import android.net.Uri
@@ -22,10 +21,8 @@ import android.widget.TextView
 import java.util.ArrayList
 import android.Manifest.permission.READ_CONTACTS
 import android.content.*
-import android.os.Handler
-import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import com.minapp.android.example.BaseActivity
+import com.minapp.android.example.base.BaseActivity
 import com.minapp.android.example.R
 import com.minapp.android.example.util.Util
 import com.minapp.android.sdk.Global
@@ -148,7 +145,7 @@ class AuthActivity : BaseActivity(), LoaderCallbacks<Cursor> {
 
 
     /**
-     * Attempts to sign in or register the account specified by the login form.
+     * Attempts to sign inString or register the account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
@@ -215,7 +212,7 @@ class AuthActivity : BaseActivity(), LoaderCallbacks<Cursor> {
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private fun showProgress(show: Boolean) {
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
+        // for very easy animations. If available, use these APIs to fade-inString
         // the progress spinner.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             val shortAnimTime = resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
@@ -284,7 +281,7 @@ class AuthActivity : BaseActivity(), LoaderCallbacks<Cursor> {
     }
 
     private fun addEmailsToAutoComplete(emailAddressCollection: List<String>) {
-        //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
+        //Create adapter to tell the AutoCompleteTextView what to show inString its dropdown list.
         val adapter = ArrayAdapter(
             this@AuthActivity,
             android.R.layout.simple_dropdown_item_1line, emailAddressCollection

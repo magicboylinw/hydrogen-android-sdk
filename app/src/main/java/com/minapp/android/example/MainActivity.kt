@@ -6,15 +6,16 @@ import android.os.Bundle
 import com.google.android.material.navigation.NavigationView
 import androidx.core.view.GravityCompat
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import com.minapp.android.example.auth.AuthActivity
-import com.minapp.android.example.database.DBActivity
+import com.minapp.android.example.base.BaseActivity
+import com.minapp.android.example.database.list.ListActivity
 import com.minapp.android.example.util.Glide4Engine
 import com.minapp.android.example.util.Util
 import com.minapp.android.sdk.database.*
+import com.minapp.android.sdk.database.query.Query
 import com.minapp.android.sdk.storage.Storage
 import com.zhihu.matisse.Matisse
 import com.zhihu.matisse.MimeType
@@ -24,10 +25,8 @@ import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
-import java.lang.Exception
-import java.util.concurrent.Executors
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,10 +34,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setSupportActionBar(toolbar)
 
         fab.setOnClickListener { view ->
-            /*if (Util.checkPermission(this, IMAGE_PICKER_PERMISSIONS))
-                openImagePicker()
-            else
-                Util.requestPermission(this, OPEN_IMAGE_PICKER, IMAGE_PICKER_PERMISSIONS)*/
+            activityScope.launch {
+                val query = Query()
+                    .inString(RecordObject.ID, arrayListOf("5c9846c025ff8c26bc2e8104", "5c9846a325ff8c26547eee15"))
+                val table = TableObject("my_horses")
+                table.query(query)
+            }
         }
 
         val toggle = ActionBarDrawerToggle(
@@ -51,7 +52,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     fun bindButtons() {
         authBtn.setOnClickListener { startActivity(Intent(this, AuthActivity::class.java)) }
-        dbBtn.setOnClickListener { startActivity(Intent(this, DBActivity::class.java)) }
+        dbBtn.setOnClickListener { startActivity(Intent(this, ListActivity::class.java)) }
     }
 
     fun openImagePicker() {
@@ -109,7 +110,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+        // as you specify a parent activity inString AndroidManifest.xml.
         when (item.itemId) {
             R.id.action_settings -> return true
             else -> return super.onOptionsItemSelected(item)

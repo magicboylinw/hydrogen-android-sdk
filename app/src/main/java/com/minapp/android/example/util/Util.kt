@@ -1,6 +1,8 @@
 package com.minapp.android.example.util
 
 import android.app.Activity
+import android.app.Dialog
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
@@ -9,6 +11,14 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 
 object Util {
+
+    fun loadingDialog(ctx: Context): Dialog {
+        return ProgressDialog(ctx).apply {
+            setMessage("加载中，请稍等...")
+            setCanceledOnTouchOutside(false)
+            show()
+        }
+    }
 
     fun checkPermission(ctx: Context, permissions: Array<String>): Boolean {
         permissions.forEach {
@@ -36,6 +46,10 @@ object Util {
 
     fun toastFailure(ctx: Context) {
         Toast.makeText(ctx, "操作失败", Toast.LENGTH_SHORT).show()
+    }
+
+    fun toast(ctx: Context, msg: String?) {
+        Toast.makeText(ctx, msg ?: "", Toast.LENGTH_SHORT).show()
     }
 
     fun hideSoftInput(activity: Activity) {

@@ -16,6 +16,13 @@ import java.util.List;
 
 public class RecordObject {
 
+    public static final String ID = "id";
+    public static final String CREATED_AT = "created_at";
+    public static final String CREATED_BY = "created_by";
+    public static final String UPDATED_AT = "updated_at";
+    public static final String WRITE_PERM = "write_perm";
+    public static final String READ_PERM = "read_perm";
+
     private TableObject table;
     private JsonObject jsonObject;
     private RecordMeta meta;
@@ -62,12 +69,12 @@ public class RecordObject {
         if (jsonObject != null) {
             JsonObject clone = jsonObject.deepCopy();
             if (meta != null) {
-                clone.addProperty(RecordMeta.ID, meta.getId());
-                clone.addProperty(RecordMeta.CREATED_AT, meta.getCreatedAt());
-                clone.addProperty(RecordMeta.CREATED_BY, meta.getCreatedBy());
-                clone.addProperty(RecordMeta.UPDATED_AT, meta.getUpdatedAt());
-                clone.add(RecordMeta.READ_PERM, Global.gson().toJsonTree(meta.getReadPerm()));
-                clone.add(RecordMeta.WRITE_PERM, Global.gson().toJsonTree(meta.getWritePerm()));
+                clone.addProperty(ID, meta.getId());
+                clone.addProperty(CREATED_AT, meta.getCreatedAt());
+                clone.addProperty(CREATED_BY, meta.getCreatedBy());
+                clone.addProperty(UPDATED_AT, meta.getUpdatedAt());
+                clone.add(READ_PERM, Global.gson().toJsonTree(meta.getReadPerm()));
+                clone.add(WRITE_PERM, Global.gson().toJsonTree(meta.getWritePerm()));
             }
             sb.append("\n").append(Global.gson().toJson(clone));
         }

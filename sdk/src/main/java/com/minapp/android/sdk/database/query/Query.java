@@ -1,8 +1,9 @@
 package com.minapp.android.sdk.database.query;
 
-import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import com.minapp.android.sdk.Global;
+
+import java.util.List;
 
 public class Query {
 
@@ -103,11 +104,11 @@ public class Query {
         return and(Operator.EQ, lvalue, rvalue);
     }
 
-    public Query in(String lvalue, String rvalue) {
+    public Query inString(String lvalue, List<String> rvalue) {
         return and(Operator.IN, lvalue, rvalue);
     }
 
-    public Query nin(String lvalue, String rvalue) {
+    public Query ninString(String lvalue, List<String> rvalue) {
         return and(Operator.NIN, lvalue, rvalue);
     }
 
@@ -147,11 +148,11 @@ public class Query {
         return and(Operator.GTE, lvalue, rvalue);
     }
 
-    public Query in(String lvalue, Number rvalue) {
+    public <T extends Number> Query inNumber(String lvalue, List<T> rvalue) {
         return and(Operator.IN, lvalue, rvalue);
     }
 
-    public Query nin(String lvalue, Number rvalue) {
+    public <T extends Number> Query ninNumber(String lvalue, List<T> rvalue) {
         return and(Operator.NIN, lvalue, rvalue);
     }
 
