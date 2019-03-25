@@ -27,7 +27,7 @@ class ListActivity : BaseActivity() {
     }
 
     fun initPagedList() {
-        viewModel = ViewModelProviders.of(this)[ListViewModel::class.java].apply {
+        viewModel = provideViewModel(ListViewModel::class.java).apply {
             refresh.setOnRefreshListener { onRefresh() }
 
             val adapter = HorseAdapter()

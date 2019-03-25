@@ -14,12 +14,9 @@ class HorseDataSource: PageKeyedDataSource<Long, Horse>() {
             val limit = params.requestedLoadSize.toLong()
             val query = Query().offset(offset).limit(limit)
 
-            val result = Horse.query(
-                Horse(),
-                query
-            )
+            val result = Horse.query(Horse(), query)
             val totalCount = result.totalCount.toInt()
-            val nextPage = if (result.totalCount > limit) limit else null
+            val nextPage = if (result.totalCount > limit + offset) limit + offset else null
 
             callback.onResult(result.records.toMutableList(), offset.toInt(), totalCount, null, nextPage)
         } catch (e: Exception) {
@@ -29,14 +26,15 @@ class HorseDataSource: PageKeyedDataSource<Long, Horse>() {
 
     override fun loadAfter(params: LoadParams<Long>, callback: LoadCallback<Long, Horse>) {
         try {
-            val offset = 0L
-            val limit = params.key
+            val offset = params.key
+            val limit = params.requestedLoadSize.toLong()
+
             val query = Query().offset(offset).limit(limit)
-            val result = Horse.query(
-                Horse(),
-                query
-            )
-            callback.onResult(result.records, if (result.totalCount > limit) limit else null)
+            val result = Horse.query(Horse(), query)
+            val totalCount = result.totalCount
+            val nextPage = if (result.totalCount > limit + offset) limit + offset else null
+
+            callback.onResult(result.records, nextPage)
         } catch (e: Exception) {
             Log.e(Const.TAG, e.message, e)
         }

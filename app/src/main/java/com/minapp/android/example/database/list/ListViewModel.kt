@@ -19,9 +19,10 @@ class ListViewModel: BaseViewModel() {
 
     val horses: LiveData<PagedList<Horse>> = LivePagedListBuilder(
         HorseDataSourceFactory(), Config(
-        pageSize = 15,
-        prefetchDistance = 5,
-        enablePlaceholders = false
+            pageSize = 15,
+            initialLoadSizeHint = 15,
+            prefetchDistance = 5,
+            enablePlaceholders = false
     )).build()
 
     val editAction = MutableLiveData<String>()
@@ -42,20 +43,17 @@ class ListViewModel: BaseViewModel() {
     }
 
     fun onDelete() {
-        ioScope.launch { runCatching {
-
-            horses.value?.snapshot()?.forEach {
-                Log.d(Const.TAG, "${it.name} ${it.hashCode()} ${it.checked}")
-            }
-
+        ioScope.launch {
             horses.value?.snapshot()?.filter { it.checked }?.map { it.id!! }?.takeIf { it.isNotEmpty() }?.also {
-                Horse.batchDelete(it)
-                opToast.postValue(true)
-                onRefresh()
+                runCatching {
+                    Horse.batchDelete(it)
+                    opToast.postValue(true)
+                    onRefresh()
+                }.onFailure {
+                    toast.postValue(it.message)
+                }
             }
-        }.onFailure {
-            toast.postValue(it.message)
-        } }
+        }
     }
 
     fun onFilter() {
