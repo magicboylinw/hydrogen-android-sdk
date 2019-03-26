@@ -4,15 +4,20 @@ import android.util.Log
 import androidx.paging.PageKeyedDataSource
 import com.minapp.android.example.Const
 import com.minapp.android.example.database.dao.Horse
+import com.minapp.android.example.database.list.ListViewModel
 import com.minapp.android.sdk.database.query.Query
 
-class HorseDataSource: PageKeyedDataSource<Long, Horse>() {
+class HorseDataSource(
+    private val viewModel: ListViewModel
+): PageKeyedDataSource<Long, Horse>() {
 
     override fun loadInitial(params: LoadInitialParams<Long>, callback: LoadInitialCallback<Long, Horse>) {
         try {
             val offset = 0L
             val limit = params.requestedLoadSize.toLong()
             val query = Query().offset(offset).limit(limit)
+            viewModel.query.name?.takeIf { !it.isNullOrEmpty() }?.also { query.eq(Horse.NAME, it) }
+            viewModel.query.age?.also { query.eq(Horse.AGE, it) }
 
             val result = Horse.query(Horse(), query)
             val totalCount = result.totalCount.toInt()
@@ -28,11 +33,13 @@ class HorseDataSource: PageKeyedDataSource<Long, Horse>() {
         try {
             val offset = params.key
             val limit = params.requestedLoadSize.toLong()
-
             val query = Query().offset(offset).limit(limit)
+            viewModel.query.name?.takeIf { !it.isNullOrEmpty() }?.also { query.eq(Horse.NAME, it) }
+            viewModel.query.age?.also { query.eq(Horse.AGE, it) }
+
             val result = Horse.query(Horse(), query)
             val totalCount = result.totalCount
-            val nextPage = if (result.totalCount > limit + offset) limit + offset else null
+            val nextPage = if (totalCount > limit + offset) limit + offset else null
 
             callback.onResult(result.records, nextPage)
         } catch (e: Exception) {

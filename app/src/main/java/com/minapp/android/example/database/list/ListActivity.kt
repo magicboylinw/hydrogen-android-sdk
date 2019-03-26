@@ -1,13 +1,10 @@
 package com.minapp.android.example.database.list
 
-import android.app.Activity
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.minapp.android.example.R
@@ -29,6 +26,7 @@ class ListActivity : BaseActivity() {
     fun initPagedList() {
         viewModel = provideViewModel(ListViewModel::class.java).apply {
             refresh.setOnRefreshListener { onRefresh() }
+            refresh.isEnabled = false
 
             val adapter = HorseAdapter()
             rv.layoutManager = LinearLayoutManager(this@ListActivity, RecyclerView.VERTICAL, false)
@@ -43,6 +41,9 @@ class ListActivity : BaseActivity() {
                 if (it == true) {
                     EditActivity.createEntity(this@ListActivity, ADD)
                 }
+            })
+            filterAction.observe(this@ListActivity, Observer {
+                QueryDialogFragment().show(supportFragmentManager, null)
             })
         }
     }

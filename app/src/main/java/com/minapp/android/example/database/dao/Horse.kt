@@ -6,7 +6,7 @@ import com.minapp.android.sdk.database.RecordObject
 import com.minapp.android.sdk.database.TableObject
 import com.minapp.android.sdk.database.query.Query
 
-class Horse {
+open class Horse {
 
     constructor(id: String) {
         record = TABLE.fetchRecord(id)

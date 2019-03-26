@@ -56,4 +56,8 @@ object Util {
         (activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(activity.window.decorView.windowToken, 0)
     }
 
+    fun dp2px(ctx: Context, dp: Int): Int {
+        return (ctx.resources.displayMetrics.density * dp).toInt()
+    }
+
 }

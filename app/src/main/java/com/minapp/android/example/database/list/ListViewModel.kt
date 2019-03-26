@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 class ListViewModel: BaseViewModel() {
 
     val horses: LiveData<PagedList<Horse>> = LivePagedListBuilder(
-        HorseDataSourceFactory(), Config(
+        HorseDataSourceFactory(this), Config(
             pageSize = 15,
             initialLoadSizeHint = 15,
             prefetchDistance = 5,
@@ -27,6 +27,8 @@ class ListViewModel: BaseViewModel() {
 
     val editAction = MutableLiveData<String>()
     val addAction = MutableLiveData<Boolean>()
+    val filterAction = MutableLiveData<Boolean>()
+    val query = Query()
 
     fun onRefresh() {
         horses.value?.dataSource?.invalidate()
@@ -57,6 +59,6 @@ class ListViewModel: BaseViewModel() {
     }
 
     fun onFilter() {
-
+        filterAction.value = true
     }
 }
