@@ -11,11 +11,14 @@ import android.view.Menu
 import android.view.MenuItem
 import com.minapp.android.example.auth.AuthActivity
 import com.minapp.android.example.base.BaseActivity
-import com.minapp.android.example.database.list.ListActivity
+import com.minapp.android.example.content.list.ContentListActivity
+import com.minapp.android.example.database.list.RecordListActivity
+import com.minapp.android.example.user.list.UserListActivity
 import com.minapp.android.example.util.Glide4Engine
 import com.minapp.android.example.util.Util
+import com.minapp.android.sdk.auth.Auth
 import com.minapp.android.sdk.database.*
-import com.minapp.android.sdk.database.query.Query
+import com.minapp.android.sdk.database.query.Config
 import com.minapp.android.sdk.storage.Storage
 import com.zhihu.matisse.Matisse
 import com.zhihu.matisse.MimeType
@@ -34,12 +37,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         setSupportActionBar(toolbar)
 
         fab.setOnClickListener { view ->
-            activityScope.launch {
-                val query = Query()
-                    .inString(RecordObject.ID, arrayListOf("5c9846c025ff8c26bc2e8104", "5c9846a325ff8c26547eee15"))
-                val table = TableObject("my_horses")
-                table.query(query)
-            }
+            activityScope.launch { runCatching {
+                val files = Storage.files(null)
+                files.objects
+            }.onFailure { Log.e(Const.TAG, it.message, it) } }
         }
 
         val toggle = ActionBarDrawerToggle(
@@ -47,12 +48,17 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
         nav_view.setNavigationItemSelectedListener(this)
-        bindButtons()
+        init()
     }
 
-    fun bindButtons() {
+    fun init() {
         authBtn.setOnClickListener { startActivity(Intent(this, AuthActivity::class.java)) }
-        dbBtn.setOnClickListener { startActivity(Intent(this, ListActivity::class.java)) }
+        dbBtn.setOnClickListener { startActivity(Intent(this, RecordListActivity::class.java)) }
+        userBtn.setOnClickListener { startActivity(Intent(this, UserListActivity::class.java)) }
+        contentBtn.setOnClickListener { startActivity(Intent(this, ContentListActivity::class.java)) }
+        activityScope.launch { runCatching {
+            Auth.signInByUsername("ui", "12")
+        } }
     }
 
     fun openImagePicker() {
@@ -82,7 +88,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
                             val file = File(Matisse.obtainPathResult(data)[0])
                             val uploaded = Storage.uploadFile(file.name, file.readBytes())
-                            val horses = TableObject("my_horses")
+                            val horses = Table("my_horses")
                             val qrCode = horses.createRecord().put("horse_name", "二维马").put("attachment", uploaded).save()
                             Log.d(Const.TAG, "${qrCode.getFile("attachment")?.path}")
 

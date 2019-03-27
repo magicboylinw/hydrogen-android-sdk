@@ -18,7 +18,7 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
-        <activity android:name=".database.list.ListActivity">
+        <activity android:name=".database.list.RecordListActivity">
         </activity>
         <activity
                 android:name=".auth.AuthActivity"
@@ -38,6 +38,10 @@
         <activity android:name=".database.edit.EditActivity"
                   android:windowSoftInputMode="stateAlwaysHidden"
         />
+        <activity android:name=".user.list.UserListActivity" />
+        <activity android:name=".content.list.ContentListActivity" />
+        <activity android:name=".content.edit.EditActivity"
+        android:windowSoftInputMode="stateAlwaysHidden"/>
     </application>
 
 </manifest>

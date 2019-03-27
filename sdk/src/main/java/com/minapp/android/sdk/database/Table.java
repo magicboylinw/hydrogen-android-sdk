@@ -2,15 +2,16 @@ package com.minapp.android.sdk.database;
 
 import android.text.TextUtils;
 import com.minapp.android.sdk.Global;
+import com.minapp.android.sdk.database.query.Config;
 import com.minapp.android.sdk.database.query.Query;
-import com.minapp.android.sdk.database.query.Result;
+import com.minapp.android.sdk.util.PagedList;
 
-public class TableObject {
+public class Table {
 
     private String tableName;
 
 
-    public TableObject(String tableName) {
+    public Table(String tableName) {
         this.tableName = tableName;
     }
 
@@ -18,16 +19,16 @@ public class TableObject {
      * 通过此 api 创建一条新记录
      * @return
      */
-    public RecordObject createRecord() {
-        return new RecordObject(this);
+    public Record createRecord() {
+        return new Record(this);
     }
 
     /**
      * 通过此 api 获取一条记录
      * @return
      */
-    public RecordObject fetchRecord(String recordId) throws Exception {
-        return Database.fetch(this, recordId);
+    public Record fetchRecord(String recordId, Config config) throws Exception {
+        return Database.fetch(this, recordId, config);
     }
 
     public void fetchRecordInBackground(final String recordId, final Callback callback) {
@@ -35,7 +36,7 @@ public class TableObject {
             @Override
             public void run() {
                 try {
-                    RecordObject record = fetchRecord(recordId);
+                    Record record = fetchRecord(recordId, null);
                     if (callback != null) {
                         callback.onSuccess(record);
                     }
@@ -54,7 +55,7 @@ public class TableObject {
      * @return
      * @throws Exception
      */
-    public Result query(Query query) throws Exception {
+    public PagedList<Record> query(Query query) throws Exception {
         return Database.query(this, query);
     }
 
@@ -67,13 +68,13 @@ public class TableObject {
             @Override
             public void run() {
                 try {
-                    Result result = Database.query(TableObject.this, query);
+                    PagedList<Record> list = Database.query(Table.this, query);
                     if (callback != null) {
-                        callback.onSuccess(result);
+                        callback.onSuccess(list);
                     }
                 } catch (Exception e) {
                     if (callback != null) {
-                        callback.onFailure(TableObject.this, e);
+                        callback.onFailure(Table.this, e);
                     }
                 }
             }
@@ -86,8 +87,8 @@ public class TableObject {
 
     @Override
     public boolean equals( Object obj) {
-        if (obj instanceof TableObject) {
-            TableObject other = (TableObject) obj;
+        if (obj instanceof Table) {
+            Table other = (Table) obj;
             return TextUtils.equals(this.tableName, other.tableName);
         }
         return false;

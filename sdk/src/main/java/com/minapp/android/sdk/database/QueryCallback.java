@@ -1,10 +1,10 @@
 package com.minapp.android.sdk.database;
 
-import com.minapp.android.sdk.database.query.Result;
+import com.minapp.android.sdk.util.PagedList;
 
 public interface QueryCallback {
 
-    void onSuccess(Result result);
+    void onSuccess(PagedList<Record> list);
 
-    void onFailure(TableObject table, Exception e);
+    void onFailure(Table table, Exception e);
 }

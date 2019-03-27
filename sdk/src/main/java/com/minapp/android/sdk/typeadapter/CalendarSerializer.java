@@ -1,8 +1,7 @@
-package com.minapp.android.sdk.serializer;
+package com.minapp.android.sdk.typeadapter;
 
 import com.google.gson.*;
 import com.minapp.android.sdk.util.DateUtil;
-import com.minapp.android.sdk.util.Util;
 
 import java.lang.reflect.Type;
 import java.util.Calendar;

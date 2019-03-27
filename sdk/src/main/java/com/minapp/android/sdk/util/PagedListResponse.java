@@ -28,6 +28,9 @@ public class PagedListResponse<T> {
         this.objects = objects;
     }
 
+    public PagedList<T> readonly() {
+        return new PagedList<>(this);
+    }
 
     public static class Meta {
 

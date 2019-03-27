@@ -21,7 +21,19 @@
         />
         <Button
                 android:id="@+id/dbBtn"
-                android:text="数据的CURD"
+                android:text="数据"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+        />
+        <Button
+                android:id="@+id/userBtn"
+                android:text="用户"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+        />
+        <Button
+                android:id="@+id/contentBtn"
+                android:text="内容"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
         />

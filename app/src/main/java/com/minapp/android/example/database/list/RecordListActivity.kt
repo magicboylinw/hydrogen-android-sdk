@@ -13,7 +13,7 @@ import com.minapp.android.example.database.edit.EditActivity
 import com.minapp.android.example.database.list.rv.HorseAdapter
 import kotlinx.android.synthetic.main.activity_db.*
 
-class ListActivity : BaseActivity() {
+class RecordListActivity : BaseActivity() {
 
     private var viewModel: ListViewModel? = null
 
@@ -29,20 +29,20 @@ class ListActivity : BaseActivity() {
             refresh.isEnabled = false
 
             val adapter = HorseAdapter()
-            rv.layoutManager = LinearLayoutManager(this@ListActivity, RecyclerView.VERTICAL, false)
+            rv.layoutManager = LinearLayoutManager(this@RecordListActivity, RecyclerView.VERTICAL, false)
             rv.adapter = adapter
-            horses.observe(this@ListActivity, Observer {
+            horses.observe(this@RecordListActivity, Observer {
                 adapter.submitList(it)
             })
-            editAction.observe(this@ListActivity, Observer {
-                EditActivity.editEntity(this@ListActivity, EDIT, it)
+            editAction.observe(this@RecordListActivity, Observer {
+                EditActivity.editEntity(this@RecordListActivity, EDIT, it)
             })
-            addAction.observe(this@ListActivity, Observer {
+            addAction.observe(this@RecordListActivity, Observer {
                 if (it == true) {
-                    EditActivity.createEntity(this@ListActivity, ADD)
+                    EditActivity.createEntity(this@RecordListActivity, ADD)
                 }
             })
-            filterAction.observe(this@ListActivity, Observer {
+            filterAction.observe(this@RecordListActivity, Observer {
                 QueryDialogFragment().show(supportFragmentManager, null)
             })
         }

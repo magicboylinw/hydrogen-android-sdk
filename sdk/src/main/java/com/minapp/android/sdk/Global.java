@@ -6,8 +6,7 @@ import com.minapp.android.sdk.auth.AuthInterceptor;
 import com.minapp.android.sdk.auth.CheckedCallAdapterFactory;
 import com.minapp.android.sdk.database.query.Condition;
 import com.minapp.android.sdk.database.query.ConditionNode;
-import com.minapp.android.sdk.storage.CloudFile;
-import com.minapp.android.sdk.serializer.*;
+import com.minapp.android.sdk.typeadapter.*;
 import com.minapp.android.sdk.util.*;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
@@ -111,8 +110,7 @@ public abstract class Global {
                 .registerTypeAdapter(Calendar.class, new CalendarDeserializer())
                 .registerTypeAdapter(GregorianCalendar.class, new GregorianCalendarSerializer())
                 .registerTypeAdapter(GregorianCalendar.class, new GregorianCalendarDeserializer())
-                .registerTypeAdapter(CloudFile.class, new CloudFileSerializer())
-                .registerTypeAdapter(CloudFile.class, new CloudFileDeserializer());
+                .registerTypeAdapterFactory(new RecordTypeAdapterFactory());
     }
 
 }

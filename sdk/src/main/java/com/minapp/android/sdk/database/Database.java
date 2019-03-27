@@ -3,13 +3,13 @@ package com.minapp.android.sdk.database;
 import androidx.annotation.NonNull;
 import com.google.gson.JsonObject;
 import com.minapp.android.sdk.Global;
+import com.minapp.android.sdk.util.Action;
+import com.minapp.android.sdk.util.PagedList;
 import com.minapp.android.sdk.util.PagedListResponse;
 import com.minapp.android.sdk.database.query.*;
 import com.minapp.android.sdk.util.Util;
-import retrofit2.Response;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 public abstract class Database {
 
@@ -17,20 +17,27 @@ public abstract class Database {
      * 新增 or 更新
      * @param record
      */
-    static void save(RecordObject record) throws Exception {
+    static void save(Record record) throws Exception {
         if (record != null) {
 
             // 新增
-            if (record.id() == null) {
-                Response<JsonObject> response = Global.httpApi().saveRecord(record.tableName(), record.toJsonObject()).execute();
-                record.updateByServer(response.body());
+            if (record.getId() == null) {
+                Record response = Global.httpApi().saveRecord(record.getTableName(), record).execute().body();
+                record._setJson(response._getJson());
 
             } else {
 
                 // 更新
-                Response<JsonObject> response = Global.httpApi().updateRecord(
-                        record.tableName(), record.id(), record.toJsonObject()).execute();
-                record.updateByServer(response.body());
+                Record clone = record._deepClone();
+                JsonObject json = clone._getJson();
+                for (String field : json.keySet()) {
+                    String id = Util.getPointerId(json.get(field));
+                    if (id != null) {
+                        json.addProperty(field, id);
+                    }
+                }
+                Record response = Global.httpApi().updateRecord(clone.getTableName(), clone.getId(), clone).execute().body();
+                record._setJson(response._getJson());
             }
         }
     }
@@ -40,10 +47,10 @@ public abstract class Database {
      * @param record
      * @throws Exception
      */
-    static void delete(RecordObject record) throws Exception {
-        if (record != null && record.id() != null) {
-            Global.httpApi().deleteRecord(record.tableName(), record.id()).execute();
-            record.updateByServer(null);
+    static void delete(Record record) throws Exception {
+        if (record != null && record.getId() != null) {
+            Global.httpApi().deleteRecord(record.getTableName(), record.getId()).execute();
+            record._setJson(null);
         }
     }
 
@@ -52,12 +59,14 @@ public abstract class Database {
      * @return
      * @throws Exception
      */
-    static @NonNull RecordObject fetch(@NonNull TableObject table, String recordId) throws Exception {
+    static @NonNull Record fetch(@NonNull Table table, String recordId, Config config) throws Exception {
         Util.assetNotNull(table);
-        Response<JsonObject> response = Global.httpApi().fetchRecord(table.getTableName(), recordId).execute();
-        RecordObject record = table.createRecord();
-        record.updateByServer(response.body());
-        return record;
+        Record response = Global.httpApi().fetchRecord(
+                table.getTableName(),
+                recordId, config != null ? config._toQueryMap() : new HashMap<String, String>()
+        ).execute().body();
+        response._setTable(table);
+        return response;
     }
 
 
@@ -68,40 +77,21 @@ public abstract class Database {
      * @return
      * @throws Exception
      */
-    static Result query(TableObject table, Query query) throws Exception {
-        Result result = new Result();
+    static PagedList<Record> query(final Table table, Query query) throws Exception {
         if (table != null) {
-            String where = query != null ? query.getWhereJson() : null;
-            String orderBy = query != null ? query.getOrderBy() : null;
-            Long limit = query != null ? query.getLimit() : null;
-            Long offset = query != null ? query.getOffset() : null;
-            PagedListResponse<JsonObject> body = Global.httpApi().queryRecord(table.getTableName(), where, orderBy, limit, offset).execute().body();
-
-            PagedListResponse.Meta meta = body.getMeta();
-            if (meta != null) {
-                result.setNext(meta.getNext());
-                result.setPrevious(meta.getPrevious());
-                result.setLimit(meta.getLimit());
-                result.setOffset(meta.getOffset());
-                result.setTotalCount(meta.getTotalCount());
-            }
-
-            List<JsonObject> objects = body.getObjects();
-            if (objects != null) {
-                List<RecordObject> records = new ArrayList<>(objects.size());
-                result.setRecords(records);
-
-                for (JsonObject object : objects) {
-                    RecordObject record = new RecordObject(table);
-                    record.updateByServer(object);
-                    records.add(record);
+            PagedListResponse<Record> body = Global.httpApi().queryRecord(
+                    table.getTableName(),
+                    query != null ? query._toQueryMap() : new HashMap<String, String>()
+            ).execute().body();
+            Util.each(body.getObjects(), new Action<Record>() {
+                @Override
+                public void on(Record record) {
+                    record._setTable(table);
                 }
-            } else {
-                result.setRecords(new ArrayList<RecordObject>(0));
-            }
-
+            });
+            return body.readonly();
         }
-        return result;
+        return new PagedList<>(null);
     }
 
     /**
@@ -111,11 +101,11 @@ public abstract class Database {
      * @return
      * @throws Exception
      */
-    static BatchDeleteResp batchDelete(TableObject table, Query query) throws Exception {
-        String where = query != null ? query.getWhereJson() : null;
-        Long limit = query != null ? query.getLimit() : null;
-        Long offset = query != null ? query.getOffset() : null;
-        return Global.httpApi().batchDelete(table.getTableName(), where, offset, limit).execute().body();
+    static BatchDeleteResp batchDelete(Table table, Query query) throws Exception {
+        return Global.httpApi().batchDelete(
+                table.getTableName(),
+                query != null ? query._toQueryMap() : new HashMap<String, String>()
+        ).execute().body();
     }
 
 }

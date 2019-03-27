@@ -1,7 +1,12 @@
 package com.minapp.android.sdk.util;
 
+import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.minapp.android.sdk.Const;
+import com.minapp.android.sdk.database.Record;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -11,6 +16,41 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 public abstract class Util {
+
+    private static final String[] POINTER_FEATURE = new String[]{
+            Record.ID, Record.TABLE
+    };
+
+    /**
+     * 判断一个 filed 是否是 Pointer（包含字段 id 和 _table）
+     * @param elem
+     * @return 如果是 Pointer，则返回其 ID；否则返回 null
+     */
+    public static String getPointerId(JsonElement elem) {
+        if (elem != null && elem.isJsonObject()) {
+            JsonObject obj = (JsonObject) elem;
+            for (String filed : POINTER_FEATURE) {
+                if (!obj.has(filed)) {
+                    return null;
+                }
+            }
+            try {
+                return obj.get(Record.ID).getAsString();
+            } catch (Exception e) {
+                Log.e(Const.TAG, e.getMessage(), e);
+                return null;
+            }
+        }
+        return null;
+    }
+
+    public static <T> void each(Collection<T> collection, Action<T> action) {
+        if (collection != null && collection.size() > 0 && action != null) {
+            for (T aCollection : collection) {
+                action.on(aCollection);
+            }
+        }
+    }
 
     public static <R, T> PagedListResponse<R> transform(PagedListResponse<T> response, Function<T, R> func) {
         PagedListResponse<R> data = new PagedListResponse<>();

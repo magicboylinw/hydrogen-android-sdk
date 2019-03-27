@@ -18,12 +18,7 @@ import kotlinx.coroutines.launch
 class ListViewModel: BaseViewModel() {
 
     val horses: LiveData<PagedList<Horse>> = LivePagedListBuilder(
-        HorseDataSourceFactory(this), Config(
-            pageSize = 15,
-            initialLoadSizeHint = 15,
-            prefetchDistance = 5,
-            enablePlaceholders = false
-    )).build()
+        HorseDataSourceFactory(this), Const.DATA_SOURCE_CONFIG).build()
 
     val editAction = MutableLiveData<String>()
     val addAction = MutableLiveData<Boolean>()

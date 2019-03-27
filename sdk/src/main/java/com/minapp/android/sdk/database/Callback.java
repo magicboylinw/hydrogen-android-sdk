@@ -4,7 +4,7 @@ import androidx.annotation.Nullable;
 
 public interface Callback {
 
-    void onSuccess(RecordObject record);
+    void onSuccess(Record record);
 
-    void onFailure(@Nullable RecordObject record, Exception e);
+    void onFailure(@Nullable Record record, Exception e);
 }

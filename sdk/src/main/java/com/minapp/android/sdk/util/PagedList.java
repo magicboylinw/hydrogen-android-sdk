@@ -57,4 +57,8 @@ public class PagedList<T> {
             return null;
         }
     }
+
+    public <R> PagedList<R> transform(Function<T, R> func) {
+        return new PagedList<>(Util.transform(this.list, func));
+    }
 }

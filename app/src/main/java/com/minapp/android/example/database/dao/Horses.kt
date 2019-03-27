@@ -1,8 +1,9 @@
 package com.minapp.android.example.database.dao
 
-import com.minapp.android.sdk.database.query.Result
+import com.minapp.android.sdk.database.Record
+import com.minapp.android.sdk.util.PagedList
 
-class Horses (result: Result) {
+class Horses (list: PagedList<Record>) {
 
     var next: String? = null
     var previous: String? = null
@@ -13,12 +14,12 @@ class Horses (result: Result) {
 
 
     init {
-        next = result.next
-        previous = result.previous
-        totalCount = result.totalCount
-        limit = result.limit
-        offset = result.offset
-        records = result.records?.map { Horse(it) } ?: arrayListOf()
+        next = list.next
+        previous = list.previous
+        totalCount = list.totalCount
+        limit = list.limit
+        offset = list.offset
+        records = list.objects?.map { Horse(it) } ?: arrayListOf()
     }
 
 }

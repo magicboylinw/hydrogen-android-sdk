@@ -1,6 +1,8 @@
 package com.minapp.android.sdk.database.query;
 
+import androidx.annotation.NonNull;
 import com.google.gson.*;
+import com.minapp.android.sdk.Global;
 import com.minapp.android.sdk.util.Util;
 
 import java.lang.reflect.Type;
@@ -68,6 +70,11 @@ public class ConditionNode {
         return newNode;
     }
 
+    @NonNull
+    @Override
+    public String toString() {
+        return Global.gson().toJson(this);
+    }
 
     public static class Serializer implements JsonSerializer<ConditionNode> {
         @Override

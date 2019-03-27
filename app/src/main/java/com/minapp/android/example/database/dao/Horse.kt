@@ -1,18 +1,17 @@
 package com.minapp.android.example.database.dao
 
-import android.util.Log
-import com.minapp.android.example.Const
-import com.minapp.android.sdk.database.RecordObject
-import com.minapp.android.sdk.database.TableObject
+import com.minapp.android.sdk.database.Record
+import com.minapp.android.sdk.database.Table
 import com.minapp.android.sdk.database.query.Query
+import com.minapp.android.sdk.util.PagedList
 
 open class Horse {
 
     constructor(id: String) {
-        record = TABLE.fetchRecord(id)
+        record = TABLE.fetchRecord(id, null)
     }
 
-    constructor(record: RecordObject) {
+    constructor(record: Record) {
         this.record = record
     }
 
@@ -30,7 +29,7 @@ open class Horse {
     set(value) { record.put(AGE, value) }
 
     val id: String?
-    get() = record.id()
+    get() = record.getId()
 
     var checked: Boolean = false
 
@@ -47,9 +46,9 @@ open class Horse {
     companion object {
         const val NAME = "horse_name"
         const val AGE = "horse_age"
-        val TABLE = TableObject("my_horses")
+        val TABLE = Table("my_horses")
 
-        fun query(condition: Horse, query: Query): Horses {
+        fun query(condition: Horse, query: Query): PagedList<Horse> {
             query.apply {
                 if (condition.age != null) {
                     eq(AGE, condition.age)
@@ -58,15 +57,11 @@ open class Horse {
                     eq(NAME, condition.name)
                 }
             }
-            return Horses(
-                TABLE.query(
-                    query
-                )
-            )
+            return TABLE.query(query).transform { Horse(it) }
         }
 
         fun batchDelete(ids: List<String>) {
-            TABLE.batchDelete(Query().inString(RecordObject.ID, ids))
+            TABLE.batchDelete(Query().inString(Record.ID, ids))
         }
     }
 }

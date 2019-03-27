@@ -6,9 +6,9 @@ import com.minapp.android.example.database.list.ListViewModel
 
 class HorseDataSourceFactory(
     private val viewModel: ListViewModel
-): DataSource.Factory<Long, Horse>() {
+): DataSource.Factory<Int, Horse>() {
 
-    override fun create(): DataSource<Long, Horse> {
+    override fun create(): DataSource<Int, Horse> {
         return HorseDataSource(viewModel)
     }
 }

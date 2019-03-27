@@ -1,19 +1,20 @@
 package com.minapp.android.sdk.storage;
 
 import com.minapp.android.sdk.Global;
+import com.minapp.android.sdk.database.query.Query;
 import com.minapp.android.sdk.storage.category.CategoryInfo;
 import com.minapp.android.sdk.storage.category.CreateCategoryBody;
 import com.minapp.android.sdk.storage.category.UpdateCategoryBody;
-import com.minapp.android.sdk.storage.model.FileMetaResponse;
 import com.minapp.android.sdk.storage.model.UploadMetaBody;
 import com.minapp.android.sdk.storage.model.UploadMetaResponse;
+import com.minapp.android.sdk.storage.model.UploadedFile;
 import com.minapp.android.sdk.util.Function;
 import com.minapp.android.sdk.util.PagedList;
 import com.minapp.android.sdk.util.PagedListResponse;
-import com.minapp.android.sdk.util.Util;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 
+import java.util.HashMap;
 import java.util.List;
 
 public abstract class Storage {
@@ -29,7 +30,7 @@ public abstract class Storage {
      * 1. 获取上传文件所需授权凭证和上传地址<br />
      * 2. 使用上一步获取的授权凭证和上传地址，进行文件上传
      */
-    public static CloudFile uploadFile(String filename, byte[] data) throws Exception {
+    public static UploadedFile uploadFile(String filename, byte[] data) throws Exception {
         return uploadFile(filename, null, data);
     }
 
@@ -38,7 +39,7 @@ public abstract class Storage {
      * 1. 获取上传文件所需授权凭证和上传地址<br />
      * 2. 使用上一步获取的授权凭证和上传地址，进行文件上传
      */
-    public static CloudFile uploadFile(String filename, String categoryId, byte[] data) throws Exception {
+    public static UploadedFile uploadFile(String filename, String categoryId, byte[] data) throws Exception {
         UploadMetaBody body = new UploadMetaBody();
         body.setFileName(filename);
         body.setCategoryId(categoryId);
@@ -52,7 +53,7 @@ public abstract class Storage {
                 .build();
         Global.httpApi().uploadFile(meta.getUploadUrl(), multipartBody).execute();
 
-        CloudFile uploaded = null;
+        UploadedFile uploaded = null;
         int maxLoop = FILE_CHECKING_MAX;
         synchronized (meta) {
             while (maxLoop > 0) {
@@ -75,27 +76,17 @@ public abstract class Storage {
      * @return
      * @throws Exception
      */
-    public static CloudFile file(String id) throws Exception {
-        return new CloudFile(Global.httpApi().file(id).execute().body());
+    public static UploadedFile file(String id) throws Exception {
+        return Global.httpApi().file(id).execute().body();
     }
 
 
     /**
      * 查询文件列表
-     * @param orderBy
-     * @param limit
-     * @param offset
-     * @return
      * @throws Exception
      */
-    public static PagedList<CloudFile> files(String orderBy, Long limit, Long offset) throws Exception {
-        PagedListResponse<FileMetaResponse> list = Global.httpApi().files(orderBy, limit, offset).execute().body();
-        return new PagedList<>(Util.transform(list, new Function<FileMetaResponse, CloudFile>() {
-            @Override
-            public CloudFile on(FileMetaResponse meta) {
-                return new CloudFile(meta);
-            }
-        }));
+    public static PagedList<UploadedFile> files(Query query) throws Exception {
+        return Global.httpApi().files(query != null ? query._toQueryMap() : new HashMap<String, String>()).execute().body().readonly();
     }
 
     /**
@@ -146,12 +137,12 @@ public abstract class Storage {
      */
     public static PagedList<Category> categories(String orderBy, Long limit, Long offset) throws Exception {
         PagedListResponse<CategoryInfo> list = Global.httpApi().categories(orderBy, limit, offset).execute().body();
-        return new PagedList<Category>(Util.transform(list, new Function<CategoryInfo, Category>() {
+        return list.readonly().transform(new Function<CategoryInfo, Category>() {
             @Override
-            public Category on(CategoryInfo info) {
-                return new Category(info);
+            public Category on(CategoryInfo categoryInfo) {
+                return new Category(categoryInfo);
             }
-        }));
+        });
     }
 
     /**

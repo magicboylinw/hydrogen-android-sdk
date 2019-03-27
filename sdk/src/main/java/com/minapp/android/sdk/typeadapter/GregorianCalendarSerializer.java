@@ -1,4 +1,4 @@
-package com.minapp.android.sdk.serializer;
+package com.minapp.android.sdk.typeadapter;
 
 import com.google.gson.*;
 import com.minapp.android.sdk.util.DateUtil;

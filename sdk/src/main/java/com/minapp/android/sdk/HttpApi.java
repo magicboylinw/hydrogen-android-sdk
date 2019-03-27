@@ -1,24 +1,24 @@
 package com.minapp.android.sdk;
 
-import com.google.gson.JsonObject;
 import com.minapp.android.sdk.auth.*;
 import com.minapp.android.sdk.auth.model.SignUpInByEmailReq;
 import com.minapp.android.sdk.auth.model.SignUpInByUsernameReq;
 import com.minapp.android.sdk.auth.model.SignUpInResp;
+import com.minapp.android.sdk.content.Content;
 import com.minapp.android.sdk.database.BatchDeleteResp;
+import com.minapp.android.sdk.database.Record;
 import com.minapp.android.sdk.storage.*;
 import com.minapp.android.sdk.storage.category.CategoryInfo;
 import com.minapp.android.sdk.storage.category.CreateCategoryBody;
 import com.minapp.android.sdk.storage.category.UpdateCategoryBody;
-import com.minapp.android.sdk.storage.model.FileMetaResponse;
-import com.minapp.android.sdk.storage.model.UploadMetaBody;
-import com.minapp.android.sdk.storage.model.UploadMetaResponse;
-import com.minapp.android.sdk.storage.model.UploadResponse;
+import com.minapp.android.sdk.storage.model.*;
+import com.minapp.android.sdk.user.User;
 import com.minapp.android.sdk.util.PagedListResponse;
 import okhttp3.RequestBody;
 import retrofit2.http.*;
 
 import java.util.Collection;
+import java.util.Map;
 
 
 /**
@@ -79,9 +79,9 @@ public interface HttpApi {
      * @return
      */
     @POST("hserve/v2.0/table/{table_name}/record/")
-    CheckedCall<JsonObject> saveRecord(
+    CheckedCall<Record> saveRecord(
             @Path("table_name") String tableName,
-            @Body JsonObject body
+            @Body Record body
     );
 
 
@@ -93,10 +93,10 @@ public interface HttpApi {
      * @return
      */
     @PUT("hserve/v2.0/table/{table_name}/record/{record_id}/")
-    CheckedCall<JsonObject> updateRecord(
+    CheckedCall<Record> updateRecord(
             @Path("table_name") String tableName,
             @Path("record_id") String recordId,
-            @Body JsonObject body
+            @Body Record body
     );
 
     /**
@@ -118,9 +118,10 @@ public interface HttpApi {
      * @return
      */
     @GET("hserve/v2.0/table/{table_name}/record/{record_id}/")
-    CheckedCall<JsonObject> fetchRecord(
+    CheckedCall<Record> fetchRecord(
             @Path("table_name") String tableName,
-            @Path("record_id") String recordId
+            @Path("record_id") String recordId,
+            @QueryMap Map<String, String> query
     );
 
 
@@ -130,28 +131,20 @@ public interface HttpApi {
      * @return
      */
     @GET("hserve/v2.0/table/{table_name}/record/")
-    CheckedCall<PagedListResponse<JsonObject>> queryRecord(
+    CheckedCall<PagedListResponse<Record>> queryRecord(
             @Path("table_name") String tableName,
-            @Query("where") String where,
-            @Query("order_by") String orderBy,
-            @Query("limit") Long limit,
-            @Query("offset") Long offset
+            @QueryMap Map<String, String> query
     );
 
     /**
      * 批量删除
      * @param tableName
-     * @param where
-     * @param offset
-     * @param limit
      * @return
      */
     @DELETE("hserve/v2.0/table/{tableName}/record/")
     CheckedCall<BatchDeleteResp> batchDelete(
             @Path("tableName") String tableName,
-            @Query("where") String where,
-            @Query("offset") Long offset,
-            @Query("limit") Long limit
+            @QueryMap Map<String, String> query
     );
 
 
@@ -163,7 +156,7 @@ public interface HttpApi {
      * @param body
      * @return
      */
-    @POST("oserve/v1/upload/")
+    @POST("hserve/v1/upload/")
     CheckedCall<UploadMetaResponse> getUploadMeta(@Body UploadMetaBody body);
 
     /**
@@ -183,21 +176,16 @@ public interface HttpApi {
      * @return
      */
     @GET("oserve/v1/file/{file_id}/")
-    CheckedCall<FileMetaResponse> file(@Path("file_id") String id);
+    CheckedCall<UploadedFile> file(@Path("file_id") String id);
 
 
     /**
-     * 查询文件列表
-     * @param orderBy
-     * @param limit
-     * @param offset
+     * 文件列表
      * @return
      */
-    @GET("oserve/v1/file/")
-    CheckedCall<PagedListResponse<FileMetaResponse>> files(
-            @Query("order_by") String orderBy,
-            @Query("limit") Long limit,
-            @Query("offset") Long offset
+    @GET("/hserve/v1.3/uploaded-file/")
+    CheckedCall<PagedListResponse<UploadedFile>> files(
+            @QueryMap Map<String, String> query
     );
 
     /**
@@ -269,4 +257,41 @@ public interface HttpApi {
     @DELETE("oserve/v1/file-category/{category_id}/")
     CheckedCall<Void> deleteCategory(@Path("category_id") String id);
 
+
+
+    /********************************* User api ****************************************/
+
+
+    /**
+     * 用户列表
+     * @return
+     */
+    @GET("hserve/v2.0/user/info/")
+    CheckedCall<PagedListResponse<User>> userList(@QueryMap Map<String, String> query);
+
+
+
+    /********************************* Content api ****************************************/
+
+    /**
+     * 内容库列表
+     * @param categoryId
+     * @param groupId
+     * @param query
+     * @return
+     */
+    @GET("hserve/v2.0/content/detail/")
+    CheckedCall<PagedListResponse<Content>> contentList(
+            @Query("category_id") String categoryId,
+            @Query("content_group_id") String groupId,
+            @QueryMap Map<String, String> query
+    );
+
+    /**
+     * 内容明细
+     * @param id
+     * @return
+     */
+    @GET("hserve/v2.0/content/detail/{id}/")
+    CheckedCall<Content> content(@Path("id") String id);
 }
