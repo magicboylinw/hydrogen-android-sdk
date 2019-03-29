@@ -6,8 +6,8 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 1
-        versionName "0.0.1"
+        versionCode 2
+        versionName "0.0.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -50,7 +50,7 @@ publish {
     // 项目的坐标
     groupId = 'com.minapp.android'
     artifactId = 'sdk'
-    publishVersion = '0.0.1'
+    publishVersion = '0.0.2'
 
     desc = ''
     uploadName = 'minapp-android-sdk'
