@@ -3,7 +3,7 @@ package com.minapp.android.example.base
 import android.util.Log
 import androidx.paging.PageKeyedDataSource
 import com.minapp.android.example.Const
-import com.minapp.android.sdk.database.query.Query
+import com.minapp.android.sdk.database.query.BaseQuery
 import com.minapp.android.sdk.util.PagedList
 
 abstract class BasePageKeyedDataSource<T>: PageKeyedDataSource<Int, T>() {
@@ -12,7 +12,10 @@ abstract class BasePageKeyedDataSource<T>: PageKeyedDataSource<Int, T>() {
         try {
             val offset = 0
             val limit = params.requestedLoadSize
-            val query = Query().setOffset(offset.toLong()).setLimit(limit.toLong())
+            val query = BaseQuery().apply {
+                put(BaseQuery.OFFSET, offset.toString())
+                put(BaseQuery.LIMIT, limit.toString())
+            }
 
             val list = loadInitial(query)
             if (list != null) {
@@ -31,7 +34,10 @@ abstract class BasePageKeyedDataSource<T>: PageKeyedDataSource<Int, T>() {
         try {
             val offset = params.key
             val limit = params.requestedLoadSize
-            val query = Query().setOffset(offset.toLong()).setLimit(limit.toLong())
+            val query = BaseQuery().apply {
+                put(BaseQuery.OFFSET, offset.toString())
+                put(BaseQuery.LIMIT, limit.toString())
+            }
 
             val list = loadAfter(query)
             if (list != null) {
@@ -50,7 +56,7 @@ abstract class BasePageKeyedDataSource<T>: PageKeyedDataSource<Int, T>() {
         callback.onResult(emptyList(), null)
     }
 
-    abstract fun loadInitial(query: Query): PagedList<T>?
+    abstract fun loadInitial(query: BaseQuery): PagedList<T>?
 
-    abstract fun loadAfter(query: Query): PagedList<T>?
+    abstract fun loadAfter(query: BaseQuery): PagedList<T>?
 }

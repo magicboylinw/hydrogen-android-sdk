@@ -1,21 +1,15 @@
 package com.minapp.android.sdk.storage;
 
 import com.minapp.android.sdk.Global;
-import com.minapp.android.sdk.database.query.Query;
-import com.minapp.android.sdk.storage.category.CategoryInfo;
-import com.minapp.android.sdk.storage.category.CreateCategoryBody;
-import com.minapp.android.sdk.storage.category.UpdateCategoryBody;
-import com.minapp.android.sdk.storage.model.UploadMetaBody;
-import com.minapp.android.sdk.storage.model.UploadMetaResponse;
-import com.minapp.android.sdk.storage.model.UploadedFile;
-import com.minapp.android.sdk.util.Function;
+import com.minapp.android.sdk.database.query.BaseQuery;
+import com.minapp.android.sdk.storage.model.BatchDeleteReq;
+import com.minapp.android.sdk.storage.model.UploadInfoReq;
+import com.minapp.android.sdk.storage.model.UploadInfoResp;
 import com.minapp.android.sdk.util.PagedList;
-import com.minapp.android.sdk.util.PagedListResponse;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public abstract class Storage {
 
@@ -40,10 +34,10 @@ public abstract class Storage {
      * 2. 使用上一步获取的授权凭证和上传地址，进行文件上传
      */
     public static UploadedFile uploadFile(String filename, String categoryId, byte[] data) throws Exception {
-        UploadMetaBody body = new UploadMetaBody();
+        UploadInfoReq body = new UploadInfoReq();
         body.setFileName(filename);
         body.setCategoryId(categoryId);
-        UploadMetaResponse meta = Global.httpApi().getUploadMeta(body).execute().body();
+        UploadInfoResp meta = Global.httpApi().getUploadMeta(body).execute().body();
 
         MultipartBody multipartBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
@@ -57,8 +51,10 @@ public abstract class Storage {
         int maxLoop = FILE_CHECKING_MAX;
         synchronized (meta) {
             while (maxLoop > 0) {
-                uploaded = file(meta.getId());
-                if (uploaded.isUploadSuccess()) {
+                try {
+                    uploaded = file(meta.getId());
+                } catch (Exception ignored) {}
+                if (uploaded != null && uploaded.isUploadSuccess()) {
                     return uploaded;
                 } else {
                     maxLoop--;
@@ -85,8 +81,8 @@ public abstract class Storage {
      * 查询文件列表
      * @throws Exception
      */
-    public static PagedList<UploadedFile> files(Query query) throws Exception {
-        return Global.httpApi().files(query != null ? query._toQueryMap() : new HashMap<String, String>()).execute().body().readonly();
+    public static PagedList<UploadedFile> files(BaseQuery query) throws Exception {
+        return Global.httpApi().files(query != null ? query : new BaseQuery()).execute().body().readonly();
     }
 
     /**
@@ -94,27 +90,16 @@ public abstract class Storage {
      * @param ids
      * @throws Exception
      */
-    public static void deleteFiles(List<String> ids) throws Exception {
+    public static void deleteFiles(Collection<String> ids) throws Exception {
         if (ids == null || ids.size() == 0) {
             return;
         }
 
         if (ids.size() == 1) {
-            Global.httpApi().deleteFile(ids.get(0)).execute();
+            Global.httpApi().deleteFile(ids.iterator().next()).execute();
         } else {
-            Global.httpApi().deleteFiles(ids).execute();
+            Global.httpApi().deleteFiles(new BatchDeleteReq(ids)).execute();
         }
-    }
-
-
-    /**
-     * 创建分类
-     * @param name
-     * @return
-     * @throws Exception
-     */
-    public static Category createCategory(String name) throws Exception {
-        return new Category(Global.httpApi().createCategory(new CreateCategoryBody(name)).execute().body());
     }
 
     /**
@@ -123,46 +108,17 @@ public abstract class Storage {
      * @return
      * @throws Exception
      */
-    public static Category category(String id) throws Exception {
-        return new Category(Global.httpApi().category(id).execute().body());
+    public static FileCategory category(String id) throws Exception {
+        return Global.httpApi().fileCategory(id).execute().body();
     }
 
     /**
      * 列表查询分类
-     * @param orderBy
-     * @param limit
-     * @param offset
      * @return
      * @throws Exception
      */
-    public static PagedList<Category> categories(String orderBy, Long limit, Long offset) throws Exception {
-        PagedListResponse<CategoryInfo> list = Global.httpApi().categories(orderBy, limit, offset).execute().body();
-        return list.readonly().transform(new Function<CategoryInfo, Category>() {
-            @Override
-            public Category on(CategoryInfo categoryInfo) {
-                return new Category(categoryInfo);
-            }
-        });
-    }
-
-    /**
-     * 更新分类
-     * @param id
-     * @param name
-     * @return
-     * @throws Exception
-     */
-    public static Category updateCategory(String id, String name) throws Exception {
-        return new Category(Global.httpApi().updateCategory(id, new UpdateCategoryBody(name)).execute().body());
-    }
-
-    /**
-     * 删除分类
-     * @param id
-     * @throws Exception
-     */
-    public static void deleteCategory(String id) throws Exception {
-        Global.httpApi().deleteCategory(id).execute();
+    public static PagedList<FileCategory> categories(BaseQuery query) throws Exception {
+        return Global.httpApi().fileCategories(query).execute().body().readonly();
     }
 
 }

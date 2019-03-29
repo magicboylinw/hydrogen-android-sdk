@@ -18,7 +18,7 @@ public abstract class Database {
      * @param record
      */
     static void save(Record record) throws Exception {
-        if (record != null) {
+        if (record != null && record.getTableName() != null) {
 
             // 新增
             if (record.getId() == null) {
@@ -59,11 +59,11 @@ public abstract class Database {
      * @return
      * @throws Exception
      */
-    static @NonNull Record fetch(@NonNull Table table, String recordId, Config config) throws Exception {
+    static @NonNull Record fetch(@NonNull Table table, String recordId, BaseQuery query) throws Exception {
         Util.assetNotNull(table);
         Record response = Global.httpApi().fetchRecord(
                 table.getTableName(),
-                recordId, config != null ? config._toQueryMap() : new HashMap<String, String>()
+                recordId, query != null ? query : new BaseQuery()
         ).execute().body();
         response._setTable(table);
         return response;
@@ -77,11 +77,11 @@ public abstract class Database {
      * @return
      * @throws Exception
      */
-    static PagedList<Record> query(final Table table, Query query) throws Exception {
+    static PagedList<Record> query(final Table table, BaseQuery query) throws Exception {
         if (table != null) {
             PagedListResponse<Record> body = Global.httpApi().queryRecord(
                     table.getTableName(),
-                    query != null ? query._toQueryMap() : new HashMap<String, String>()
+                    query != null ? query : new BaseQuery()
             ).execute().body();
             Util.each(body.getObjects(), new Action<Record>() {
                 @Override
@@ -101,10 +101,10 @@ public abstract class Database {
      * @return
      * @throws Exception
      */
-    static BatchDeleteResp batchDelete(Table table, Query query) throws Exception {
+    static BatchDeleteResp batchDelete(Table table, BaseQuery query) throws Exception {
         return Global.httpApi().batchDelete(
                 table.getTableName(),
-                query != null ? query._toQueryMap() : new HashMap<String, String>()
+                query != null ? query : new BaseQuery()
         ).execute().body();
     }
 

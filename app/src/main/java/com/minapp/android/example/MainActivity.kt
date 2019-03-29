@@ -13,12 +13,12 @@ import com.minapp.android.example.auth.AuthActivity
 import com.minapp.android.example.base.BaseActivity
 import com.minapp.android.example.content.list.ContentListActivity
 import com.minapp.android.example.database.list.RecordListActivity
+import com.minapp.android.example.file.list.FileListActivity
 import com.minapp.android.example.user.list.UserListActivity
 import com.minapp.android.example.util.Glide4Engine
 import com.minapp.android.example.util.Util
 import com.minapp.android.sdk.auth.Auth
 import com.minapp.android.sdk.database.*
-import com.minapp.android.sdk.database.query.Config
 import com.minapp.android.sdk.storage.Storage
 import com.zhihu.matisse.Matisse
 import com.zhihu.matisse.MimeType
@@ -37,10 +37,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         setSupportActionBar(toolbar)
 
         fab.setOnClickListener { view ->
-            activityScope.launch { runCatching {
-                val files = Storage.files(null)
-                files.objects
-            }.onFailure { Log.e(Const.TAG, it.message, it) } }
+
         }
 
         val toggle = ActionBarDrawerToggle(
@@ -56,6 +53,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         dbBtn.setOnClickListener { startActivity(Intent(this, RecordListActivity::class.java)) }
         userBtn.setOnClickListener { startActivity(Intent(this, UserListActivity::class.java)) }
         contentBtn.setOnClickListener { startActivity(Intent(this, ContentListActivity::class.java)) }
+        fileBtn.setOnClickListener { startActivity(Intent(this, FileListActivity::class.java)) }
         activityScope.launch { runCatching {
             Auth.signInByUsername("ui", "12")
         } }
@@ -108,9 +106,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.main, menu)
-        return true
+        return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

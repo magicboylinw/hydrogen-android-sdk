@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.Gravity
 import android.view.ViewGroup
+import android.view.Window
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatDialog
 import com.minapp.android.example.util.Util

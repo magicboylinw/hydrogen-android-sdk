@@ -2,7 +2,7 @@ package com.minapp.android.sdk.storage.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class UploadMetaBody {
+public class UploadInfoReq {
 
     @SerializedName("filename")
     private String fileName;            // 上传的文件名

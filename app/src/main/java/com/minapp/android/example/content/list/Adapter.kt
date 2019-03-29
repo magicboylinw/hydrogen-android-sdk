@@ -28,6 +28,7 @@ class Adapter(
                     t?.id?.also { viewModel.selectedItems.remove(it) }
                 }
             }
+            itemView.setOnClickListener { t?.let { t.id }?.also { viewModel.onContentClick(it) } }
         }
     }
 }

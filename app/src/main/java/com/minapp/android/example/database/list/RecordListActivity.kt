@@ -20,10 +20,10 @@ class RecordListActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_db)
-        initPagedList()
+        init()
     }
 
-    fun initPagedList() {
+    fun init() {
         viewModel = provideViewModel(ListViewModel::class.java).apply {
             refresh.setOnRefreshListener { onRefresh() }
             refresh.isEnabled = false
@@ -46,6 +46,7 @@ class RecordListActivity : BaseActivity() {
                 QueryDialogFragment().show(supportFragmentManager, null)
             })
         }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

@@ -1,6 +1,8 @@
-package com.minapp.android.sdk.storage.model;
+package com.minapp.android.sdk.storage;
 
 import androidx.annotation.Nullable;
+import com.google.gson.JsonObject;
+import com.minapp.android.sdk.Global;
 import com.minapp.android.sdk.database.Record;
 
 
@@ -27,7 +29,11 @@ public class UploadedFile extends Record {
     public static final String PATH = "path";
     public static final String SIZE = "size";
     public static final String STATUS = "status";
-    public static final String CATEGORIES = "categories";
+    public static final String CATEGORY = "category";
+
+    // 用于查询
+    public static final String QUERY_CATEGORY_ID = "category_id";
+    public static final String QUERY_CATEGORY_NAME = "category_name";
 
     public boolean isUploadSuccess() {
         return STATUS_SUCCESS.equalsIgnoreCase(getStatus());
@@ -93,6 +99,26 @@ public class UploadedFile extends Record {
 
     public UploadedFile setStatus(String status) {
         put(STATUS, status);
+        return this;
+    }
+
+    public @Nullable
+    FileCategory getCategory() {
+        JsonObject json = getJsonObject(CATEGORY);
+        if (json != null) {
+            FileCategory category = new FileCategory();
+            category._setJson(json);
+            return category;
+        }
+        return null;
+    }
+
+    public UploadedFile setCategory(FileCategory category) {
+        if (category == null) {
+            remove(CATEGORY);
+        } else {
+            put(CATEGORY, Global.gson().toJsonTree(category));
+        }
         return this;
     }
 

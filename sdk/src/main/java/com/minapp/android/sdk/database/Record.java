@@ -6,7 +6,7 @@ import android.util.Log;
 import com.google.gson.*;
 import com.minapp.android.sdk.Const;
 import com.minapp.android.sdk.Global;
-import com.minapp.android.sdk.storage.model.UploadedFile;
+import com.minapp.android.sdk.storage.UploadedFile;
 import com.minapp.android.sdk.util.Function;
 import com.minapp.android.sdk.util.Util;
 
@@ -161,6 +161,11 @@ public class Record {
         return this;
     }
 
+    public Record remove(@NonNull String key) {
+        json.remove(key);
+        return this;
+    }
+
 
     /*************************** meta info ***********************************/
 
@@ -190,8 +195,8 @@ public class Record {
         return getStringArray(READ_PERM);
     }
 
-    public @NonNull String getTableName() {
-        return table != null ? table.getTableName() : "";
+    public @Nullable String getTableName() {
+        return table != null ? table.getTableName() : null;
     }
 
 

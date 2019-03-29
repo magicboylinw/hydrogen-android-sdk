@@ -30,6 +30,23 @@ public abstract class Auth {
         CLIENT_ID = clientId;
     }
 
+
+    /**
+     * 登出
+     */
+    public static void logout() {
+        AUTH_INFO = null;
+    }
+
+    /**
+     * 是否已登录
+     * @return
+     */
+    public static boolean isSignIn() {
+        return AUTH_INFO != null;
+    }
+
+
     /**
      * 邮箱注册
      * @param email

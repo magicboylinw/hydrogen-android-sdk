@@ -2,7 +2,7 @@ package com.minapp.android.sdk.storage.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class UploadMetaResponse {
+public class UploadInfoResp {
 
     @SerializedName("id")
     private String id;                                // 上传的文件 ID

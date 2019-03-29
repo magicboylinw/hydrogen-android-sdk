@@ -2,8 +2,7 @@ package com.minapp.android.sdk.database;
 
 import android.text.TextUtils;
 import com.minapp.android.sdk.Global;
-import com.minapp.android.sdk.database.query.Config;
-import com.minapp.android.sdk.database.query.Query;
+import com.minapp.android.sdk.database.query.BaseQuery;
 import com.minapp.android.sdk.util.PagedList;
 
 public class Table {
@@ -27,8 +26,8 @@ public class Table {
      * 通过此 api 获取一条记录
      * @return
      */
-    public Record fetchRecord(String recordId, Config config) throws Exception {
-        return Database.fetch(this, recordId, config);
+    public Record fetchRecord(String recordId, BaseQuery query) throws Exception {
+        return Database.fetch(this, recordId, query);
     }
 
     public void fetchRecordInBackground(final String recordId, final Callback callback) {
@@ -55,15 +54,15 @@ public class Table {
      * @return
      * @throws Exception
      */
-    public PagedList<Record> query(Query query) throws Exception {
+    public PagedList<Record> query(BaseQuery query) throws Exception {
         return Database.query(this, query);
     }
 
-    public BatchDeleteResp batchDelete(Query query) throws Exception {
+    public BatchDeleteResp batchDelete(BaseQuery query) throws Exception {
         return Database.batchDelete(this, query);
     }
 
-    public void queryInBackground(final Query query, final QueryCallback callback) {
+    public void queryInBackground(final BaseQuery query, final QueryCallback callback) {
         Global.submit(new Runnable() {
             @Override
             public void run() {

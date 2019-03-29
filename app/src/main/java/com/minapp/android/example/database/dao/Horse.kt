@@ -2,7 +2,8 @@ package com.minapp.android.example.database.dao
 
 import com.minapp.android.sdk.database.Record
 import com.minapp.android.sdk.database.Table
-import com.minapp.android.sdk.database.query.Query
+import com.minapp.android.sdk.database.query.BaseQuery
+import com.minapp.android.sdk.database.query.Where
 import com.minapp.android.sdk.util.PagedList
 
 open class Horse {
@@ -48,20 +49,26 @@ open class Horse {
         const val AGE = "horse_age"
         val TABLE = Table("my_horses")
 
-        fun query(condition: Horse, query: Query): PagedList<Horse> {
+        fun query(condition: Horse, query: BaseQuery): PagedList<Horse> {
             query.apply {
-                if (condition.age != null) {
-                    eq(AGE, condition.age)
-                }
-                if (condition.name != null) {
-                    eq(NAME, condition.name)
-                }
+                put(Where().apply {
+                    if (condition.age != null) {
+                        eq(AGE, condition.age)
+                    }
+                    if (condition.name != null) {
+                        eq(NAME, condition.name)
+                    }
+                })
             }
             return TABLE.query(query).transform { Horse(it) }
         }
 
         fun batchDelete(ids: List<String>) {
-            TABLE.batchDelete(Query().inString(Record.ID, ids))
+            TABLE.batchDelete(BaseQuery().apply {
+                put(Where().apply {
+                    inString(Record.ID, ids)
+                })
+            })
         }
     }
 }

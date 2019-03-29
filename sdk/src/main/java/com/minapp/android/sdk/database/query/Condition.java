@@ -9,11 +9,11 @@ import java.lang.reflect.Type;
 
 public class Condition {
 
-    private Operator operator;
+    private WhereOperator operator;
     private String lvalue;
     private Object rvalue;
 
-    Condition(Operator operator, String lvalue, Object rvalue) {
+    Condition(WhereOperator operator, String lvalue, Object rvalue) {
         this.operator = operator;
         this.lvalue = lvalue;
         this.rvalue = rvalue;

@@ -39,9 +39,16 @@
                   android:windowSoftInputMode="stateAlwaysHidden"
         />
         <activity android:name=".user.list.UserListActivity" />
-        <activity android:name=".content.list.ContentListActivity" />
+        <activity android:name=".content.list.ContentListActivity" android:theme="@style/AppTheme.ToolBar"/>
         <activity android:name=".content.edit.EditActivity"
         android:windowSoftInputMode="stateAlwaysHidden"/>
+        <activity android:name=".file.list.FileListActivity" android:theme="@style/AppTheme.ToolBar">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="minapp.example" />
+                <action android:name="minapp.example.file.pick" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
