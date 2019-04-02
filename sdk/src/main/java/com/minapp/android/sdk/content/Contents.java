@@ -1,12 +1,9 @@
 package com.minapp.android.sdk.content;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import com.minapp.android.sdk.Global;
 import com.minapp.android.sdk.database.query.BaseQuery;
 import com.minapp.android.sdk.util.PagedList;
-
-import java.util.HashMap;
 
 public abstract class Contents {
 
@@ -19,8 +16,8 @@ public abstract class Contents {
      * @return
      * @throws Exception
      */
-    public static PagedList<Content> contentList(@NonNull BaseQuery query) throws Exception {
-        return Global.httpApi().contentList(query).execute().body().readonly();
+    public static PagedList<Content> contents(@NonNull BaseQuery query) throws Exception {
+        return Global.httpApi().contents(query).execute().body().readonly();
     }
 
     /**

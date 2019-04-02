@@ -9,9 +9,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.minapp.android.example.R
+import com.minapp.android.example.user.list.UserListViewModel
 import com.minapp.android.sdk.user.User
 
-class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class UserViewHolder(
+    private val viewModel: UserListViewModel,
+    itemView: View
+) : RecyclerView.ViewHolder(itemView) {
 
     private var data: User? = null
 
@@ -25,11 +29,14 @@ class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             text = data?.userName ?: data?.email
         }
         Glide.with(itemView).load(data?.avatar).into(itemView.findViewById(R.id.avatarIv))
+        itemView.setOnClickListener {
+            data?.id?.also { viewModel.onItemClick(it) }
+        }
     }
 
     companion object {
-        fun create(parent: ViewGroup): UserViewHolder {
-            return LayoutInflater.from(parent.context).inflate(R.layout.item_user, parent, false).let { UserViewHolder(it) }
+        fun create(parent: ViewGroup, viewModel: UserListViewModel): UserViewHolder {
+            return LayoutInflater.from(parent.context).inflate(R.layout.item_user, parent, false).let { UserViewHolder(viewModel, it) }
         }
     }
 }

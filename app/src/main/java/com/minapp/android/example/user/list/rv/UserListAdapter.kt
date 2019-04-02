@@ -4,12 +4,15 @@ import android.view.ViewGroup
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.minapp.android.example.user.list.UserListViewModel
 import com.minapp.android.sdk.user.User
 
-class UserListAdapter: PagedListAdapter<User, RecyclerView.ViewHolder>(DIFF_CB) {
+class UserListAdapter(
+    private val viewModel: UserListViewModel
+): PagedListAdapter<User, RecyclerView.ViewHolder>(DIFF_CB) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return UserViewHolder.create(parent)
+        return UserViewHolder.create(parent, viewModel)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {

@@ -249,8 +249,18 @@ public interface HttpApi {
      * @return
      */
     @GET("hserve/v2.0/user/info/")
-    CheckedCall<PagedListResponse<User>> userList(
+    CheckedCall<PagedListResponse<User>> users(
             @QueryMap BaseQuery query
+    );
+
+    /**
+     * 用户明细
+     * @param id
+     * @return
+     */
+    @GET("hserve/v2.0/user/info/{id}/")
+    CheckedCall<User> user(
+            @Path("id") String id
     );
 
 
@@ -263,7 +273,7 @@ public interface HttpApi {
      * @return
      */
     @GET("hserve/v2.0/content/detail/")
-    CheckedCall<PagedListResponse<Content>> contentList(
+    CheckedCall<PagedListResponse<Content>> contents(
             @QueryMap BaseQuery query
     );
 

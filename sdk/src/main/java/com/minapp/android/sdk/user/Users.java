@@ -4,8 +4,6 @@ import com.minapp.android.sdk.Global;
 import com.minapp.android.sdk.database.query.BaseQuery;
 import com.minapp.android.sdk.util.PagedList;
 
-import java.util.HashMap;
-
 public abstract class Users {
 
     /**
@@ -14,6 +12,16 @@ public abstract class Users {
      * @throws Exception
      */
     public static PagedList<User> users(BaseQuery query) throws Exception {
-        return Global.httpApi().userList(query != null ? query : new BaseQuery()).execute().body().readonly();
+        return Global.httpApi().users(query != null ? query : new BaseQuery()).execute().body().readonly();
+    }
+
+    /**
+     * 用户明细
+     * @param id
+     * @return
+     * @throws Exception
+     */
+    public static User use(String id) throws Exception {
+        return Global.httpApi().user(id).execute().body();
     }
 }

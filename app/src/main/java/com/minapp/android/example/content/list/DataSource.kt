@@ -13,12 +13,12 @@ class DataSource(
 
     override fun loadInitial(query: BaseQuery): PagedList<Content>? {
         query.putAll(viewModel.query)
-        return Contents.contentList(query)
+        return Contents.contents(query)
     }
 
     override fun loadAfter(query: BaseQuery): PagedList<Content>? {
         query.putAll(viewModel.query)
-        return Contents.contentList(query)
+        return Contents.contents(query)
     }
 
     class Factory(
