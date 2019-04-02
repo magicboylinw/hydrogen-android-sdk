@@ -2,7 +2,6 @@ package com.minapp.android.sdk;
 
 import com.minapp.android.sdk.auth.*;
 import com.minapp.android.sdk.auth.model.*;
-import com.minapp.android.sdk.category.BaseCategory;
 import com.minapp.android.sdk.content.ContentCategory;
 import com.minapp.android.sdk.content.ContentGroup;
 import com.minapp.android.sdk.storage.FileCategory;
@@ -13,6 +12,7 @@ import com.minapp.android.sdk.database.query.BaseQuery;
 import com.minapp.android.sdk.storage.*;
 import com.minapp.android.sdk.storage.model.*;
 import com.minapp.android.sdk.user.User;
+import com.minapp.android.sdk.util.BaseStatusResp;
 import com.minapp.android.sdk.util.PagedListResponse;
 import okhttp3.RequestBody;
 import retrofit2.http.*;
@@ -81,7 +81,7 @@ public interface HttpApi {
      * @return
      */
     @POST("hserve/v2.0/user/email-verify/")
-    CheckedCall<EmailVerifyResp> emailVerify(
+    CheckedCall<BaseStatusResp> emailVerify(
             @Body Object emptyBody
     );
 
@@ -96,6 +96,16 @@ public interface HttpApi {
             @Body UpdateUserReq body
     );
 
+
+    /**
+     * 重置邮箱所属用户密码
+     * @param body
+     * @return
+     */
+    @POST("hserve/v2.0/user/password/reset/")
+    CheckedCall<BaseStatusResp> resetPwd(
+            @Body ResetPwdReq body
+    );
 
 
     /********************************* Record api ****************************************/

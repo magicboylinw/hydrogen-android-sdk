@@ -24,6 +24,18 @@ public abstract class Auth {
     private static SignUpInResp AUTH_INFO;
 
     /**
+     * 重置邮箱所属用户密码
+     * @param email
+     * @return
+     * @throws Exception
+     */
+    public static boolean resetPwd(String email) throws Exception {
+        ResetPwdReq request = new ResetPwdReq();
+        request.setEmail(email);
+        return Global.httpApi().resetPwd(request).execute().body().isOk();
+    }
+
+    /**
      * 修改用户用于登录的基本信息
      * @param request
      * @return

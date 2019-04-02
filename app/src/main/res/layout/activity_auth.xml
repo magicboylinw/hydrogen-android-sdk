@@ -150,6 +150,15 @@
                         android:layout_height="wrap_content"
                         android:text="修改登录用户信息"
                         android:textStyle="bold"/>
+
+                <Button
+                        android:id="@+id/resetPwdBtn"
+                        style="?android:textAppearanceSmall"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="重置邮箱所属用户密码"
+                        android:textStyle="bold"/>
             </LinearLayout>
 
             <TextView

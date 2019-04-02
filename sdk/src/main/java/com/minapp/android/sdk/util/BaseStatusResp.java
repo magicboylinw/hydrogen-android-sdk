@@ -1,8 +1,8 @@
-package com.minapp.android.sdk.auth.model;
+package com.minapp.android.sdk.util;
 
 import com.google.gson.annotations.SerializedName;
 
-public class EmailVerifyResp {
+public class BaseStatusResp {
 
     public static final String OK = "ok";
 

@@ -26,6 +26,7 @@ import com.minapp.android.example.base.BaseActivity
 import com.minapp.android.example.R
 import com.minapp.android.example.auth.edit.EditUserActivity
 import com.minapp.android.example.util.Util
+import com.minapp.android.example.util.trimToNull
 import com.minapp.android.sdk.Global
 import com.minapp.android.sdk.auth.Auth
 
@@ -78,7 +79,28 @@ class AuthActivity : BaseActivity(), LoaderCallbacks<Cursor> {
             if (Auth.isSignIn()) {
                 startActivity(Intent(this, EditUserActivity::class.java))
             } else {
-                Util.toast(this, "请现登录")
+                Util.toast(this, "请先登录")
+            }
+        }
+
+        resetPwdBtn.setOnClickListener {
+            val email = email.text.toString().trimToNull()
+            if (email == null) {
+                Util.toast(this, "请先输入邮箱")
+                return@setOnClickListener
+            }
+
+            activityScope.launch {
+                try {
+                    Auth.resetPwd(email)
+                    withContext(Dispatchers.Main) {
+                        Util.toastSuccess(this@AuthActivity)
+                    }
+                } catch (e: Exception) {
+                    withContext(Dispatchers.Main) {
+                        Util.toast(this@AuthActivity, e.message)
+                    }
+                }
             }
         }
 
