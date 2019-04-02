@@ -1,6 +1,7 @@
 package com.minapp.android.sdk;
 
 import com.minapp.android.sdk.auth.*;
+import com.minapp.android.sdk.auth.model.EmailVerifyResp;
 import com.minapp.android.sdk.auth.model.SignUpInByEmailReq;
 import com.minapp.android.sdk.auth.model.SignUpInByUsernameReq;
 import com.minapp.android.sdk.auth.model.SignUpInResp;
@@ -75,6 +76,16 @@ public interface HttpApi {
     @POST("hserve/v2.0/login/anonymous/")
     CheckedCall<SignUpInResp> signInAnonymous(
             @Body Object body
+    );
+
+
+    /**
+     * 发送验证邮件
+     * @return
+     */
+    @POST("hserve/v2.0/user/email-verify/")
+    CheckedCall<EmailVerifyResp> emailVerify(
+            @Body Object emptyBody
     );
 
 
@@ -262,6 +273,8 @@ public interface HttpApi {
     CheckedCall<User> user(
             @Path("id") String id
     );
+
+
 
 
 

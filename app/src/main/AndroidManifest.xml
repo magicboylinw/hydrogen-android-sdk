@@ -22,7 +22,8 @@
         </activity>
         <activity
                 android:name=".auth.AuthActivity"
-                android:label="@string/title_activity_auth">
+                android:label="@string/title_activity_auth"
+        android:windowSoftInputMode="stateAlwaysHidden">
         </activity>
         <activity
                 android:name=".MainActivity"

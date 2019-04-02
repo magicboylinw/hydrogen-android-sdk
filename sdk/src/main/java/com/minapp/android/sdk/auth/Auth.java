@@ -25,6 +25,15 @@ public abstract class Auth {
     private static final Object API_LOCK = new Object();
     private static SignUpInResp AUTH_INFO;
 
+    /**
+     * 发送验证邮件
+     * @return
+     * @throws Exception
+     */
+    public static boolean emailVerify() throws Exception {
+        return Global.httpApi().emailVerify(new Object()).execute().body().isOk();
+    }
+
 
     public static void init(String clientId) {
         CLIENT_ID = clientId;

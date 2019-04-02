@@ -67,6 +67,34 @@ class AuthActivity : BaseActivity(), LoaderCallbacks<Cursor> {
                 Toast.makeText(this, "已复制内容到剪贴板", Toast.LENGTH_SHORT).show()
             }
         }
+
+        logoutBtn.setOnClickListener {
+            Auth.logout()
+            Util.toastSuccess(this)
+        }
+
+        emailVerifyBtn.setOnClickListener {
+            activityScope.launch {
+                try {
+                    val success = Auth.emailVerify()
+                    if (isActive) {
+                        withContext(Dispatchers.Main) {
+                            if (success)
+                                Util.toastSuccess(this@AuthActivity)
+                            else
+                                Util.toastFailure(this@AuthActivity)
+                        }
+                    }
+                } catch (e: Exception) {
+                    if (isActive) {
+                        withContext(Dispatchers.Main) {
+                            Util.toastFailure(this@AuthActivity)
+                            response_tv.text = e.message
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
