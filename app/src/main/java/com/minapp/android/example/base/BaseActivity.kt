@@ -83,6 +83,11 @@ abstract class BaseActivity: AppCompatActivity() {
                     startActivityForResult(Intent(this@BaseActivity, it.first), it.second)
                 }
             })
+            this.closeActivity.observe(this@BaseActivity, Observer {
+                if (it == true) {
+                    finish()
+                }
+            })
         }
     }
 }

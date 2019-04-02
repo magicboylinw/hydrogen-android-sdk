@@ -61,3 +61,7 @@ object Util {
     }
 
 }
+
+public fun String.trimToNull(): String? {
+    return this.trim().let { if (it.isNullOrBlank()) null else it}
+}

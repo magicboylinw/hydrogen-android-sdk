@@ -1,10 +1,7 @@
 package com.minapp.android.sdk;
 
 import com.minapp.android.sdk.auth.*;
-import com.minapp.android.sdk.auth.model.EmailVerifyResp;
-import com.minapp.android.sdk.auth.model.SignUpInByEmailReq;
-import com.minapp.android.sdk.auth.model.SignUpInByUsernameReq;
-import com.minapp.android.sdk.auth.model.SignUpInResp;
+import com.minapp.android.sdk.auth.model.*;
 import com.minapp.android.sdk.category.BaseCategory;
 import com.minapp.android.sdk.content.ContentCategory;
 import com.minapp.android.sdk.content.ContentGroup;
@@ -86,6 +83,17 @@ public interface HttpApi {
     @POST("hserve/v2.0/user/email-verify/")
     CheckedCall<EmailVerifyResp> emailVerify(
             @Body Object emptyBody
+    );
+
+
+    /**
+     * 修改用户用于登录的基本信息
+     * @param body
+     * @return
+     */
+    @PUT("hserve/v2.0/user/account/")
+    CheckedCall<UpdateUserResp> updateUser(
+            @Body UpdateUserReq body
     );
 
 

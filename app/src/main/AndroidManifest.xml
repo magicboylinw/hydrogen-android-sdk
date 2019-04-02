@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.minapp.android.example">
-
     <!-- To auto-complete the email text field inString the login form with the user's emails -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
     <uses-permission android:name="android.permission.READ_PROFILE"/>
@@ -18,12 +17,14 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
+        <activity android:name=".auth.edit.EditUserActivity" android:windowSoftInputMode="stateAlwaysHidden">
+        </activity>
         <activity android:name=".database.list.RecordListActivity">
         </activity>
         <activity
                 android:name=".auth.AuthActivity"
                 android:label="@string/title_activity_auth"
-        android:windowSoftInputMode="stateAlwaysHidden">
+                android:windowSoftInputMode="stateAlwaysHidden">
         </activity>
         <activity
                 android:name=".MainActivity"
@@ -36,18 +37,24 @@
             </intent-filter>
         </activity>
         <activity android:name="com.zhihu.matisse.ui.MatisseActivity"/>
-        <activity android:name=".database.edit.EditActivity"
-                  android:windowSoftInputMode="stateAlwaysHidden"
-        />
-        <activity android:name=".user.list.UserListActivity" />
-        <activity android:name=".content.list.ContentListActivity" android:theme="@style/AppTheme.ToolBar"/>
-        <activity android:name=".content.edit.EditActivity"
-        android:windowSoftInputMode="stateAlwaysHidden"/>
-        <activity android:name=".file.list.FileListActivity" android:theme="@style/AppTheme.ToolBar">
+        <activity
+                android:name=".database.edit.EditActivity"
+                android:windowSoftInputMode="stateAlwaysHidden"/>
+        <activity android:name=".user.list.UserListActivity"/>
+        <activity
+                android:name=".content.list.ContentListActivity"
+                android:theme="@style/AppTheme.ToolBar"/>
+        <activity
+                android:name=".content.edit.EditActivity"
+                android:windowSoftInputMode="stateAlwaysHidden"/>
+        <activity
+                android:name=".file.list.FileListActivity"
+                android:theme="@style/AppTheme.ToolBar">
             <intent-filter>
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="minapp.example" />
-                <action android:name="minapp.example.file.pick" />
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="minapp.example"/>
+
+                <action android:name="minapp.example.file.pick"/>
             </intent-filter>
         </activity>
     </application>

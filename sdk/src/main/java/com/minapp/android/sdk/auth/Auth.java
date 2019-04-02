@@ -6,9 +6,7 @@ import com.google.gson.GsonBuilder;
 import com.minapp.android.sdk.Const;
 import com.minapp.android.sdk.Global;
 import com.minapp.android.sdk.HttpApi;
-import com.minapp.android.sdk.auth.model.SignUpInByEmailReq;
-import com.minapp.android.sdk.auth.model.SignUpInByUsernameReq;
-import com.minapp.android.sdk.auth.model.SignUpInResp;
+import com.minapp.android.sdk.auth.model.*;
 import com.minapp.android.sdk.util.ContentTypeInterceptor;
 import com.minapp.android.sdk.util.MemoryCookieJar;
 import okhttp3.*;
@@ -24,6 +22,16 @@ public abstract class Auth {
     private static HttpApi API;
     private static final Object API_LOCK = new Object();
     private static SignUpInResp AUTH_INFO;
+
+    /**
+     * 修改用户用于登录的基本信息
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    public static UpdateUserResp updateUser(UpdateUserReq request) throws Exception {
+        return Global.httpApi().updateUser(request).execute().body();
+    }
 
     /**
      * 发送验证邮件
@@ -53,6 +61,14 @@ public abstract class Auth {
      */
     public static boolean isSignIn() {
         return AUTH_INFO != null;
+    }
+
+    /**
+     * 当前登录用户的信息
+     * @return
+     */
+    public static @Nullable SignUpInResp currentUser() {
+        return AUTH_INFO;
     }
 
 

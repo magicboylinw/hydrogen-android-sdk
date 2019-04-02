@@ -24,6 +24,7 @@ import android.content.*
 import android.widget.Toast
 import com.minapp.android.example.base.BaseActivity
 import com.minapp.android.example.R
+import com.minapp.android.example.auth.edit.EditUserActivity
 import com.minapp.android.example.util.Util
 import com.minapp.android.sdk.Global
 import com.minapp.android.sdk.auth.Auth
@@ -71,6 +72,14 @@ class AuthActivity : BaseActivity(), LoaderCallbacks<Cursor> {
         logoutBtn.setOnClickListener {
             Auth.logout()
             Util.toastSuccess(this)
+        }
+
+        editUserBtn.setOnClickListener {
+            if (Auth.isSignIn()) {
+                startActivity(Intent(this, EditUserActivity::class.java))
+            } else {
+                Util.toast(this, "请现登录")
+            }
         }
 
         emailVerifyBtn.setOnClickListener {

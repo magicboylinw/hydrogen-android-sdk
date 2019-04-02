@@ -17,6 +17,7 @@ abstract class BaseViewModel: ViewModel() {
     val opToast = MutableLiveData<Boolean>()
     val startActivity = MutableLiveData<Class<out Activity>>()
     val startActivityForResult = MutableLiveData<Pair<Class<out Activity>, Int>>()
+    val closeActivity = MutableLiveData<Boolean>()
 
     override fun onCleared() {
         super.onCleared()
