@@ -1,8 +1,8 @@
 package com.minapp.android.sdk.auth;
 
-import com.minapp.android.sdk.exception.AuthException;
 import com.minapp.android.sdk.exception.EmptyResponseException;
 import com.minapp.android.sdk.exception.HttpException;
+import com.minapp.android.sdk.exception.SessionMissingException;
 import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -19,7 +19,7 @@ import java.io.IOException;
  */
 public interface CheckedCall<T> {
 
-    Response<T> execute() throws IOException, HttpException, EmptyResponseException;
+    Response<T> execute() throws IOException, HttpException, EmptyResponseException, SessionMissingException;
 
     void enqueue(Callback<T> callback);
     boolean isExecuted();

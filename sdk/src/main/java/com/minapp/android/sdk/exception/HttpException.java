@@ -1,6 +1,6 @@
 package com.minapp.android.sdk.exception;
 
-public class HttpException extends SdkException {
+public class HttpException extends Exception {
 
     private final int code;
     private final String errorMsg;

@@ -1,6 +1,7 @@
 package com.minapp.android.sdk.auth;
 
 import com.minapp.android.sdk.Const;
+import com.minapp.android.sdk.exception.UninitializedException;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 
@@ -14,9 +15,10 @@ public class AuthInterceptor implements Interceptor {
     public okhttp3.Response intercept(Chain chain) throws IOException {
         Request.Builder builder = chain.request().newBuilder();
         String clientId = Auth.clientId();
-        if (clientId != null) {
-            builder.header(Const.AUTH_HEADER_CLIENT_ID, clientId);
+        if (clientId == null) {
+            throw new IOException(new UninitializedException());
         }
+        builder.header(Const.AUTH_HEADER_CLIENT_ID, clientId);
         String token = Auth.token();
         if (token != null) {
             builder.header(Const.AUTH_HEADER_AUTH, Const.AUTH_HEADER_AUTH_PREFIX + token);

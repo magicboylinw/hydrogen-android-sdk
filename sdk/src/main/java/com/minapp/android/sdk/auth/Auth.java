@@ -7,6 +7,7 @@ import com.minapp.android.sdk.Const;
 import com.minapp.android.sdk.Global;
 import com.minapp.android.sdk.HttpApi;
 import com.minapp.android.sdk.auth.model.*;
+import com.minapp.android.sdk.exception.AnonymousNotAllowedException;
 import com.minapp.android.sdk.util.ContentTypeInterceptor;
 import com.minapp.android.sdk.util.MemoryCookieJar;
 import okhttp3.*;
@@ -30,6 +31,7 @@ public abstract class Auth {
      * @throws Exception
      */
     public static boolean resetPwd(String email) throws Exception {
+        anonymousCheck();
         ResetPwdReq request = new ResetPwdReq();
         request.setEmail(email);
         return Global.httpApi().resetPwd(request).execute().body().isOk();
@@ -42,6 +44,7 @@ public abstract class Auth {
      * @throws Exception
      */
     public static UpdateUserResp updateUser(UpdateUserReq request) throws Exception {
+        anonymousCheck();
         return Global.httpApi().updateUser(request).execute().body();
     }
 
@@ -51,6 +54,7 @@ public abstract class Auth {
      * @throws Exception
      */
     public static boolean emailVerify() throws Exception {
+        anonymousCheck();
         return Global.httpApi().emailVerify(new Object()).execute().body().isOk();
     }
 
@@ -192,4 +196,9 @@ public abstract class Auth {
     }
 
 
+    static void anonymousCheck() throws AnonymousNotAllowedException {
+        if (AUTH_INFO != null && AUTH_INFO.isAnonymous()) {
+            throw new AnonymousNotAllowedException();
+        }
+    }
 }
