@@ -1,4 +1,4 @@
-package com.minapp.android.sdk.database;
+package com.minapp.android.sdk.database.model;
 
 import com.google.gson.annotations.SerializedName;
 

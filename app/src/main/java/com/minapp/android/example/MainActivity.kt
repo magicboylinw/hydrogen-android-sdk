@@ -17,6 +17,7 @@ import com.minapp.android.example.file.list.FileListActivity
 import com.minapp.android.example.user.list.UserListActivity
 import com.minapp.android.example.util.Glide4Engine
 import com.minapp.android.example.util.Util
+import com.minapp.android.sdk.Global
 import com.minapp.android.sdk.auth.Auth
 import com.minapp.android.sdk.database.*
 import com.minapp.android.sdk.storage.Storage
@@ -29,6 +30,7 @@ import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
+import kotlin.Exception
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -39,6 +41,26 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         fab.setOnClickListener { view ->
             activityScope.launch {
+                try {
+                    val table = Table("my_horses")
+                    val records = listOf(
+                        table.createRecord().apply {
+                            put("horse_name", "kkk")
+                        },
+                        table.createRecord().apply {
+                            put("horse_name", "kkk")
+                        },
+                        table.createRecord().apply {
+                            put("horse_name", "kkk")
+                        },
+                        table.createRecord().apply {
+                            put("horse_name", "kkk")
+                        }
+                    )
+                    Log.d(Const.TAG, "${Global.gsonPrint().toJson(table.batchSave(records))}")
+                } catch (e : Exception) {
+                    Log.e(Const.TAG, e.message, e)
+                }
             }
         }
 
