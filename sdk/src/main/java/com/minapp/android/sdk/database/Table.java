@@ -2,8 +2,6 @@ package com.minapp.android.sdk.database;
 
 import android.text.TextUtils;
 import com.minapp.android.sdk.Global;
-import com.minapp.android.sdk.database.model.BatchDeleteResp;
-import com.minapp.android.sdk.database.model.BatchSaveResp;
 import com.minapp.android.sdk.database.query.BaseQuery;
 import com.minapp.android.sdk.util.PagedList;
 
@@ -117,7 +115,7 @@ public class Table {
      * @return
      * @throws Exception
      */
-    public BatchDeleteResp batchDelete(BaseQuery query) throws Exception {
+    public BatchResult batchDelete(BaseQuery query) throws Exception {
         return Database.batchDelete(this, query);
     }
 
@@ -127,8 +125,19 @@ public class Table {
      * @return
      * @throws Exception
      */
-    public BatchSaveResp batchSave(List<Record> records) throws Exception {
+    public BatchResult batchSave(List<Record> records) throws Exception {
         return Database.batchSave(this, records);
+    }
+
+    /**
+     * 批量更新
+     * @param query
+     * @param update
+     * @return
+     * @throws Exception
+     */
+    public BatchResult batchUpdate(BaseQuery query, Record update) throws Exception {
+        return Database.batchUpdate(this, query, update);
     }
 
 }

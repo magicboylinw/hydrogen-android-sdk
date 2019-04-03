@@ -4,10 +4,9 @@ import com.minapp.android.sdk.auth.*;
 import com.minapp.android.sdk.auth.model.*;
 import com.minapp.android.sdk.content.ContentCategory;
 import com.minapp.android.sdk.content.ContentGroup;
-import com.minapp.android.sdk.database.model.BatchSaveResp;
+import com.minapp.android.sdk.database.BatchResult;
 import com.minapp.android.sdk.storage.FileCategory;
 import com.minapp.android.sdk.content.Content;
-import com.minapp.android.sdk.database.model.BatchDeleteResp;
 import com.minapp.android.sdk.database.Record;
 import com.minapp.android.sdk.database.query.BaseQuery;
 import com.minapp.android.sdk.storage.*;
@@ -133,7 +132,7 @@ public interface HttpApi {
      * @return
      */
     @POST("hserve/v2.0/table/{table_name}/record/")
-    CheckedCall<BatchSaveResp> batchSaveRecord(
+    CheckedCall<BatchResult> batchSaveRecord(
             @Path("table_name") String tableName,
             @Body List<Record> body
     );
@@ -150,6 +149,20 @@ public interface HttpApi {
     CheckedCall<Record> updateRecord(
             @Path("table_name") String tableName,
             @Path("record_id") String recordId,
+            @Body Record body
+    );
+
+    /**
+     * 批量更新
+     * @param tableName
+     * @param query
+     * @param body
+     * @return
+     */
+    @PUT("hserve/v1.5/table/{tableName}/record/")
+    CheckedCall<BatchResult> batchUpdate(
+            @Path("tableName") String tableName,
+            @QueryMap BaseQuery query,
             @Body Record body
     );
 
@@ -196,7 +209,7 @@ public interface HttpApi {
      * @return
      */
     @DELETE("hserve/v2.0/table/{tableName}/record/")
-    CheckedCall<BatchDeleteResp> batchDelete(
+    CheckedCall<BatchResult> batchDelete(
             @Path("tableName") String tableName,
             @QueryMap BaseQuery query
     );

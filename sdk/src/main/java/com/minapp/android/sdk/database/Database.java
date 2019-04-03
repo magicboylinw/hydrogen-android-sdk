@@ -3,8 +3,6 @@ package com.minapp.android.sdk.database;
 import androidx.annotation.NonNull;
 import com.google.gson.JsonObject;
 import com.minapp.android.sdk.Global;
-import com.minapp.android.sdk.database.model.BatchDeleteResp;
-import com.minapp.android.sdk.database.model.BatchSaveResp;
 import com.minapp.android.sdk.util.Action;
 import com.minapp.android.sdk.util.PagedList;
 import com.minapp.android.sdk.util.PagedListResponse;
@@ -22,7 +20,7 @@ public abstract class Database {
      * @return
      * @throws Exception
      */
-    static BatchSaveResp batchSave(Table table, List<Record> records) throws Exception {
+    static BatchResult batchSave(Table table, List<Record> records) throws Exception {
         return Global.httpApi().batchSaveRecord(table.getTableName(), records).execute().body();
     }
 
@@ -114,13 +112,23 @@ public abstract class Database {
      * @return
      * @throws Exception
      */
-    static BatchDeleteResp batchDelete(Table table, BaseQuery query) throws Exception {
+    static BatchResult batchDelete(Table table, BaseQuery query) throws Exception {
         return Global.httpApi().batchDelete(
                 table.getTableName(),
                 query != null ? query : new BaseQuery()
         ).execute().body();
     }
 
-
+    /**
+     * 批量更新
+     * @param table
+     * @param query
+     * @param update
+     * @return
+     * @throws Exception
+     */
+    static BatchResult batchUpdate(Table table, BaseQuery query, Record update) throws Exception {
+        return Global.httpApi().batchUpdate(table.getTableName(), query, update).execute().body();
+    }
 
 }

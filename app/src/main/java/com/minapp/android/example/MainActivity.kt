@@ -12,6 +12,7 @@ import android.view.MenuItem
 import com.minapp.android.example.auth.AuthActivity
 import com.minapp.android.example.base.BaseActivity
 import com.minapp.android.example.content.list.ContentListActivity
+import com.minapp.android.example.database.list.Query
 import com.minapp.android.example.database.list.RecordListActivity
 import com.minapp.android.example.file.list.FileListActivity
 import com.minapp.android.example.user.list.UserListActivity
@@ -20,6 +21,7 @@ import com.minapp.android.example.util.Util
 import com.minapp.android.sdk.Global
 import com.minapp.android.sdk.auth.Auth
 import com.minapp.android.sdk.database.*
+import com.minapp.android.sdk.database.query.BaseQuery
 import com.minapp.android.sdk.storage.Storage
 import com.minapp.android.sdk.user.Users
 import com.zhihu.matisse.Matisse
@@ -57,7 +59,14 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                             put("horse_name", "kkk")
                         }
                     )
-                    Log.d(Const.TAG, "${Global.gsonPrint().toJson(table.batchSave(records))}")
+                    val query = BaseQuery().apply {
+                        put(BaseQuery.OFFSET, "0")
+                        put(BaseQuery.LIMIT, "5")
+                    }
+                    val update = Record().apply {
+                        put("horse_name", "batch update")
+                    }
+                    Log.d(Const.TAG, "${Global.gsonPrint().toJson(table.batchUpdate(query, update))}")
                 } catch (e : Exception) {
                     Log.e(Const.TAG, e.message, e)
                 }
