@@ -9,6 +9,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import com.minapp.android.example.auth.AuthActivity
 import com.minapp.android.example.base.BaseActivity
 import com.minapp.android.example.content.list.ContentListActivity
@@ -44,29 +45,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         fab.setOnClickListener { view ->
             activityScope.launch {
                 try {
-                    val table = Table("my_horses")
-                    val records = listOf(
-                        table.createRecord().apply {
-                            put("horse_name", "kkk")
-                        },
-                        table.createRecord().apply {
-                            put("horse_name", "kkk")
-                        },
-                        table.createRecord().apply {
-                            put("horse_name", "kkk")
-                        },
-                        table.createRecord().apply {
-                            put("horse_name", "kkk")
-                        }
-                    )
-                    val query = BaseQuery().apply {
-                        put(BaseQuery.OFFSET, "0")
-                        put(BaseQuery.LIMIT, "5")
-                    }
-                    val update = Record().apply {
-                        put("horse_name", "batch update")
-                    }
-                    Log.d(Const.TAG, "${Global.gsonPrint().toJson(table.batchUpdate(query, update))}")
                 } catch (e : Exception) {
                     Log.e(Const.TAG, e.message, e)
                 }
@@ -82,14 +60,17 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     fun init() {
+        if (Const.clientId.isBlank()) {
+            notificationTv.apply {
+                visibility = View.VISIBLE
+                text = "请先在 Config.clientId 配置知晓云 client id"
+            }
+        }
         authBtn.setOnClickListener { startActivity(Intent(this, AuthActivity::class.java)) }
         dbBtn.setOnClickListener { startActivity(Intent(this, RecordListActivity::class.java)) }
         userBtn.setOnClickListener { startActivity(Intent(this, UserListActivity::class.java)) }
         contentBtn.setOnClickListener { startActivity(Intent(this, ContentListActivity::class.java)) }
         fileBtn.setOnClickListener { startActivity(Intent(this, FileListActivity::class.java)) }
-        activityScope.launch { runCatching {
-            Auth.signInByUsername("ui", "12")
-        } }
     }
 
     fun openImagePicker() {

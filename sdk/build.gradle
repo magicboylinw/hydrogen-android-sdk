@@ -1,13 +1,16 @@
 apply plugin: 'com.android.library'
 
+def sdkVersionCode = 4
+def sdkVersionName = "0.0.4"
+
 android {
     compileSdkVersion 28
 
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 2
-        versionName "0.0.2"
+        versionCode sdkVersionCode
+        versionName sdkVersionName
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -39,22 +42,24 @@ dependencies {
 
 apply plugin: 'com.novoda.bintray-release'
 
-publish {
+Properties properties = new Properties()
+InputStream inputStream = project.file('bintray.properties').newDataInputStream()
+properties.load( inputStream )
 
-    // bintray.com 的账户名、api key 和账户下的仓库名；库将会被上传到此仓库下
-    bintrayUser = 'linwei'
-    bintrayKey = '91404bfe65565effb1d8db28285ad178e42762ea'
-    userOrg = ''
-    repoName = 'minapp-android-sdk'
+publish {
+    bintrayUser = properties.getProperty("bintrayUser")
+    bintrayKey = properties.getProperty("bintrayKey")
+    userOrg = ""
+    repoName = "minapp-android-sdk"
 
     // 项目的坐标
-    groupId = 'com.minapp.android'
-    artifactId = 'sdk'
-    publishVersion = '0.0.2'
+    groupId = "com.minapp.android"
+    artifactId = "sdk"
+    publishVersion = sdkVersionName
 
-    desc = ''
-    uploadName = 'minapp-android-sdk'
-    website = 'https://github.com/magicboylinw/minapp-android-sdk'
+    desc = "hydrogen-android-sdk"
+    uploadName = "hydrogen-android-sdk"
+    website = "https://github.com/ifanrx/hydrogen-android-sdk"
     dryRun = false
 }
 
