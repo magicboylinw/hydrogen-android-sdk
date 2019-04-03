@@ -40,26 +40,28 @@ dependencies {
 }
 
 
-apply plugin: 'com.novoda.bintray-release'
+def bintrayConfig = project.file('bintray.properties')
+if (bintrayConfig != null && bintrayConfig.exists()) {
+    Properties prop = new Properties()
+    prop.load( bintrayConfig.newDataInputStream() )
 
-Properties properties = new Properties()
-InputStream inputStream = project.file('bintray.properties').newDataInputStream()
-properties.load( inputStream )
+    apply plugin: 'com.novoda.bintray-release'
 
-publish {
-    bintrayUser = properties.getProperty("bintrayUser")
-    bintrayKey = properties.getProperty("bintrayKey")
-    userOrg = ""
-    repoName = "minapp-android-sdk"
+    publish {
+        bintrayUser = prop.getProperty("bintrayUser")
+        bintrayKey = prop.getProperty("bintrayKey")
+        userOrg = ""
+        repoName = "minapp-android-sdk"
 
-    // 项目的坐标
-    groupId = "com.minapp.android"
-    artifactId = "sdk"
-    publishVersion = sdkVersionName
+        // 项目的坐标
+        groupId = "com.minapp.android"
+        artifactId = "sdk"
+        publishVersion = sdkVersionName
 
-    desc = "hydrogen-android-sdk"
-    uploadName = "hydrogen-android-sdk"
-    website = "https://github.com/ifanrx/hydrogen-android-sdk"
-    dryRun = false
+        desc = "hydrogen-android-sdk"
+        uploadName = "hydrogen-android-sdk"
+        website = "https://github.com/ifanrx/hydrogen-android-sdk"
+        dryRun = false
+    }
 }
 
