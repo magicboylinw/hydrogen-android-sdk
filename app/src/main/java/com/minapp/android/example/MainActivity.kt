@@ -60,17 +60,27 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     fun init() {
-        if (Const.clientId.isBlank()) {
-            notificationTv.apply {
-                visibility = View.VISIBLE
-                text = "请先在 Config.clientId 配置知晓云 client id"
-            }
-        }
         authBtn.setOnClickListener { startActivity(Intent(this, AuthActivity::class.java)) }
         dbBtn.setOnClickListener { startActivity(Intent(this, RecordListActivity::class.java)) }
         userBtn.setOnClickListener { startActivity(Intent(this, UserListActivity::class.java)) }
         contentBtn.setOnClickListener { startActivity(Intent(this, ContentListActivity::class.java)) }
         fileBtn.setOnClickListener { startActivity(Intent(this, FileListActivity::class.java)) }
+    }
+
+    fun checkClientId() {
+        if (Auth.clientId().isNullOrEmpty()) {
+            notificationTv.apply {
+                visibility = View.VISIBLE
+                text = "请先初始化 sdk：BaaS.init(...)"
+            }
+        } else {
+            notificationTv.visibility = View.GONE
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        checkClientId()
     }
 
     fun openImagePicker() {

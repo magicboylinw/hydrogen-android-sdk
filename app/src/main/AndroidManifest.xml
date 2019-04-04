@@ -17,6 +17,9 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
+
+        <meta-data android:name="baasClientId" android:value="${clientId}" />
+
         <activity android:name=".auth.edit.EditUserActivity" android:windowSoftInputMode="stateAlwaysHidden">
         </activity>
         <activity android:name=".database.list.RecordListActivity">

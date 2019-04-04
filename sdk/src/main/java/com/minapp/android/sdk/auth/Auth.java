@@ -157,7 +157,7 @@ public abstract class Auth {
         }
     }
 
-    static @Nullable String clientId() {
+    public static @Nullable String clientId() {
         return CLIENT_ID;
     }
 
