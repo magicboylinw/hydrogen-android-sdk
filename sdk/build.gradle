@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 
-def sdkVersionCode = 6
-def sdkVersionName = "0.0.6"
+def sdkVersionCode = 7
+def sdkVersionName = "0.0.7"
 
 android {
     compileSdkVersion 28
