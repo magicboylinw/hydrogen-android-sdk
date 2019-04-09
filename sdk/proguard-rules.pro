@@ -20,6 +20,9 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
+# hydrogen sdk
+-keep class com.minapp.android.sdk.database.Record { *; }
+
 
 ############### okhttp ###############
 
