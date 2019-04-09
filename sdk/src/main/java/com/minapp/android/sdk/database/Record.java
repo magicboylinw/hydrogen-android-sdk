@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.util.Log;
 import com.google.gson.*;
+import com.google.gson.annotations.SerializedName;
 import com.minapp.android.sdk.Const;
 import com.minapp.android.sdk.Global;
 import com.minapp.android.sdk.storage.UploadedFile;
@@ -215,7 +216,7 @@ public class Record {
 
     /*************************** string ***********************************/
 
-    public Record put(@NonNull String key, String value) {
+    private Record put(@NonNull String key, String value) {
         Util.assetNotNull(key);
         json.addProperty(key, value);
         return this;
@@ -235,7 +236,7 @@ public class Record {
 
 
 
-    public Record put(@NonNull String key, Number value) {
+    private Record put(@NonNull String key, Number value) {
         Util.assetNotNull(key);
         json.addProperty(key, value);
         return this;
@@ -286,7 +287,7 @@ public class Record {
 
     /*************************** boolean ***********************************/
 
-    public Record put(@NonNull String key, boolean value) {
+    private Record put(@NonNull String key, boolean value) {
         Util.assetNotNull(key);
         json.addProperty(key, value);
         return this;
@@ -304,7 +305,7 @@ public class Record {
 
     /*************************** file ***********************************/
 
-    public Record put(@NonNull String key, UploadedFile value) {
+    private Record put(@NonNull String key, UploadedFile value) {
         Util.assetNotNull(key);
         json.add(key, Global.gson().toJsonTree(value));
         return this;
@@ -322,16 +323,25 @@ public class Record {
 
     /*************************** object ***********************************/
 
+
     /**
-     * 这里通过 {@link Gson} 序列化 object <br />
-     * 所以 object 要不用 gson 注解标注 property，要不在 proguard 里排除 object 的混淆
+     *
      * @param key
-     * @param obj
+     * @param value 可以是：
+     *              1，基本类型及其包装类，{@link String}
+     *              2，{@link JsonObject}, {@link JsonArray}, {@link JsonNull} 等 Gson 类型
+     *              3，集合
+     *              4，时间日期用 {@link Calendar}
+     *              5，自定义类型，注意不要混淆 properties，或者加上 {@link SerializedName}
      * @return
      */
-    public Record put(@NonNull String key, Object obj) {
+    public Record put(@NonNull String key, @Nullable Object value) {
         Util.assetNotNull(key);
-        json.add(key, Global.gson().toJsonTree(obj));
+        if (value == null) {
+            json.remove(key);
+        } else {
+            json.add(key, Global.gson().toJsonTree(value));
+        }
         return this;
     }
 
@@ -356,7 +366,7 @@ public class Record {
 
     /*************************** date（日期时间，ISO8601 格式的日期字符串，例如："2018-09-01T18:31:02.631000+08:00" ***********************************/
 
-    public Record put(@NonNull String key, Calendar calendar) {
+    private Record put(@NonNull String key, Calendar calendar) {
         Util.assetNotNull(key);
         json.add(key, Global.gson().toJsonTree(calendar));
         return this;
@@ -404,27 +414,27 @@ public class Record {
     }
 
 
-    public Record putStringArray(@NonNull String key, List<String> list) {
+    private Record putStringArray(@NonNull String key, List<String> list) {
         return putArray(key, list);
     }
 
-    public Record putNumberArray(@NonNull String key, List<Number> list) {
+    private Record putNumberArray(@NonNull String key, List<Number> list) {
         return putArray(key, list);
     }
 
-    public Record putBooleanArray(@NonNull String key, List<Boolean> list) {
+    private Record putBooleanArray(@NonNull String key, List<Boolean> list) {
         return putArray(key, list);
     }
 
-    public Record putFileArray(@NonNull String key, List<UploadedFile> list) {
+    private Record putFileArray(@NonNull String key, List<UploadedFile> list) {
         return putArray(key, list);
     }
 
-    public Record putCalendarArray(@NonNull String key, List<Calendar> list) {
+    private Record putCalendarArray(@NonNull String key, List<Calendar> list) {
         return putArray(key, list);
     }
 
-    public Record putObjectArray(@NonNull String key, List<Object> list) {
+    private Record putObjectArray(@NonNull String key, List<Object> list) {
         return putArray(key, list);
     }
 

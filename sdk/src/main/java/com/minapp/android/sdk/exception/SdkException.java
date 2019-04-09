@@ -4,18 +4,24 @@ import android.annotation.TargetApi;
 
 public class SdkException extends Exception {
 
-    public SdkException() {
+    private int code;
+    private String msg;
+
+    public SdkException(int code, String msg) {
+        this(code, msg, null);
     }
 
-    public SdkException(String message) {
-        super(message);
+    public SdkException(int code, String msg, Throwable cause) {
+        super("code: " + code + (msg != null ? (", " + msg) : ""), cause);
+        this.code = code;
+        this.msg = msg;
     }
 
-    public SdkException(String message, Throwable cause) {
-        super(message, cause);
+    public int getCode() {
+        return code;
     }
 
-    public SdkException(Throwable cause) {
-        super(cause);
+    public String getMsg() {
+        return msg;
     }
 }

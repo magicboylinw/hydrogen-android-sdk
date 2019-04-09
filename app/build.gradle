@@ -6,12 +6,22 @@ apply plugin: 'kotlin-android-extensions'
 
 apply plugin: 'kotlin-kapt'
 
+String baasClientId = ""
+File configFile = project.file("config.properties")
+if (configFile != null && configFile.exists()) {
+    Properties prop = new Properties()
+    prop.load(configFile.newReader())
+    baasClientId = prop.getProperty("clientId")
+}
+
+
 android {
     compileSdkVersion 28
     compileOptions {
         sourceCompatibility 1.8
         targetCompatibility 1.8
     }
+
     defaultConfig {
         applicationId "com.minapp.android.example"
         minSdkVersion 21
@@ -19,6 +29,9 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders = [
+                clientId : "${baasClientId}"
+        ]
     }
     buildTypes {
         release {
@@ -45,7 +58,7 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
 
-    implementation "com.minapp.android:sdk:0.0.2"
+    implementation "com.minapp.android:sdk:0.0.6"
     /*implementation project(':sdk')*/
 
     implementation('cn.leancloud:storage-android:5.0.10')

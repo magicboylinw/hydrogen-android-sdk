@@ -6,9 +6,8 @@ import com.google.gson.GsonBuilder;
 import com.minapp.android.sdk.Const;
 import com.minapp.android.sdk.Global;
 import com.minapp.android.sdk.HttpApi;
-import com.minapp.android.sdk.auth.model.SignUpInByEmailReq;
-import com.minapp.android.sdk.auth.model.SignUpInByUsernameReq;
-import com.minapp.android.sdk.auth.model.SignUpInResp;
+import com.minapp.android.sdk.auth.model.*;
+import com.minapp.android.sdk.exception.AnonymousNotAllowedException;
 import com.minapp.android.sdk.util.ContentTypeInterceptor;
 import com.minapp.android.sdk.util.MemoryCookieJar;
 import okhttp3.*;
@@ -24,6 +23,40 @@ public abstract class Auth {
     private static HttpApi API;
     private static final Object API_LOCK = new Object();
     private static SignUpInResp AUTH_INFO;
+
+    /**
+     * 重置邮箱所属用户密码
+     * @param email
+     * @return
+     * @throws Exception
+     */
+    public static boolean resetPwd(String email) throws Exception {
+        anonymousCheck();
+        ResetPwdReq request = new ResetPwdReq();
+        request.setEmail(email);
+        return Global.httpApi().resetPwd(request).execute().body().isOk();
+    }
+
+    /**
+     * 修改用户用于登录的基本信息
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    public static UpdateUserResp updateUser(UpdateUserReq request) throws Exception {
+        anonymousCheck();
+        return Global.httpApi().updateUser(request).execute().body();
+    }
+
+    /**
+     * 发送验证邮件
+     * @return
+     * @throws Exception
+     */
+    public static boolean emailVerify() throws Exception {
+        anonymousCheck();
+        return Global.httpApi().emailVerify(new Object()).execute().body().isOk();
+    }
 
 
     public static void init(String clientId) {
@@ -44,6 +77,14 @@ public abstract class Auth {
      */
     public static boolean isSignIn() {
         return AUTH_INFO != null;
+    }
+
+    /**
+     * 当前登录用户的信息
+     * @return
+     */
+    public static @Nullable SignUpInResp currentUser() {
+        return AUTH_INFO;
     }
 
 
@@ -116,7 +157,7 @@ public abstract class Auth {
         }
     }
 
-    static @Nullable String clientId() {
+    public static @Nullable String clientId() {
         return CLIENT_ID;
     }
 
@@ -155,4 +196,9 @@ public abstract class Auth {
     }
 
 
+    static void anonymousCheck() throws AnonymousNotAllowedException {
+        if (AUTH_INFO != null && AUTH_INFO.isAnonymous()) {
+            throw new AnonymousNotAllowedException();
+        }
+    }
 }

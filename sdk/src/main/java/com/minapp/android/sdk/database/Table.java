@@ -5,6 +5,8 @@ import com.minapp.android.sdk.Global;
 import com.minapp.android.sdk.database.query.BaseQuery;
 import com.minapp.android.sdk.util.PagedList;
 
+import java.util.List;
+
 public class Table {
 
     private String tableName;
@@ -13,6 +15,22 @@ public class Table {
     public Table(String tableName) {
         this.tableName = tableName;
     }
+
+    public String getTableName() {
+        return tableName;
+    }
+
+    @Override
+    public boolean equals( Object obj) {
+        if (obj instanceof Table) {
+            Table other = (Table) obj;
+            return TextUtils.equals(this.tableName, other.tableName);
+        }
+        return false;
+    }
+
+
+    /******************************** simple curd **************************************/
 
     /**
      * 通过此 api 创建一条新记录
@@ -30,6 +48,12 @@ public class Table {
         return Database.fetch(this, recordId, query);
     }
 
+    /**
+     * 获取一条记录
+     * @see #fetchRecord(String, BaseQuery)
+     * @param recordId
+     * @param callback
+     */
     public void fetchRecordInBackground(final String recordId, final Callback callback) {
         Global.submit(new Runnable() {
             @Override
@@ -58,10 +82,12 @@ public class Table {
         return Database.query(this, query);
     }
 
-    public BatchDeleteResp batchDelete(BaseQuery query) throws Exception {
-        return Database.batchDelete(this, query);
-    }
-
+    /**
+     * 查询
+     * @see #query(BaseQuery)
+     * @param query
+     * @param callback
+     */
     public void queryInBackground(final BaseQuery query, final QueryCallback callback) {
         Global.submit(new Runnable() {
             @Override
@@ -80,17 +106,38 @@ public class Table {
         });
     }
 
-    String getTableName() {
-        return tableName;
+
+    /******************************** batch operation **************************************/
+
+    /**
+     * 批量删除，通过 where 查询条件
+     * @param query
+     * @return
+     * @throws Exception
+     */
+    public BatchResult batchDelete(BaseQuery query) throws Exception {
+        return Database.batchDelete(this, query);
     }
 
-    @Override
-    public boolean equals( Object obj) {
-        if (obj instanceof Table) {
-            Table other = (Table) obj;
-            return TextUtils.equals(this.tableName, other.tableName);
-        }
-        return false;
+    /**
+     * 批量保存
+     * @param records
+     * @return
+     * @throws Exception
+     */
+    public BatchResult batchSave(List<Record> records) throws Exception {
+        return Database.batchSave(this, records);
+    }
+
+    /**
+     * 批量更新
+     * @param query
+     * @param update
+     * @return
+     * @throws Exception
+     */
+    public BatchResult batchUpdate(BaseQuery query, Record update) throws Exception {
+        return Database.batchUpdate(this, query, update);
     }
 
 }

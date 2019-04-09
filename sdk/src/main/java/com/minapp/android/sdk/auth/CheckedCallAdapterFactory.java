@@ -3,6 +3,7 @@ package com.minapp.android.sdk.auth;
 import androidx.annotation.Nullable;
 import com.minapp.android.sdk.exception.EmptyResponseException;
 import com.minapp.android.sdk.exception.HttpException;
+import com.minapp.android.sdk.exception.SessionMissingException;
 import okhttp3.Request;
 import retrofit2.*;
 
@@ -54,7 +55,7 @@ public class CheckedCallAdapterFactory extends CallAdapter.Factory {
         }
 
         @Override
-        public Response execute() throws IOException, HttpException, EmptyResponseException {
+        public Response execute() throws IOException, HttpException, EmptyResponseException, SessionMissingException {
             return postProcess(realCall, realCall.execute());
         }
 
@@ -86,17 +87,21 @@ public class CheckedCallAdapterFactory extends CallAdapter.Factory {
          * @throws HttpException
          * @throws EmptyResponseException
          */
-        private Response postProcess(Call call, Response response) throws IOException, HttpException, EmptyResponseException {
+        private Response postProcess(Call call, Response response) throws IOException, HttpException, EmptyResponseException, SessionMissingException {
             // TODO 自动重新登录？
             if (response.code() == 401) {
             }
 
             if (checked) {
                 if (!response.isSuccessful()) {
-                    throw new HttpException(
-                            response.code(),
-                            response.errorBody() != null ? response.errorBody().string() : null
-                    );
+                    if (response.code() == 401) {
+                        throw new SessionMissingException();
+                    } else {
+                        throw new HttpException(
+                                response.code(),
+                                response.errorBody() != null ? response.errorBody().string() : null
+                        );
+                    }
                 }
                 if (hasBody && response.body() == null) {
                     throw new EmptyResponseException();

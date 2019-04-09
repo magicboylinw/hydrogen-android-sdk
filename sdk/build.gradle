@@ -1,13 +1,16 @@
 apply plugin: 'com.android.library'
 
+def sdkVersionCode = 6
+def sdkVersionName = "0.0.6"
+
 android {
     compileSdkVersion 28
 
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 2
-        versionName "0.0.2"
+        versionCode sdkVersionCode
+        versionName sdkVersionName
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -15,6 +18,11 @@ android {
 
     buildTypes {
         release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            consumerProguardFiles 'proguard-rules.pro'
+        }
+        debug {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             consumerProguardFiles 'proguard-rules.pro'
@@ -37,24 +45,28 @@ dependencies {
 }
 
 
-apply plugin: 'com.novoda.bintray-release'
+def bintrayConfig = project.file('bintray.properties')
+if (bintrayConfig != null && bintrayConfig.exists()) {
+    Properties prop = new Properties()
+    prop.load( bintrayConfig.newDataInputStream() )
 
-publish {
+    apply plugin: 'com.novoda.bintray-release'
 
-    // bintray.com 的账户名、api key 和账户下的仓库名；库将会被上传到此仓库下
-    bintrayUser = 'linwei'
-    bintrayKey = '91404bfe65565effb1d8db28285ad178e42762ea'
-    userOrg = ''
-    repoName = 'minapp-android-sdk'
+    publish {
+        bintrayUser = prop.getProperty("bintrayUser")
+        bintrayKey = prop.getProperty("bintrayKey")
+        userOrg = ""
+        repoName = "minapp-android-sdk"
 
-    // 项目的坐标
-    groupId = 'com.minapp.android'
-    artifactId = 'sdk'
-    publishVersion = '0.0.2'
+        // 项目的坐标
+        groupId = "com.minapp.android"
+        artifactId = "sdk"
+        publishVersion = sdkVersionName
 
-    desc = ''
-    uploadName = 'minapp-android-sdk'
-    website = 'https://github.com/magicboylinw/minapp-android-sdk'
-    dryRun = false
+        desc = "minapp-android-sdk"
+        uploadName = "minapp-android-sdk"
+        website = "https://github.com/ifanrx/hydrogen-android-sdk"
+        dryRun = false
+    }
 }
 

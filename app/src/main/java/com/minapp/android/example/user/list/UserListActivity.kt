@@ -8,11 +8,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.minapp.android.example.R
 import com.minapp.android.example.base.BaseActivity
 import com.minapp.android.example.user.list.rv.UserListAdapter
+import com.minapp.android.example.util.TextPanelDialogFragment
 import kotlinx.android.synthetic.main.activity_db.*
 
 class UserListActivity: BaseActivity() {
-
-    private var viewModel: UserListViewModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,11 +20,15 @@ class UserListActivity: BaseActivity() {
     }
 
     fun initList() {
-        val adapter = UserListAdapter()
+        val viewModel = provideViewModel(UserListViewModel::class.java)
+        val adapter = UserListAdapter(viewModel)
         rv.layoutManager = LinearLayoutManager(this)
         rv.adapter = adapter
-        viewModel = provideViewModel(UserListViewModel::class.java).apply {
+        viewModel.apply {
             data.observe(this@UserListActivity, Observer { adapter.submitList(it) })
+            userDetail.observe(this@UserListActivity, Observer {
+                it?.also { TextPanelDialogFragment.create(it).show(supportFragmentManager, null) }
+            })
         }
     }
 

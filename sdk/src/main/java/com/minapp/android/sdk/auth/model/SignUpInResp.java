@@ -35,6 +35,10 @@ public class SignUpInResp {
     @SerializedName("_provider")
     private JsonElement provider;   // 用户在平台方的用户信息（见 v2.0/user/info 接口）
 
+    public boolean isAnonymous() {
+        return username == null && email == null && nickname == null;
+    }
+
     public Long getUserId() {
         return userId;
     }

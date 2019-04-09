@@ -24,7 +24,9 @@ import android.content.*
 import android.widget.Toast
 import com.minapp.android.example.base.BaseActivity
 import com.minapp.android.example.R
+import com.minapp.android.example.auth.edit.EditUserActivity
 import com.minapp.android.example.util.Util
+import com.minapp.android.example.util.trimToNull
 import com.minapp.android.sdk.Global
 import com.minapp.android.sdk.auth.Auth
 
@@ -65,6 +67,63 @@ class AuthActivity : BaseActivity(), LoaderCallbacks<Cursor> {
                 val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                 clipboard.primaryClip = ClipData.newPlainText(null, content)
                 Toast.makeText(this, "已复制内容到剪贴板", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        logoutBtn.setOnClickListener {
+            Auth.logout()
+            Util.toastSuccess(this)
+        }
+
+        editUserBtn.setOnClickListener {
+            if (Auth.isSignIn()) {
+                startActivity(Intent(this, EditUserActivity::class.java))
+            } else {
+                Util.toast(this, "请先登录")
+            }
+        }
+
+        resetPwdBtn.setOnClickListener {
+            val email = email.text.toString().trimToNull()
+            if (email == null) {
+                Util.toast(this, "请先输入邮箱")
+                return@setOnClickListener
+            }
+
+            activityScope.launch {
+                try {
+                    Auth.resetPwd(email)
+                    withContext(Dispatchers.Main) {
+                        Util.toastSuccess(this@AuthActivity)
+                    }
+                } catch (e: Exception) {
+                    withContext(Dispatchers.Main) {
+                        Util.toast(this@AuthActivity, e.message)
+                    }
+                }
+            }
+        }
+
+        emailVerifyBtn.setOnClickListener {
+            activityScope.launch {
+                try {
+                    val success = Auth.emailVerify()
+                    if (isActive) {
+                        withContext(Dispatchers.Main) {
+                            if (success)
+                                Util.toastSuccess(this@AuthActivity)
+                            else
+                                Util.toastFailure(this@AuthActivity)
+                        }
+                    }
+                } catch (e: Exception) {
+                    if (isActive) {
+                        withContext(Dispatchers.Main) {
+                            Util.toastFailure(this@AuthActivity)
+                            response_tv.text = e.message
+                        }
+                    }
+                }
             }
         }
     }

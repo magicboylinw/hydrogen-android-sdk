@@ -1,23 +1,23 @@
 package com.minapp.android.sdk;
 
 import com.minapp.android.sdk.auth.*;
-import com.minapp.android.sdk.auth.model.SignUpInByEmailReq;
-import com.minapp.android.sdk.auth.model.SignUpInByUsernameReq;
-import com.minapp.android.sdk.auth.model.SignUpInResp;
-import com.minapp.android.sdk.category.BaseCategory;
+import com.minapp.android.sdk.auth.model.*;
 import com.minapp.android.sdk.content.ContentCategory;
 import com.minapp.android.sdk.content.ContentGroup;
+import com.minapp.android.sdk.database.BatchResult;
 import com.minapp.android.sdk.storage.FileCategory;
 import com.minapp.android.sdk.content.Content;
-import com.minapp.android.sdk.database.BatchDeleteResp;
 import com.minapp.android.sdk.database.Record;
 import com.minapp.android.sdk.database.query.BaseQuery;
 import com.minapp.android.sdk.storage.*;
 import com.minapp.android.sdk.storage.model.*;
 import com.minapp.android.sdk.user.User;
+import com.minapp.android.sdk.util.BaseStatusResp;
 import com.minapp.android.sdk.util.PagedListResponse;
 import okhttp3.RequestBody;
 import retrofit2.http.*;
+
+import java.util.List;
 
 
 /**
@@ -78,6 +78,37 @@ public interface HttpApi {
     );
 
 
+    /**
+     * 发送验证邮件
+     * @return
+     */
+    @POST("hserve/v2.0/user/email-verify/")
+    CheckedCall<BaseStatusResp> emailVerify(
+            @Body Object emptyBody
+    );
+
+
+    /**
+     * 修改用户用于登录的基本信息
+     * @param body
+     * @return
+     */
+    @PUT("hserve/v2.0/user/account/")
+    CheckedCall<UpdateUserResp> updateUser(
+            @Body UpdateUserReq body
+    );
+
+
+    /**
+     * 重置邮箱所属用户密码
+     * @param body
+     * @return
+     */
+    @POST("hserve/v2.0/user/password/reset/")
+    CheckedCall<BaseStatusResp> resetPwd(
+            @Body ResetPwdReq body
+    );
+
 
     /********************************* Record api ****************************************/
 
@@ -95,6 +126,19 @@ public interface HttpApi {
 
 
     /**
+     * 批量保存
+     * @param tableName
+     * @param body
+     * @return
+     */
+    @POST("hserve/v2.0/table/{table_name}/record/")
+    CheckedCall<BatchResult> batchSaveRecord(
+            @Path("table_name") String tableName,
+            @Body List<Record> body
+    );
+
+
+    /**
      * 更新记录
      * @param tableName
      * @param recordId
@@ -105,6 +149,20 @@ public interface HttpApi {
     CheckedCall<Record> updateRecord(
             @Path("table_name") String tableName,
             @Path("record_id") String recordId,
+            @Body Record body
+    );
+
+    /**
+     * 批量更新
+     * @param tableName
+     * @param query
+     * @param body
+     * @return
+     */
+    @PUT("hserve/v1.5/table/{tableName}/record/")
+    CheckedCall<BatchResult> batchUpdate(
+            @Path("tableName") String tableName,
+            @QueryMap BaseQuery query,
             @Body Record body
     );
 
@@ -151,7 +209,7 @@ public interface HttpApi {
      * @return
      */
     @DELETE("hserve/v2.0/table/{tableName}/record/")
-    CheckedCall<BatchDeleteResp> batchDelete(
+    CheckedCall<BatchResult> batchDelete(
             @Path("tableName") String tableName,
             @QueryMap BaseQuery query
     );
@@ -249,9 +307,21 @@ public interface HttpApi {
      * @return
      */
     @GET("hserve/v2.0/user/info/")
-    CheckedCall<PagedListResponse<User>> userList(
+    CheckedCall<PagedListResponse<User>> users(
             @QueryMap BaseQuery query
     );
+
+    /**
+     * 用户明细
+     * @param id
+     * @return
+     */
+    @GET("hserve/v2.0/user/info/{id}/")
+    CheckedCall<User> user(
+            @Path("id") String id
+    );
+
+
 
 
 
@@ -263,7 +333,7 @@ public interface HttpApi {
      * @return
      */
     @GET("hserve/v2.0/content/detail/")
-    CheckedCall<PagedListResponse<Content>> contentList(
+    CheckedCall<PagedListResponse<Content>> contents(
             @QueryMap BaseQuery query
     );
 

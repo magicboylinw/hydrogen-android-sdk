@@ -9,17 +9,22 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import com.minapp.android.example.auth.AuthActivity
 import com.minapp.android.example.base.BaseActivity
 import com.minapp.android.example.content.list.ContentListActivity
+import com.minapp.android.example.database.list.Query
 import com.minapp.android.example.database.list.RecordListActivity
 import com.minapp.android.example.file.list.FileListActivity
 import com.minapp.android.example.user.list.UserListActivity
 import com.minapp.android.example.util.Glide4Engine
 import com.minapp.android.example.util.Util
+import com.minapp.android.sdk.Global
 import com.minapp.android.sdk.auth.Auth
 import com.minapp.android.sdk.database.*
+import com.minapp.android.sdk.database.query.BaseQuery
 import com.minapp.android.sdk.storage.Storage
+import com.minapp.android.sdk.user.Users
 import com.zhihu.matisse.Matisse
 import com.zhihu.matisse.MimeType
 import kotlinx.android.synthetic.main.activity_main.*
@@ -28,6 +33,7 @@ import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
+import kotlin.Exception
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -37,7 +43,12 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         setSupportActionBar(toolbar)
 
         fab.setOnClickListener { view ->
-
+            activityScope.launch {
+                try {
+                } catch (e : Exception) {
+                    Log.e(Const.TAG, e.message, e)
+                }
+            }
         }
 
         val toggle = ActionBarDrawerToggle(
@@ -54,9 +65,22 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         userBtn.setOnClickListener { startActivity(Intent(this, UserListActivity::class.java)) }
         contentBtn.setOnClickListener { startActivity(Intent(this, ContentListActivity::class.java)) }
         fileBtn.setOnClickListener { startActivity(Intent(this, FileListActivity::class.java)) }
-        activityScope.launch { runCatching {
-            Auth.signInByUsername("ui", "12")
-        } }
+    }
+
+    fun checkClientId() {
+        if (Auth.clientId().isNullOrEmpty()) {
+            notificationTv.apply {
+                visibility = View.VISIBLE
+                text = "请先初始化 sdk：BaaS.init(...)"
+            }
+        } else {
+            notificationTv.visibility = View.GONE
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        checkClientId()
     }
 
     fun openImagePicker() {
