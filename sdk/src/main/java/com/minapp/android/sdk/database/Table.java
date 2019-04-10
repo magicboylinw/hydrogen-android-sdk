@@ -136,7 +136,7 @@ public class Table {
      * @return
      * @throws Exception
      */
-    public BatchResult batchUpdate(Query query, Record update) throws Exception {
+    private BatchResult batchUpdate(Query query, Record update) throws Exception {
         return Database.batchUpdate(this, query, update);
     }
 

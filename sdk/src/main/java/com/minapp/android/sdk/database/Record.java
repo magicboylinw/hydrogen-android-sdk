@@ -240,6 +240,18 @@ public class Record {
         return this;
     }
 
+    /**
+     * 这个方法相当于批量设置 field
+     * 它用其他 {@link Record} 里的值覆盖此对象的值
+     * @param other
+     * @return
+     */
+    public Record putAll(@NonNull Record other) {
+        for (Map.Entry<String, JsonElement> entry : other.json.entrySet()) {
+            put(entry.getKey(), entry.getValue());
+        }
+        return this;
+    }
 
 
     /*************************** public getter ***********************************/
