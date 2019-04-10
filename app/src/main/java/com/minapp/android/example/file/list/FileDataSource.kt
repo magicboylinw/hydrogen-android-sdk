@@ -2,7 +2,7 @@ package com.minapp.android.example.file.list
 
 import androidx.paging.DataSource
 import com.minapp.android.example.base.BasePageKeyedDataSource
-import com.minapp.android.sdk.database.query.BaseQuery
+import com.minapp.android.sdk.database.query.Query
 import com.minapp.android.sdk.storage.Storage
 import com.minapp.android.sdk.storage.UploadedFile
 import com.minapp.android.sdk.util.PagedList
@@ -11,12 +11,12 @@ class FileDataSource(
     private val viewModel: ListViewModel
 ): BasePageKeyedDataSource<UploadedFile>() {
 
-    override fun loadInitial(query: BaseQuery): PagedList<UploadedFile>? {
+    override fun loadInitial(query: Query): PagedList<UploadedFile>? {
         query.putAll(viewModel.query)
         return Storage.files(query)
     }
 
-    override fun loadAfter(query: BaseQuery): PagedList<UploadedFile>? {
+    override fun loadAfter(query: Query): PagedList<UploadedFile>? {
         query.putAll(viewModel.query)
         return Storage.files(query)
     }

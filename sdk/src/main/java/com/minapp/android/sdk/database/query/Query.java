@@ -1,7 +1,6 @@
 package com.minapp.android.sdk.database.query;
 
 import android.text.TextUtils;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.HashMap;
@@ -10,7 +9,7 @@ import java.util.Map;
 /**
  * 对于 filed 的查询有两种方式
  */
-public class BaseQuery extends HashMap<String, String> {
+public class Query extends HashMap<String, String> {
 
     /**
      * 查询语句的 JSON String
@@ -65,9 +64,9 @@ public class BaseQuery extends HashMap<String, String> {
     private Map<String, String> queryMap = new HashMap<>();
 
 
-    public BaseQuery() {}
+    public Query() {}
 
-    public BaseQuery(BaseQuery q) {
+    public Query(Query q) {
         if (q != null) {
             queryMap.putAll(q.queryMap);
         }
@@ -98,7 +97,7 @@ public class BaseQuery extends HashMap<String, String> {
     }
 
 
-    public BaseQuery put(Where where) {
+    public Query put(Where where) {
         String json = where.toString();
         if (TextUtils.isEmpty(json) || "null".equalsIgnoreCase(json)) {
             remove(WHERE);

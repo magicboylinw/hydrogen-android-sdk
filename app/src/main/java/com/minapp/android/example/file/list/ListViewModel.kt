@@ -7,7 +7,7 @@ import androidx.paging.LivePagedListBuilder
 import com.minapp.android.example.Const
 import com.minapp.android.example.base.BaseViewModel
 import com.minapp.android.sdk.Global
-import com.minapp.android.sdk.database.query.BaseQuery
+import com.minapp.android.sdk.database.query.Query
 import com.minapp.android.sdk.database.query.Operator
 import com.minapp.android.sdk.storage.FileCategory
 import com.minapp.android.sdk.storage.Storage
@@ -26,9 +26,9 @@ class ListViewModel: BaseViewModel() {
     val categories: LiveData<List<FileCategory>> = object : LiveData<List<FileCategory>>() {
         override fun onActive() {
             ioScope.launch {
-                val query = BaseQuery().apply {
-                    put(BaseQuery.OFFSET, "0")
-                    put(BaseQuery.LIMIT, Int.MAX_VALUE.toString())
+                val query = Query().apply {
+                    put(Query.OFFSET, "0")
+                    put(Query.LIMIT, Int.MAX_VALUE.toString())
                 }
                 repeat(10) {
                     try {
@@ -43,7 +43,7 @@ class ListViewModel: BaseViewModel() {
             }
         }
     }
-    val query = BaseQuery()
+    val query = Query()
 
     fun onCategorySelected(position: Int) {
         ioScope.launch {

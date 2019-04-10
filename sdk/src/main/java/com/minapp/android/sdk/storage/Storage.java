@@ -1,7 +1,7 @@
 package com.minapp.android.sdk.storage;
 
 import com.minapp.android.sdk.Global;
-import com.minapp.android.sdk.database.query.BaseQuery;
+import com.minapp.android.sdk.database.query.Query;
 import com.minapp.android.sdk.storage.model.BatchDeleteReq;
 import com.minapp.android.sdk.storage.model.UploadInfoReq;
 import com.minapp.android.sdk.storage.model.UploadInfoResp;
@@ -81,8 +81,8 @@ public abstract class Storage {
      * 查询文件列表
      * @throws Exception
      */
-    public static PagedList<UploadedFile> files(BaseQuery query) throws Exception {
-        return Global.httpApi().files(query != null ? query : new BaseQuery()).execute().body().readonly();
+    public static PagedList<UploadedFile> files(Query query) throws Exception {
+        return Global.httpApi().files(query != null ? query : new Query()).execute().body().readonly();
     }
 
     /**
@@ -117,7 +117,7 @@ public abstract class Storage {
      * @return
      * @throws Exception
      */
-    public static PagedList<FileCategory> categories(BaseQuery query) throws Exception {
+    public static PagedList<FileCategory> categories(Query query) throws Exception {
         return Global.httpApi().fileCategories(query).execute().body().readonly();
     }
 
