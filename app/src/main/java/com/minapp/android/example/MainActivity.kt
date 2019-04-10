@@ -42,6 +42,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         fab.setOnClickListener { view ->
             activityScope.launch {
                 try {
+
                 } catch (e : Exception) {
                     Log.e(Const.TAG, e.message, e)
                 }

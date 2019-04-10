@@ -1,14 +1,20 @@
 package com.minapp.android.sdk.auth;
 
 import androidx.annotation.NonNull;
+import com.minapp.android.sdk.Const;
 import com.minapp.android.sdk.Global;
 import com.minapp.android.sdk.auth.model.ResetPwdReq;
 import com.minapp.android.sdk.auth.model.UpdateUserReq;
 import com.minapp.android.sdk.auth.model.UpdateUserResp;
+import com.minapp.android.sdk.database.Table;
 import com.minapp.android.sdk.exception.AnonymousNotAllowedException;
 import com.minapp.android.sdk.user.User;
 
 public class CurrentUser extends User {
+
+    CurrentUser() {
+        super(new Table(Const.TABLE_USER_PROFILE), null);
+    }
 
     CurrentUser(@NonNull User user) {
         super(user._getTable(), user._getJson());

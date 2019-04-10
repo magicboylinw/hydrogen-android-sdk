@@ -301,8 +301,21 @@ public class Record {
      * @return
      */
     public Record put(@NonNull String key, @Nullable Object value) {
-        Util.assetNotNull(key);
-        json.add(key, Global.gson().toJsonTree(value));
+        JsonElement elem = Global.gson().toJsonTree(value);
+
+        /**
+         * 如果是 {@link Record}，则是 pointer 类型，这里要把 table 放入 json 里面
+         */
+        if (value instanceof Record && elem instanceof JsonObject) {
+            Record record = (Record) value;
+            JsonObject obj = (JsonObject) elem;
+
+            String table = record.getTableName();
+            if (table != null) {
+                obj.addProperty(Record.TABLE, table);
+            }
+        }
+        json.add(key, elem);
         return this;
     }
 

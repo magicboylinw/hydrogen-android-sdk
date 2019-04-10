@@ -31,22 +31,24 @@ public abstract class Database {
     static void save(Record record) throws Exception {
         if (record != null && record.getTableName() != null) {
 
+            // 这里要处理下 pointer 类型
+            Record clone = record._deepClone();
+            JsonObject json = clone._getJson();
+            for (String field : json.keySet()) {
+                String id = Util.getPointerId(json.get(field));
+                if (id != null) {
+                    json.addProperty(field, id);
+                }
+            }
+
             // 新增
             if (record.getId() == null) {
-                Record response = Global.httpApi().saveRecord(record.getTableName(), record).execute().body();
+                Record response = Global.httpApi().saveRecord(clone.getTableName(), clone).execute().body();
                 record._setJson(response._getJson());
 
             } else {
 
                 // 更新
-                Record clone = record._deepClone();
-                JsonObject json = clone._getJson();
-                for (String field : json.keySet()) {
-                    String id = Util.getPointerId(json.get(field));
-                    if (id != null) {
-                        json.addProperty(field, id);
-                    }
-                }
                 Record response = Global.httpApi().updateRecord(clone.getTableName(), clone.getId(), clone).execute().body();
                 record._setJson(response._getJson());
             }
