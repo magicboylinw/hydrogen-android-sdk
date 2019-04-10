@@ -106,6 +106,17 @@ public class Table {
         });
     }
 
+    /**
+     * 根据 id 构造一条记录，但不去抓取这条记录的内容，所以这条记录只有 table 和 id 信息
+     * @param id
+     * @return
+     */
+    public Record fetchWithoutData(String id) {
+        Record record = createRecord();
+        record.put(Record.ID, id);
+        return record;
+    }
+
 
     /******************************** batch operation **************************************/
 
