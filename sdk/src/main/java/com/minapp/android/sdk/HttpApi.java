@@ -245,7 +245,7 @@ public interface HttpApi {
      * @return
      */
     @GET("hserve/v1.3/uploaded-file/{file_id}/")
-    CheckedCall<UploadedFile> file(
+    CheckedCall<CloudFile> file(
             @Path("file_id") String id
     );
 
@@ -255,7 +255,7 @@ public interface HttpApi {
      * @return
      */
     @GET("hserve/v1.3/uploaded-file/")
-    CheckedCall<PagedListResponse<UploadedFile>> files(
+    CheckedCall<PagedListResponse<CloudFile>> files(
             @QueryMap Query query
     );
 

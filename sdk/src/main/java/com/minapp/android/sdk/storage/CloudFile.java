@@ -18,7 +18,7 @@ import com.minapp.android.sdk.database.Record;
  * size : 3652
  * status : success
  */
-public class UploadedFile extends Record {
+public class CloudFile extends Record {
 
     public static final String STATUS_SUCCESS = "success";
 
@@ -43,7 +43,7 @@ public class UploadedFile extends Record {
         return getString(CDN_PATH);
     }
 
-    public UploadedFile setCdnPath(String path) {
+    public CloudFile setCdnPath(String path) {
         put(CDN_PATH, path);
         return this;
     }
@@ -52,7 +52,7 @@ public class UploadedFile extends Record {
         return getString(MEDIA_TYPE);
     }
 
-    public UploadedFile setMediaType(String type) {
+    public CloudFile setMediaType(String type) {
         put(MEDIA_TYPE, type);
         return this;
     }
@@ -61,7 +61,7 @@ public class UploadedFile extends Record {
         return getString(MIME_TYPE);
     }
 
-    public UploadedFile setMimeType(String type) {
+    public CloudFile setMimeType(String type) {
         put(MIME_TYPE, type);
         return this;
     }
@@ -70,7 +70,7 @@ public class UploadedFile extends Record {
         return getString(NAME);
     }
 
-    public UploadedFile setName(String name) {
+    public CloudFile setName(String name) {
         put(NAME, name);
         return this;
     }
@@ -79,7 +79,7 @@ public class UploadedFile extends Record {
         return getString(PATH);
     }
 
-    public UploadedFile setPath(String path) {
+    public CloudFile setPath(String path) {
         put(PATH, path);
         return this;
     }
@@ -88,7 +88,7 @@ public class UploadedFile extends Record {
         return getLong(SIZE);
     }
 
-    public UploadedFile setSize(Long size) {
+    public CloudFile setSize(Long size) {
         put(SIZE, size);
         return this;
     }
@@ -97,7 +97,7 @@ public class UploadedFile extends Record {
         return getString(STATUS);
     }
 
-    public UploadedFile setStatus(String status) {
+    public CloudFile setStatus(String status) {
         put(STATUS, status);
         return this;
     }
@@ -113,7 +113,7 @@ public class UploadedFile extends Record {
         return null;
     }
 
-    public UploadedFile setCategory(FileCategory category) {
+    public CloudFile setCategory(FileCategory category) {
         if (category == null) {
             remove(CATEGORY);
         } else {

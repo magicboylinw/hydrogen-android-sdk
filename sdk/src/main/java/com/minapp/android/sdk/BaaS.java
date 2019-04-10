@@ -11,7 +11,7 @@ public class BaaS {
      *
      */
     public static void init(String clientId) {
-        Auth.init(clientId);
+        Config.setClientId(clientId);
     }
 
 }

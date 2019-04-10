@@ -7,7 +7,7 @@ import com.google.gson.*;
 import com.google.gson.annotations.SerializedName;
 import com.minapp.android.sdk.Const;
 import com.minapp.android.sdk.Global;
-import com.minapp.android.sdk.storage.UploadedFile;
+import com.minapp.android.sdk.storage.CloudFile;
 import com.minapp.android.sdk.util.Function;
 import com.minapp.android.sdk.util.Util;
 
@@ -296,7 +296,7 @@ public class Record {
      *              3，集合
      *              4，时间日期用 {@link Calendar}
      *              5，自定义类型，注意不要混淆 properties，或者加上 {@link SerializedName}
-     *              6，{@link UploadedFile}
+     *              6，{@link CloudFile}
      *              7，如果列类型是 pointer，还可以是 {@link Record} 及其子类
      * @return
      */
@@ -360,10 +360,11 @@ public class Record {
      * @param key
      * @return
      */
-    public @Nullable UploadedFile getFile(@NonNull String key) {
+    public @Nullable
+    CloudFile getFile(@NonNull String key) {
         Util.assetNotNull(key);
         try {
-            return Global.gson().fromJson(json.getAsJsonObject(key), UploadedFile.class);
+            return Global.gson().fromJson(json.getAsJsonObject(key), CloudFile.class);
         } catch (Exception e) {
             return null;
         }

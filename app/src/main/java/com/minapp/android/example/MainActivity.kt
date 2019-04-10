@@ -18,6 +18,7 @@ import com.minapp.android.example.file.list.FileListActivity
 import com.minapp.android.example.user.list.UserListActivity
 import com.minapp.android.example.util.Glide4Engine
 import com.minapp.android.example.util.Util
+import com.minapp.android.sdk.Config
 import com.minapp.android.sdk.auth.Auth
 import com.minapp.android.sdk.database.*
 import com.minapp.android.sdk.storage.Storage
@@ -64,7 +65,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     fun checkClientId() {
-        if (Auth.clientId().isNullOrEmpty()) {
+        if (Config.getClientId().isNullOrEmpty()) {
             notificationTv.apply {
                 visibility = View.VISIBLE
                 text = "请先初始化 sdk：BaaS.init(...)"

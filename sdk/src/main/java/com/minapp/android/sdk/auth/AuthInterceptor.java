@@ -1,6 +1,7 @@
 package com.minapp.android.sdk.auth;
 
 import com.minapp.android.sdk.BuildConfig;
+import com.minapp.android.sdk.Config;
 import com.minapp.android.sdk.Const;
 import com.minapp.android.sdk.exception.UninitializedException;
 import okhttp3.Interceptor;
@@ -16,7 +17,7 @@ public class AuthInterceptor implements Interceptor {
     public okhttp3.Response intercept(Chain chain) throws IOException {
         Request.Builder builder = chain.request().newBuilder();
 
-        String clientId = Auth.clientId();
+        String clientId = Config.getClientId();
         if (clientId == null) {
             throw new IOException(new UninitializedException());
         }

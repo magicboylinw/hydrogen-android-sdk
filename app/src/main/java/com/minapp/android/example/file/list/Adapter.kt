@@ -8,17 +8,17 @@ import com.bumptech.glide.Glide
 import com.minapp.android.example.R
 import com.minapp.android.example.base.BasePagedListAdapter
 import com.minapp.android.example.base.ViewHolderBinder
-import com.minapp.android.sdk.storage.UploadedFile
+import com.minapp.android.sdk.storage.CloudFile
 
 class Adapter(
     private val viewModel: ListViewModel
-): BasePagedListAdapter<UploadedFile>(R.layout.item_file, FileViewHolderBinder(viewModel))
+): BasePagedListAdapter<CloudFile>(R.layout.item_file, FileViewHolderBinder(viewModel))
 
 class FileViewHolderBinder(
     private val viewModel: ListViewModel
-): ViewHolderBinder<UploadedFile> {
+): ViewHolderBinder<CloudFile> {
 
-    override fun onBind(itemView: View, t: UploadedFile?) {
+    override fun onBind(itemView: View, t: CloudFile?) {
 
         val view = View.OnClickListener { t?.let { t.id }?.also { viewModel.view(it) } }
 

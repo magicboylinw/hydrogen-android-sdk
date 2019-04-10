@@ -18,7 +18,6 @@ import java.util.concurrent.TimeUnit;
 
 public abstract class Auth {
 
-    private static String CLIENT_ID;
     private static final MemoryCookieJar COOKIE_JAR = new MemoryCookieJar();
     private static HttpApi API;
     private static final Object API_LOCK = new Object();
@@ -56,11 +55,6 @@ public abstract class Auth {
     public static boolean emailVerify() throws Exception {
         anonymousCheck();
         return Global.httpApi().emailVerify(new Object()).execute().body().isOk();
-    }
-
-
-    public static void init(String clientId) {
-        CLIENT_ID = clientId;
     }
 
 
@@ -155,10 +149,6 @@ public abstract class Auth {
         if (info != null) {
             AUTH_INFO = Global.gson().fromJson(Global.gson().toJson(info), SignUpInResp.class);
         }
-    }
-
-    public static @Nullable String clientId() {
-        return CLIENT_ID;
     }
 
     static @Nullable String token() {
