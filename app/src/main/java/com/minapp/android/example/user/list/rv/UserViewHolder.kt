@@ -3,7 +3,6 @@ package com.minapp.android.example.user.list.rv
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewParent
 import android.widget.CheckBox
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -26,9 +25,9 @@ class UserViewHolder(
             isChecked = false
         }
         itemView.findViewById<TextView>(R.id.nameTv).apply {
-            text = data?.userName ?: data?.email
+            text = data?.getString(User.USERNAME) ?: data?.getString(User.EMAIL)
         }
-        Glide.with(itemView).load(data?.avatar).into(itemView.findViewById(R.id.avatarIv))
+        Glide.with(itemView).load(data?.getString(User.AVATAR)).into(itemView.findViewById(R.id.avatarIv))
         itemView.setOnClickListener {
             data?.id?.also { viewModel.onItemClick(it) }
         }

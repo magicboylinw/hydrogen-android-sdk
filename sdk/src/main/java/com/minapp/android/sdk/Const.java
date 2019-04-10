@@ -17,4 +17,6 @@ public abstract class Const {
     public static final String HTTP_HEADER_CLIENT_ID = "X-Hydrogen-Client-ID";
     public static final String SDK_PLATFORM = "NATIVE_ANDROID";
 
+    public static final String TABLE_USER_PROFILE = "_userprofile";
+
 }

@@ -8,61 +8,34 @@ import com.minapp.android.sdk.Global;
 import com.minapp.android.sdk.HttpApi;
 import com.minapp.android.sdk.auth.model.*;
 import com.minapp.android.sdk.exception.AnonymousNotAllowedException;
+import com.minapp.android.sdk.user.User;
+import com.minapp.android.sdk.user.Users;
 import com.minapp.android.sdk.util.ContentTypeInterceptor;
 import com.minapp.android.sdk.util.MemoryCookieJar;
 import okhttp3.*;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public abstract class Auth {
 
+    static final String TOKEN = "TOKEN";
+    static final String USER_ID = "USER_ID";
+
     private static final MemoryCookieJar COOKIE_JAR = new MemoryCookieJar();
     private static HttpApi API;
     private static final Object API_LOCK = new Object();
-    private static SignUpInResp AUTH_INFO;
-
-    /**
-     * 重置邮箱所属用户密码
-     * @param email
-     * @return
-     * @throws Exception
-     */
-    public static boolean resetPwd(String email) throws Exception {
-        anonymousCheck();
-        ResetPwdReq request = new ResetPwdReq();
-        request.setEmail(email);
-        return Global.httpApi().resetPwd(request).execute().body().isOk();
-    }
-
-    /**
-     * 修改用户用于登录的基本信息
-     * @param request
-     * @return
-     * @throws Exception
-     */
-    public static UpdateUserResp updateUser(UpdateUserReq request) throws Exception {
-        anonymousCheck();
-        return Global.httpApi().updateUser(request).execute().body();
-    }
-
-    /**
-     * 发送验证邮件
-     * @return
-     * @throws Exception
-     */
-    public static boolean emailVerify() throws Exception {
-        anonymousCheck();
-        return Global.httpApi().emailVerify(new Object()).execute().body().isOk();
-    }
+    public static final Map<Object, Object> AUTH_INFO = new HashMap<>();
 
 
     /**
      * 登出
      */
     public static void logout() {
-        AUTH_INFO = null;
+        AUTH_INFO.clear();
     }
 
     /**
@@ -70,15 +43,19 @@ public abstract class Auth {
      * @return
      */
     public static boolean isSignIn() {
-        return AUTH_INFO != null;
+        return AUTH_INFO.get(TOKEN) != null;
     }
 
     /**
-     * 当前登录用户的信息
-     * @return
+     * 当前登录用户的信息；它会执行一次网络请求，获取到的用户信息总是最新的
+     * @return 当未登录或者是匿名登录时，返回 null
      */
-    public static @Nullable SignUpInResp currentUser() {
-        return AUTH_INFO;
+    public static @Nullable CurrentUser currentUser() throws Exception {
+        String userId = (String) AUTH_INFO.get(USER_ID);
+        if (userId != null) {
+            return new CurrentUser(Users.use(userId));
+        }
+        return null;
     }
 
 
@@ -89,7 +66,7 @@ public abstract class Auth {
      * @return
      * @throws Exception
      */
-    public static SignUpInResp signUpByEmail(String email, String pwd) throws Exception {
+    public static User signUpByEmail(String email, String pwd) throws Exception {
         return Global.httpApi().signUpByEmail(new SignUpInByEmailReq(email, pwd)).execute().body();
     }
 
@@ -100,7 +77,7 @@ public abstract class Auth {
      * @return
      * @throws Exception
      */
-    public static SignUpInResp signUpByUsername(String username, String pwd) throws Exception {
+    public static User signUpByUsername(String username, String pwd) throws Exception {
         return Global.httpApi().signUpByUsername(new SignUpInByUsernameReq(username, pwd)).execute().body();
     }
 
@@ -111,8 +88,8 @@ public abstract class Auth {
      * @return
      * @throws Exception
      */
-    public static SignUpInResp signInByEmail(String email, String pwd) throws Exception {
-        SignUpInResp info = Global.httpApi().signInByEmail(new SignUpInByEmailReq(email, pwd)).execute().body();
+    public static User signInByEmail(String email, String pwd) throws Exception {
+        User info = Global.httpApi().signInByEmail(new SignUpInByEmailReq(email, pwd)).execute().body();
         signIn(info);
         return info;
     }
@@ -124,8 +101,8 @@ public abstract class Auth {
      * @return
      * @throws Exception
      */
-    public static SignUpInResp signInByUsername(String username, String pwd) throws Exception {
-        SignUpInResp info = Global.httpApi().signInByUsername(new SignUpInByUsernameReq(username, pwd)).execute().body();
+    public static User signInByUsername(String username, String pwd) throws Exception {
+        User info = Global.httpApi().signInByUsername(new SignUpInByUsernameReq(username, pwd)).execute().body();
         signIn(info);
         return info;
     }
@@ -135,24 +112,33 @@ public abstract class Auth {
      * @return
      * @throws Exception
      */
-    public static SignUpInResp signInAnonymous() throws Exception {
-        SignUpInResp info = Global.httpApi().signInAnonymous(new Object()).execute().body();
+    public static void signInAnonymous() throws Exception {
+        User info = Global.httpApi().signInAnonymous(new Object()).execute().body();
         signIn(info);
-        return info;
     }
 
     /**
      * 登录成功后，保存用户信息
      * @param info
      */
-    private static void signIn(SignUpInResp info) {
+    private static void signIn(User info) {
         if (info != null) {
-            AUTH_INFO = Global.gson().fromJson(Global.gson().toJson(info), SignUpInResp.class);
+            AUTH_INFO.clear();
+
+            String token = info.getString(User.TOKEN);
+            if (token != null) {
+                AUTH_INFO.put(TOKEN, token);
+            }
+
+            String userId = info.getString(User.USER_ID);
+            if (userId != null) {
+                AUTH_INFO.put(USER_ID, userId);
+            }
         }
     }
 
     static @Nullable String token() {
-        return AUTH_INFO != null ? AUTH_INFO.getToken() : null;
+        return (String) AUTH_INFO.get(TOKEN);
     }
 
     private static HttpApi httpApi() {
@@ -183,12 +169,5 @@ public abstract class Auth {
             }
         }
         return API;
-    }
-
-
-    static void anonymousCheck() throws AnonymousNotAllowedException {
-        if (AUTH_INFO != null && AUTH_INFO.isAnonymous()) {
-            throw new AnonymousNotAllowedException();
-        }
     }
 }

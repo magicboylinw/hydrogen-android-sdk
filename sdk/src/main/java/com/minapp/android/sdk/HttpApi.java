@@ -34,7 +34,7 @@ public interface HttpApi {
      * @return
      */
     @POST("hserve/v2.0/register/email/")
-    CheckedCall<SignUpInResp> signUpByEmail(
+    CheckedCall<User> signUpByEmail(
             @Body SignUpInByEmailReq body
     );
 
@@ -44,7 +44,7 @@ public interface HttpApi {
      * @return
      */
     @POST("hserve/v2.0/register/username/")
-    CheckedCall<SignUpInResp> signUpByUsername(
+    CheckedCall<User> signUpByUsername(
             @Body SignUpInByUsernameReq body
     );
 
@@ -54,7 +54,7 @@ public interface HttpApi {
      * @return
      */
     @POST("hserve/v2.0/login/email/")
-    CheckedCall<SignUpInResp> signInByEmail(
+    CheckedCall<User> signInByEmail(
             @Body SignUpInByEmailReq body
     );
 
@@ -64,7 +64,7 @@ public interface HttpApi {
      * @return
      */
     @POST("hserve/v2.0/login/username/")
-    CheckedCall<SignUpInResp> signInByUsername(
+    CheckedCall<User> signInByUsername(
             @Body SignUpInByUsernameReq body
     );
 
@@ -73,7 +73,7 @@ public interface HttpApi {
      * @return
      */
     @POST("hserve/v2.0/login/anonymous/")
-    CheckedCall<SignUpInResp> signInAnonymous(
+    CheckedCall<User> signInAnonymous(
             @Body Object body
     );
 
