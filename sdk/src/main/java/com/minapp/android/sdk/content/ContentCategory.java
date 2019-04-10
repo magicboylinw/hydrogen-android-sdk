@@ -20,7 +20,7 @@ public class ContentCategory extends BaseCategory {
     }
 
     public @Nullable List<ContentCategory> getChildren() {
-        return getObjectArray(CHILDREN, ContentCategory.class);
+        return getArray(CHILDREN, ContentCategory.class);
     }
 
 }

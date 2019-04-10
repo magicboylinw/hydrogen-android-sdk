@@ -52,6 +52,7 @@ public class Record {
                 .toString();
     }
 
+
     /*************************** CURD ***********************************/
 
 
@@ -109,7 +110,7 @@ public class Record {
     }
 
 
-    /*************************** inner method ***********************************/
+    /*************************** private method ***********************************/
 
 
     public JsonObject _getJson() {
@@ -138,6 +139,20 @@ public class Record {
         clone._setTable(table);
         clone._setJson(json.deepCopy());
         return clone;
+    }
+
+    private @Nullable <T> List<T> getArray(@NonNull String key, Function<JsonElement, T> transform) {
+        Util.assetNotNull(key);
+        try {
+            JsonArray array = json.get(key).getAsJsonArray();
+            List<T> list = new ArrayList<>(array.size());
+            for (JsonElement elem : array) {
+                list.add(transform.on(elem));
+            }
+            return list;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
 
@@ -189,11 +204,11 @@ public class Record {
     }
 
     public @Nullable List<String> getWritePerm() {
-        return getStringArray(WRITE_PERM);
+        return getArray(WRITE_PERM, String.class);
     }
 
     public @Nullable List<String> getReadPerm() {
-        return getStringArray(READ_PERM);
+        return getArray(READ_PERM, String.class);
     }
 
     public @Nullable String getTableName() {
@@ -201,9 +216,40 @@ public class Record {
     }
 
 
-    /*************************** json class ***********************************/
 
 
+    /*************************** public setter ***********************************/
+
+
+    /**
+     * put json field
+     * @param key
+     * @param value 可以是：
+     *              1，基本类型及其包装类，{@link String}
+     *              2，{@link JsonObject}, {@link JsonArray}, {@link JsonNull} 等 Gson 类型
+     *              3，集合
+     *              4，时间日期用 {@link Calendar}
+     *              5，自定义类型，注意不要混淆 properties，或者加上 {@link SerializedName}
+     *              6，{@link UploadedFile}
+     *              7，如果列类型是 pointer，还可以是 {@link Record} 及其子类
+     * @return
+     */
+    public Record put(@NonNull String key, @Nullable Object value) {
+        Util.assetNotNull(key);
+        json.add(key, Global.gson().toJsonTree(value));
+        return this;
+    }
+
+
+
+    /*************************** public getter ***********************************/
+
+
+    /**
+     * 直接作为 {@link JsonObject} 返回
+     * @param key
+     * @return
+     */
     public @Nullable JsonObject getJsonObject(@NonNull String key) {
         Util.assetNotNull(key);
         try {
@@ -214,34 +260,73 @@ public class Record {
     }
 
 
-    /*************************** string ***********************************/
-
-    private Record put(@NonNull String key, String value) {
-        Util.assetNotNull(key);
-        json.addProperty(key, value);
-        return this;
-    }
-
-    public @Nullable String getString(@NonNull String key) {
+    /**
+     * 1，对应 date 列类型（日期时间，ISO8601 格式的日期字符串，例如："2018-09-01T18:31:02.631000+08:00"）
+     * 2，或者它本身就是 {@link Calendar}
+     * @param key
+     * @return
+     */
+    public @Nullable Calendar getCalendar(@NonNull String key) {
         Util.assetNotNull(key);
         try {
-            return json.get(key).getAsString();
+            return Global.gson().fromJson(json.get(key), Calendar.class);
+        } catch (Exception e) {
+            Log.e(Const.TAG, e.getMessage(), e);
+            return null;
+        }
+    }
+
+
+    /**
+     * 对应 file 列类型
+     * @param key
+     * @return
+     */
+    public @Nullable UploadedFile getFile(@NonNull String key) {
+        Util.assetNotNull(key);
+        try {
+            return Global.gson().fromJson(json.getAsJsonObject(key), UploadedFile.class);
         } catch (Exception e) {
             return null;
         }
     }
 
 
-    /*************************** number ***********************************/
-
-
-
-    private Record put(@NonNull String key, Number value) {
-        Util.assetNotNull(key);
-        json.addProperty(key, value);
-        return this;
+    public @Nullable <T> List<T> getArray(@NonNull String key, final Class<T> clz) {
+        return getArray(key, new Function<JsonElement, T>() {
+            @Override
+            public T on(JsonElement elem) {
+                return Global.gson().fromJson(elem, clz);
+            }
+        });
     }
 
+    public <T> T getObject(@NonNull String key, Class<T> clz) {
+        Util.assetNotNull(key);
+        try {
+            return Global.gson().fromJson(json.get(key), clz);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public <T> T getObject(@NonNull String key, Type type) {
+        Util.assetNotNull(key);
+        try {
+            return Global.gson().fromJson(json.get(key), type);
+        } catch (JsonSyntaxException e) {
+            return null;
+        }
+    }
+
+    public @Nullable Boolean getBoolean(@NonNull String key) {
+        Util.assetNotNull(key);
+        try {
+            return json.get(key).getAsBoolean();
+        } catch (Exception e) {
+            return null;
+        }
+    }
 
     public @Nullable Number getNumber(@NonNull String key) {
         Util.assetNotNull(key);
@@ -284,239 +369,14 @@ public class Record {
         }
     }
 
-
-    /*************************** boolean ***********************************/
-
-    private Record put(@NonNull String key, boolean value) {
-        Util.assetNotNull(key);
-        json.addProperty(key, value);
-        return this;
-    }
-
-    public @Nullable Boolean getBoolean(@NonNull String key) {
+    public @Nullable String getString(@NonNull String key) {
         Util.assetNotNull(key);
         try {
-            return json.get(key).getAsBoolean();
+            return json.get(key).getAsString();
         } catch (Exception e) {
             return null;
         }
     }
 
-
-    /*************************** file ***********************************/
-
-    private Record put(@NonNull String key, UploadedFile value) {
-        Util.assetNotNull(key);
-        json.add(key, Global.gson().toJsonTree(value));
-        return this;
-    }
-
-    public @Nullable UploadedFile getFile(@NonNull String key) {
-        Util.assetNotNull(key);
-        try {
-            return Global.gson().fromJson(json.getAsJsonObject(key), UploadedFile.class);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-
-    /*************************** object ***********************************/
-
-
-    /**
-     *
-     * @param key
-     * @param value 可以是：
-     *              1，基本类型及其包装类，{@link String}
-     *              2，{@link JsonObject}, {@link JsonArray}, {@link JsonNull} 等 Gson 类型
-     *              3，集合
-     *              4，时间日期用 {@link Calendar}
-     *              5，自定义类型，注意不要混淆 properties，或者加上 {@link SerializedName}
-     * @return
-     */
-    public Record put(@NonNull String key, @Nullable Object value) {
-        Util.assetNotNull(key);
-        if (value == null) {
-            json.remove(key);
-        } else {
-            json.add(key, Global.gson().toJsonTree(value));
-        }
-        return this;
-    }
-
-    public <T> T getObject(@NonNull String key, Class<T> clz) {
-        Util.assetNotNull(key);
-        try {
-            return Global.gson().fromJson(json.get(key), clz);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    public <T> T getObject(@NonNull String key, Type type) {
-        Util.assetNotNull(key);
-        try {
-            return Global.gson().fromJson(json.get(key), type);
-        } catch (JsonSyntaxException e) {
-            return null;
-        }
-    }
-
-
-    /*************************** date（日期时间，ISO8601 格式的日期字符串，例如："2018-09-01T18:31:02.631000+08:00" ***********************************/
-
-    private Record put(@NonNull String key, Calendar calendar) {
-        Util.assetNotNull(key);
-        json.add(key, Global.gson().toJsonTree(calendar));
-        return this;
-    }
-
-    public @Nullable Calendar getCalendar(@NonNull String key) {
-        Util.assetNotNull(key);
-        try {
-            return Global.gson().fromJson(json.get(key), Calendar.class);
-        } catch (Exception e) {
-            Log.e(Const.TAG, e.getMessage(), e);
-            return null;
-        }
-    }
-
-
-    /*************************** array ***********************************/
-
-
-    private  <T> Record putArray(@NonNull String key, List<T> list) {
-        Util.assetNotNull(key);
-        JsonArray value = null;
-        if (list != null) {
-            value = new JsonArray(list.size());
-            for (T item : list) {
-                value.add(Global.gson().toJsonTree(item));
-            }
-        }
-        json.add(key, value);
-        return this;
-    }
-
-    private @Nullable <T> List<T> getArray(@NonNull String key, Function<JsonElement, T> transform) {
-        Util.assetNotNull(key);
-        try {
-            JsonArray array = json.get(key).getAsJsonArray();
-            List<T> list = new ArrayList<>(array.size());
-            for (JsonElement elem : array) {
-                list.add(transform.on(elem));
-            }
-            return list;
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-
-    private Record putStringArray(@NonNull String key, List<String> list) {
-        return putArray(key, list);
-    }
-
-    private Record putNumberArray(@NonNull String key, List<Number> list) {
-        return putArray(key, list);
-    }
-
-    private Record putBooleanArray(@NonNull String key, List<Boolean> list) {
-        return putArray(key, list);
-    }
-
-    private Record putFileArray(@NonNull String key, List<UploadedFile> list) {
-        return putArray(key, list);
-    }
-
-    private Record putCalendarArray(@NonNull String key, List<Calendar> list) {
-        return putArray(key, list);
-    }
-
-    private Record putObjectArray(@NonNull String key, List<Object> list) {
-        return putArray(key, list);
-    }
-
-    public @Nullable List<String> getStringArray(@NonNull String key) {
-        return getArray(key, new Function<JsonElement, String>() {
-            @Override
-            public String on(JsonElement elem) {
-                return elem.getAsString();
-            }
-        });
-    }
-
-    public @Nullable List<Integer> getIntArray(@NonNull String key) {
-        return getArray(key, new Function<JsonElement, Integer>() {
-            @Override
-            public Integer on(JsonElement elem) {
-                return elem.getAsNumber().intValue();
-            }
-        });
-    }
-
-    public @Nullable List<Long> getLongArray(@NonNull String key) {
-        return getArray(key, new Function<JsonElement, Long>() {
-            @Override
-            public Long on(JsonElement elem) {
-                return elem.getAsNumber().longValue();
-            }
-        });
-    }
-
-    public @Nullable List<Float> getFloatArray(@NonNull String key) {
-        return getArray(key, new Function<JsonElement, Float>() {
-            @Override
-            public Float on(JsonElement elem) {
-                return elem.getAsNumber().floatValue();
-            }
-        });
-    }
-
-    public @Nullable List<Double> getDoubleArray(@NonNull String key) {
-        return getArray(key, new Function<JsonElement, Double>() {
-            @Override
-            public Double on(JsonElement elem) {
-                return elem.getAsNumber().doubleValue();
-            }
-        });
-    }
-
-    public @Nullable List<Boolean> getBooleanArray(@NonNull String key) {
-        return getArray(key, new Function<JsonElement, Boolean>() {
-            @Override
-            public Boolean on(JsonElement elem) {
-                return elem.getAsBoolean();
-            }
-        });
-    }
-
-    public @Nullable List<UploadedFile> getFileArray(@NonNull String key) {
-        return getArray(key, new Function<JsonElement, UploadedFile>() {
-            @Override
-            public UploadedFile on(JsonElement elem) {
-                return Global.gson().fromJson(elem, UploadedFile.class);
-            }
-        });
-    }
-
-    public @Nullable List<Calendar> getCalendarArray(@NonNull String key) {
-        return getArray(key, new Function<JsonElement, Calendar>() {
-            @Override
-            public Calendar on(JsonElement elem) {
-                return Global.gson().fromJson(elem, Calendar.class);
-            }
-        });
-    }
-
-    public @Nullable <T> List<T> getObjectArray(@NonNull String key, final Class<T> clz) {
-        return getArray(key, new Function<JsonElement, T>() {
-            @Override
-            public T on(JsonElement elem) {
-                return Global.gson().fromJson(elem, clz);
-            }
-        });
-    }
 }
 
