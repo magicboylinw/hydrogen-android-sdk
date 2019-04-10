@@ -9,10 +9,7 @@ import com.minapp.android.sdk.Const;
 import com.minapp.android.sdk.database.Record;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public abstract class Util {
@@ -20,6 +17,14 @@ public abstract class Util {
     private static final String[] POINTER_FEATURE = new String[]{
             Record.ID, Record.TABLE
     };
+
+
+    public static Map singleMap(@NonNull Object key, Object value) {
+        Map retVal = new HashMap(1);
+        retVal.put(key, value);
+        return retVal;
+    }
+
 
     /**
      * 判断一个 filed 是否是 Pointer（包含字段 id 和 _table）

@@ -26,8 +26,18 @@ public class Record {
 
     public static final String SPECIAL_UNSET = "$unset";
 
+    /*************************** 原子操作符 ***********************************/
+
+    public static final String INCR_BY = "$incr_by";
+    public static final String APPEND = "$append";
+    public static final String APPEND_UNIQUE = "$append_unique";
+    public static final String REMOVE = "$remove";
+    public static final String UPDATE = "$update";
+
+
     private @Nullable Table table;
     private @NonNull JsonObject json;
+
 
     public Record(Table table) {
         this(table, null);
@@ -216,6 +226,62 @@ public class Record {
     }
 
 
+
+    /*************************** 原子操作 ***********************************/
+
+
+    /**
+     * 对数字类型的键进行增减操作
+     * @param by
+     * @return
+     */
+    public Record incrementBy(@NonNull String key, int by) {
+        return put(key, Util.singleMap(INCR_BY, by));
+    }
+
+    /**
+     * 将 append 里的值追加到数组类型的字段中
+     * @param key
+     * @param append
+     * @param <T>
+     * @return
+     */
+    public <T> Record append(@NonNull String key, @NonNull Collection<T> append) {
+        return put(key, Util.singleMap(APPEND, append));
+    }
+
+
+    /**
+     * 将 appendUnique 里的值追加到数组类型的字段中, 且仅当该值不在数组内才增加
+     * @param key
+     * @param appendUnique
+     * @param <T>
+     * @return
+     */
+    public <T> Record appendUnique(@NonNull String key, @NonNull Collection<T> appendUnique) {
+        return put(key, Util.singleMap(APPEND_UNIQUE, appendUnique));
+    }
+
+    /**
+     * 从数组类型的字段中删除 removes 里的每个值,
+     * @param key
+     * @param removes
+     * @param <T>
+     * @return
+     */
+    public <T> Record remove(@NonNull String key, @NonNull Collection<T> removes) {
+        return put(key, Util.singleMap(REMOVE, removes));
+    }
+
+    /**
+     * 以 update 中的各字段值更新 object 中的相应字段
+     * @param key
+     * @param update
+     * @return
+     */
+    public Record update(@NonNull String key, @NonNull Record update) {
+        return put(key, Util.singleMap(UPDATE, update));
+    }
 
 
     /*************************** public setter ***********************************/
