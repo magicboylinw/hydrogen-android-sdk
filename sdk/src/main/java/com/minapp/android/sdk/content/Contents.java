@@ -2,7 +2,7 @@ package com.minapp.android.sdk.content;
 
 import androidx.annotation.NonNull;
 import com.minapp.android.sdk.Global;
-import com.minapp.android.sdk.database.query.BaseQuery;
+import com.minapp.android.sdk.database.query.Query;
 import com.minapp.android.sdk.util.PagedList;
 
 public abstract class Contents {
@@ -16,7 +16,7 @@ public abstract class Contents {
      * @return
      * @throws Exception
      */
-    public static PagedList<Content> contents(@NonNull BaseQuery query) throws Exception {
+    public static PagedList<Content> contents(@NonNull Query query) throws Exception {
         return Global.httpApi().contents(query).execute().body().readonly();
     }
 
@@ -36,7 +36,7 @@ public abstract class Contents {
      * @return
      * @throws Exception
      */
-    public static PagedList<ContentGroup> contentGroups(@NonNull BaseQuery query) throws Exception {
+    public static PagedList<ContentGroup> contentGroups(@NonNull Query query) throws Exception {
         return Global.httpApi().contentGroups(query).execute().body().readonly();
     }
 
@@ -46,7 +46,7 @@ public abstract class Contents {
      * @return
      * @throws Exception
      */
-    public static PagedList<ContentCategory> contentCategories(@NonNull BaseQuery query) throws Exception {
+    public static PagedList<ContentCategory> contentCategories(@NonNull Query query) throws Exception {
         return Global.httpApi().contentCategories(query).execute().body().readonly();
     }
 

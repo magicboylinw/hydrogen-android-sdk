@@ -31,3 +31,5 @@
 
 # matisse
 -dontwarn com.squareup.picasso.**
+-dontwarn com.zhihu.matisse.engine.impl.GlideEngine
+-dontwarn com.zhihu.matisse.internal.model.SelectedItemCollection

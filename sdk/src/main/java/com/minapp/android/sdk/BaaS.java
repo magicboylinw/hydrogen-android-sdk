@@ -2,8 +2,8 @@ package com.minapp.android.sdk;
 
 import com.minapp.android.sdk.auth.Auth;
 
-public class Baas {
-    private Baas() {}
+public class BaaS {
+    private BaaS() {}
 
     /**
      * 完成 sdk 的初始化
@@ -11,7 +11,7 @@ public class Baas {
      *
      */
     public static void init(String clientId) {
-        Auth.init(clientId);
+        Config.setClientId(clientId);
     }
 
 }

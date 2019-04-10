@@ -8,7 +8,7 @@ import com.minapp.android.sdk.database.BatchResult;
 import com.minapp.android.sdk.storage.FileCategory;
 import com.minapp.android.sdk.content.Content;
 import com.minapp.android.sdk.database.Record;
-import com.minapp.android.sdk.database.query.BaseQuery;
+import com.minapp.android.sdk.database.query.Query;
 import com.minapp.android.sdk.storage.*;
 import com.minapp.android.sdk.storage.model.*;
 import com.minapp.android.sdk.user.User;
@@ -34,7 +34,7 @@ public interface HttpApi {
      * @return
      */
     @POST("hserve/v2.0/register/email/")
-    CheckedCall<SignUpInResp> signUpByEmail(
+    CheckedCall<User> signUpByEmail(
             @Body SignUpInByEmailReq body
     );
 
@@ -44,7 +44,7 @@ public interface HttpApi {
      * @return
      */
     @POST("hserve/v2.0/register/username/")
-    CheckedCall<SignUpInResp> signUpByUsername(
+    CheckedCall<User> signUpByUsername(
             @Body SignUpInByUsernameReq body
     );
 
@@ -54,7 +54,7 @@ public interface HttpApi {
      * @return
      */
     @POST("hserve/v2.0/login/email/")
-    CheckedCall<SignUpInResp> signInByEmail(
+    CheckedCall<User> signInByEmail(
             @Body SignUpInByEmailReq body
     );
 
@@ -64,7 +64,7 @@ public interface HttpApi {
      * @return
      */
     @POST("hserve/v2.0/login/username/")
-    CheckedCall<SignUpInResp> signInByUsername(
+    CheckedCall<User> signInByUsername(
             @Body SignUpInByUsernameReq body
     );
 
@@ -73,7 +73,7 @@ public interface HttpApi {
      * @return
      */
     @POST("hserve/v2.0/login/anonymous/")
-    CheckedCall<SignUpInResp> signInAnonymous(
+    CheckedCall<User> signInAnonymous(
             @Body Object body
     );
 
@@ -162,7 +162,7 @@ public interface HttpApi {
     @PUT("hserve/v1.5/table/{tableName}/record/")
     CheckedCall<BatchResult> batchUpdate(
             @Path("tableName") String tableName,
-            @QueryMap BaseQuery query,
+            @QueryMap Query query,
             @Body Record body
     );
 
@@ -188,7 +188,7 @@ public interface HttpApi {
     CheckedCall<Record> fetchRecord(
             @Path("table_name") String tableName,
             @Path("record_id") String recordId,
-            @QueryMap BaseQuery query
+            @QueryMap Query query
     );
 
 
@@ -200,7 +200,7 @@ public interface HttpApi {
     @GET("hserve/v2.0/table/{table_name}/record/")
     CheckedCall<PagedListResponse<Record>> queryRecord(
             @Path("table_name") String tableName,
-            @QueryMap BaseQuery query
+            @QueryMap Query query
     );
 
     /**
@@ -211,7 +211,7 @@ public interface HttpApi {
     @DELETE("hserve/v2.0/table/{tableName}/record/")
     CheckedCall<BatchResult> batchDelete(
             @Path("tableName") String tableName,
-            @QueryMap BaseQuery query
+            @QueryMap Query query
     );
 
 
@@ -245,7 +245,7 @@ public interface HttpApi {
      * @return
      */
     @GET("hserve/v1.3/uploaded-file/{file_id}/")
-    CheckedCall<UploadedFile> file(
+    CheckedCall<CloudFile> file(
             @Path("file_id") String id
     );
 
@@ -255,8 +255,8 @@ public interface HttpApi {
      * @return
      */
     @GET("hserve/v1.3/uploaded-file/")
-    CheckedCall<PagedListResponse<UploadedFile>> files(
-            @QueryMap BaseQuery query
+    CheckedCall<PagedListResponse<CloudFile>> files(
+            @QueryMap Query query
     );
 
     /**
@@ -294,7 +294,7 @@ public interface HttpApi {
      */
     @GET("hserve/v1.3/file-category/")
     CheckedCall<PagedListResponse<FileCategory>> fileCategories(
-            @QueryMap BaseQuery query
+            @QueryMap Query query
     );
 
 
@@ -308,7 +308,7 @@ public interface HttpApi {
      */
     @GET("hserve/v2.0/user/info/")
     CheckedCall<PagedListResponse<User>> users(
-            @QueryMap BaseQuery query
+            @QueryMap Query query
     );
 
     /**
@@ -334,7 +334,7 @@ public interface HttpApi {
      */
     @GET("hserve/v2.0/content/detail/")
     CheckedCall<PagedListResponse<Content>> contents(
-            @QueryMap BaseQuery query
+            @QueryMap Query query
     );
 
     /**
@@ -354,7 +354,7 @@ public interface HttpApi {
      */
     @GET("/hserve/v1/content/group/")
     CheckedCall<PagedListResponse<ContentGroup>> contentGroups(
-            @QueryMap BaseQuery query
+            @QueryMap Query query
     );
 
     /**
@@ -364,7 +364,7 @@ public interface HttpApi {
      */
     @GET("hserve/v1/content/category/")
     CheckedCall<PagedListResponse<ContentCategory>> contentCategories(
-            @QueryMap BaseQuery query
+            @QueryMap Query query
     );
 
     /**

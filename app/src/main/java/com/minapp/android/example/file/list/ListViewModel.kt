@@ -7,11 +7,11 @@ import androidx.paging.LivePagedListBuilder
 import com.minapp.android.example.Const
 import com.minapp.android.example.base.BaseViewModel
 import com.minapp.android.sdk.Global
-import com.minapp.android.sdk.database.query.BaseQuery
+import com.minapp.android.sdk.database.query.Query
 import com.minapp.android.sdk.database.query.Operator
 import com.minapp.android.sdk.storage.FileCategory
 import com.minapp.android.sdk.storage.Storage
-import com.minapp.android.sdk.storage.UploadedFile
+import com.minapp.android.sdk.storage.CloudFile
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.File
@@ -20,15 +20,15 @@ import java.util.concurrent.CopyOnWriteArraySet
 class ListViewModel: BaseViewModel() {
 
     val data = LivePagedListBuilder(FileDataSource.Factory(this), Const.DATA_SOURCE_CONFIG).build()
-    val fileSelected = MutableLiveData<UploadedFile>()
+    val fileSelected = MutableLiveData<CloudFile>()
     val selected = CopyOnWriteArraySet<String>()
     val showTextPanel = MutableLiveData<String>()
     val categories: LiveData<List<FileCategory>> = object : LiveData<List<FileCategory>>() {
         override fun onActive() {
             ioScope.launch {
-                val query = BaseQuery().apply {
-                    put(BaseQuery.OFFSET, "0")
-                    put(BaseQuery.LIMIT, Int.MAX_VALUE.toString())
+                val query = Query().apply {
+                    put(Query.OFFSET, "0")
+                    put(Query.LIMIT, Int.MAX_VALUE.toString())
                 }
                 repeat(10) {
                     try {
@@ -43,12 +43,12 @@ class ListViewModel: BaseViewModel() {
             }
         }
     }
-    val query = BaseQuery()
+    val query = Query()
 
     fun onCategorySelected(position: Int) {
         ioScope.launch {
             categories.value?.takeIf { it.size > position }?.let { it[position] }?.also {
-                query.put(Operator.IN, UploadedFile.QUERY_CATEGORY_ID, it.id)
+                query.put(Operator.IN, CloudFile.QUERY_CATEGORY_ID, it.id)
                 refresh()
             }
         }
@@ -59,7 +59,7 @@ class ListViewModel: BaseViewModel() {
             loadingDialog.postValue(true)
             try {
                 val file = File(path)
-                Storage.uploadFile(file.name, query.get(Operator.IN, UploadedFile.QUERY_CATEGORY_ID), file.readBytes())
+                Storage.uploadFile(file.name, query.get(Operator.IN, CloudFile.QUERY_CATEGORY_ID), file.readBytes())
                 opToast.postValue(true)
                 refresh()
             } catch (e: Exception) {

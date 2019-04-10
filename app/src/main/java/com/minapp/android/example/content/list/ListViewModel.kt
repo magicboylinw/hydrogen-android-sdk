@@ -7,7 +7,7 @@ import com.minapp.android.example.base.BaseViewModel
 import com.minapp.android.sdk.content.Content
 import com.minapp.android.sdk.content.ContentGroup
 import com.minapp.android.sdk.content.Contents
-import com.minapp.android.sdk.database.query.BaseQuery
+import com.minapp.android.sdk.database.query.Query
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -15,7 +15,7 @@ class ListViewModel: BaseViewModel() {
 
     val data = LivePagedListBuilder(DataSource.Factory(this), Const.DATA_SOURCE_CONFIG).build()
     val selectedItems = hashSetOf<String>()
-    val query = BaseQuery()
+    val query = Query()
     val openContent = MutableLiveData<String>()
 
     val contentGroup = object : MutableLiveData<List<ContentGroup>>() {
@@ -23,9 +23,9 @@ class ListViewModel: BaseViewModel() {
             ioScope.launch {
                 repeat(10) {
                     try {
-                        Contents.contentGroups(BaseQuery().apply {
-                            put(BaseQuery.OFFSET, "0")
-                            put(BaseQuery.LIMIT, Int.MAX_VALUE.toString())
+                        Contents.contentGroups(Query().apply {
+                            put(Query.OFFSET, "0")
+                            put(Query.LIMIT, Int.MAX_VALUE.toString())
                         }).objects?.also {
                             postValue(it)
                             it.getOrNull(0)?.also { query.put(Content.QUERY_CONTENT_GROUP_ID, it.id) }

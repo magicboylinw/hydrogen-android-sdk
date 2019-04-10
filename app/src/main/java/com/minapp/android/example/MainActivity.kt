@@ -13,18 +13,15 @@ import android.view.View
 import com.minapp.android.example.auth.AuthActivity
 import com.minapp.android.example.base.BaseActivity
 import com.minapp.android.example.content.list.ContentListActivity
-import com.minapp.android.example.database.list.Query
 import com.minapp.android.example.database.list.RecordListActivity
 import com.minapp.android.example.file.list.FileListActivity
 import com.minapp.android.example.user.list.UserListActivity
 import com.minapp.android.example.util.Glide4Engine
 import com.minapp.android.example.util.Util
-import com.minapp.android.sdk.Global
+import com.minapp.android.sdk.Config
 import com.minapp.android.sdk.auth.Auth
 import com.minapp.android.sdk.database.*
-import com.minapp.android.sdk.database.query.BaseQuery
 import com.minapp.android.sdk.storage.Storage
-import com.minapp.android.sdk.user.Users
 import com.zhihu.matisse.Matisse
 import com.zhihu.matisse.MimeType
 import kotlinx.android.synthetic.main.activity_main.*
@@ -45,6 +42,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         fab.setOnClickListener { view ->
             activityScope.launch {
                 try {
+
                 } catch (e : Exception) {
                     Log.e(Const.TAG, e.message, e)
                 }
@@ -68,7 +66,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     fun checkClientId() {
-        if (Auth.clientId().isNullOrEmpty()) {
+        if (Config.getClientId().isNullOrEmpty()) {
             notificationTv.apply {
                 visibility = View.VISIBLE
                 text = "请先初始化 sdk：BaaS.init(...)"

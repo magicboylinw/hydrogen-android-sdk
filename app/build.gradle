@@ -33,10 +33,28 @@ android {
                 clientId : "${baasClientId}"
         ]
     }
+
+    signingConfigs {
+        release {
+            keyAlias "mincloud_sdk_example"
+            keyPassword "123456"
+            storeFile file("example.keystore")
+            storePassword "123456"
+            v2SigningEnabled true
+            v1SigningEnabled true
+        }
+    }
+
     buildTypes {
         release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+        debug {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 }
@@ -58,10 +76,9 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
 
-    implementation "com.minapp.android:sdk:0.0.6"
+    implementation "com.minapp.android:sdk:0.0.8"
     /*implementation project(':sdk')*/
 
-    implementation('cn.leancloud:storage-android:5.0.10')
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
     implementation 'com.alibaba:fastjson:1.1.70.android'
     implementation 'com.zhihu.android:matisse:0.5.2-beta4'

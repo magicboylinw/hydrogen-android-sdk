@@ -29,6 +29,7 @@ import com.minapp.android.example.util.Util
 import com.minapp.android.example.util.trimToNull
 import com.minapp.android.sdk.Global
 import com.minapp.android.sdk.auth.Auth
+import com.minapp.android.sdk.user.User
 
 import kotlinx.android.synthetic.main.activity_auth.*
 import kotlinx.coroutines.*
@@ -84,17 +85,18 @@ class AuthActivity : BaseActivity(), LoaderCallbacks<Cursor> {
         }
 
         resetPwdBtn.setOnClickListener {
-            val email = email.text.toString().trimToNull()
-            if (email == null) {
-                Util.toast(this, "请先输入邮箱")
-                return@setOnClickListener
-            }
-
             activityScope.launch {
                 try {
-                    Auth.resetPwd(email)
-                    withContext(Dispatchers.Main) {
-                        Util.toastSuccess(this@AuthActivity)
+                    val currentUser = Auth.currentUser()
+                    if (currentUser == null) {
+                        withContext(Dispatchers.Main) {
+                            Util.toast(this@AuthActivity, "请先非匿名登录")
+                        }
+                    } else {
+                        currentUser.resetPwd(currentUser.getString(User.EMAIL));
+                        withContext(Dispatchers.Main) {
+                            Util.toastSuccess(this@AuthActivity)
+                        }
                     }
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
@@ -107,13 +109,20 @@ class AuthActivity : BaseActivity(), LoaderCallbacks<Cursor> {
         emailVerifyBtn.setOnClickListener {
             activityScope.launch {
                 try {
-                    val success = Auth.emailVerify()
-                    if (isActive) {
+                    val currentUser = Auth.currentUser()
+                    if (currentUser == null) {
                         withContext(Dispatchers.Main) {
-                            if (success)
-                                Util.toastSuccess(this@AuthActivity)
-                            else
-                                Util.toastFailure(this@AuthActivity)
+                            Util.toast(this@AuthActivity, "请先非匿名登录")
+                        }
+                    } else {
+                        val success = currentUser.emailVerify()
+                        if (isActive) {
+                            withContext(Dispatchers.Main) {
+                                if (success)
+                                    Util.toastSuccess(this@AuthActivity)
+                                else
+                                    Util.toastFailure(this@AuthActivity)
+                            }
                         }
                     }
                 } catch (e: Exception) {

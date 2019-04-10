@@ -26,10 +26,15 @@ class EditUserViewModel: BaseViewModel() {
         ioScope.launch {
             loadingDialog.postValue(true)
             try {
-                Auth.updateUser(request)
-                Auth.logout()
-                toast.postValue("修改成功，请重新登录")
-                closeActivity.postValue(true)
+                val currentUser = Auth.currentUser()
+                if (currentUser == null) {
+                    toast.postValue("请先非匿名登录")
+                } else {
+                    currentUser.updateUser(request)
+                    Auth.logout()
+                    toast.postValue("修改成功，请重新登录")
+                    closeActivity.postValue(true)
+                }
             } catch (e: Exception) {
                 toast.postValue(e.message)
             }
