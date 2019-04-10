@@ -53,10 +53,10 @@ open class Horse {
             query.apply {
                 put(Where().apply {
                     if (condition.age != null) {
-                        eq(AGE, condition.age)
+                        equalTo(AGE, condition.age)
                     }
                     if (condition.name != null) {
-                        eq(NAME, condition.name)
+                        equalTo(NAME, condition.name)
                     }
                 })
             }
@@ -66,7 +66,7 @@ open class Horse {
         fun batchDelete(ids: List<String>) {
             TABLE.batchDelete(Query().apply {
                 put(Where().apply {
-                    inString(Record.ID, ids)
+                    containedIn(Record.ID, ids)
                 })
             })
         }

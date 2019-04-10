@@ -3,6 +3,7 @@ package com.minapp.android.sdk.database.query;
 import androidx.annotation.NonNull;
 import com.minapp.android.sdk.Global;
 
+import java.util.Collection;
 import java.util.List;
 
 public class Where {
@@ -21,7 +22,9 @@ public class Where {
         return Global.gson().toJson(where);
     }
 
-    /*************************  and, or  ******************************/
+
+
+    /*************************  组合：and, or  ******************************/
 
 
     public static @NonNull Where and(Where lvalue, Where rvalue) {
@@ -61,73 +64,62 @@ public class Where {
     }
 
 
-    /*************************  string  ******************************/
+    /*************************  比较操作符  ******************************/
 
-    public Where isNull(String lvalue) {
-        return _and(WhereOperator.IS_NULL, lvalue, null);
-    }
 
-    public Where eq(String lvalue, String rvalue) {
+    public Where equalTo(String lvalue, Object rvalue) {
         return _and(WhereOperator.EQ, lvalue, rvalue);
     }
 
-    public Where inString(String lvalue, List<String> rvalue) {
+    public Where notEqualTo(String lvalue, Object rvalue) {
+        return _and(WhereOperator.NE, lvalue, rvalue);
+    }
+
+    public Where lessThan(String lvalue, Object rvalue) {
+        return _and(WhereOperator.LT, lvalue, rvalue);
+    }
+
+    public Where lessThanOrEqualTo(String lvalue, Object rvalue) {
+        return _and(WhereOperator.LTE, lvalue, rvalue);
+    }
+
+    public Where greaterThan(String lvalue, Object rvalue) {
+        return _and(WhereOperator.GT, lvalue, rvalue);
+    }
+
+    public Where greaterThanOrEqualTo(String lvalue, Object rvalue) {
+        return _and(WhereOperator.GTE, lvalue, rvalue);
+    }
+
+
+
+    /*************************  包含操作符  ******************************/
+
+
+    public <T> Where containedIn(String lvalue, Collection<T> rvalue) {
         return _and(WhereOperator.IN, lvalue, rvalue);
     }
 
-    public Where ninString(String lvalue, List<String> rvalue) {
+    public <T> Where notContainedIn(String lvalue, Collection<T> rvalue) {
         return _and(WhereOperator.NIN, lvalue, rvalue);
     }
 
-    public Where ne(String lvalue, String rvalue) {
-        return _and(WhereOperator.NE, lvalue, rvalue);
-    }
+
+
+    /*************************  字符串相关  ******************************/
+
 
     public Where contains(String lvalue, String rvalue) {
         return _and(WhereOperator.CONTAINS, lvalue, rvalue);
     }
 
 
-    /*************************  number  ******************************/
+
+    /*************************  misc  ******************************/
 
 
-    public Where eq(String lvalue, Number rvalue) {
-        return _and(WhereOperator.EQ, lvalue, rvalue);
+    public Where isNull(String lvalue) {
+        return _and(WhereOperator.IS_NULL, lvalue, null);
     }
 
-    public Where ne(String lvalue, Number rvalue) {
-        return _and(WhereOperator.NE, lvalue, rvalue);
-    }
-
-    public Where lt(String lvalue, Number rvalue) {
-        return _and(WhereOperator.LT, lvalue, rvalue);
-    }
-
-    public Where lte(String lvalue, Number rvalue) {
-        return _and(WhereOperator.LTE, lvalue, rvalue);
-    }
-
-    public Where gt(String lvalue, Number rvalue) {
-        return _and(WhereOperator.GT, lvalue, rvalue);
-    }
-
-    public Where gte(String lvalue, Number rvalue) {
-        return _and(WhereOperator.GTE, lvalue, rvalue);
-    }
-
-    public <T extends Number> Where inNumber(String lvalue, List<T> rvalue) {
-        return _and(WhereOperator.IN, lvalue, rvalue);
-    }
-
-    public <T extends Number> Where ninNumber(String lvalue, List<T> rvalue) {
-        return _and(WhereOperator.NIN, lvalue, rvalue);
-    }
-
-
-    /*************************  boolean  ******************************/
-
-
-    public Where eq(String lvalue, boolean rvalue) {
-        return _and(WhereOperator.EQ, lvalue, rvalue);
-    }
 }

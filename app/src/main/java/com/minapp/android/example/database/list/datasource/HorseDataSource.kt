@@ -13,8 +13,8 @@ class HorseDataSource(
 
     override fun loadInitial(query: Query): PagedList<Horse> {
         val where = Where().apply {
-            viewModel.query.name?.takeIf { !it.isNullOrEmpty() }?.also { eq(Horse.NAME, it) }
-            viewModel.query.age?.also { eq(Horse.AGE, it) }
+            viewModel.query.name?.takeIf { !it.isNullOrEmpty() }?.also { equalTo(Horse.NAME, it) }
+            viewModel.query.age?.also { equalTo(Horse.AGE, it) }
         }
         query.put(where)
         return Horse.query(Horse(), query)
@@ -22,8 +22,8 @@ class HorseDataSource(
 
     override fun loadAfter(query: Query): PagedList<Horse> {
         val where = Where().apply {
-            viewModel.query.name?.takeIf { !it.isNullOrEmpty() }?.also { eq(Horse.NAME, it) }
-            viewModel.query.age?.also { eq(Horse.AGE, it) }
+            viewModel.query.name?.takeIf { !it.isNullOrEmpty() }?.also { equalTo(Horse.NAME, it) }
+            viewModel.query.age?.also { equalTo(Horse.AGE, it) }
         }
         query.put(where)
         return Horse.query(Horse(), query)
