@@ -67,7 +67,9 @@ public abstract class Auth {
      * @throws Exception
      */
     public static User signUpByEmail(String email, String pwd) throws Exception {
-        return Global.httpApi().signUpByEmail(new SignUpInByEmailReq(email, pwd)).execute().body();
+        User user = Global.httpApi().signUpByEmail(new SignUpInByEmailReq(email, pwd)).execute().body();
+        signIn(user);
+        return user;
     }
 
     /**
@@ -78,7 +80,9 @@ public abstract class Auth {
      * @throws Exception
      */
     public static User signUpByUsername(String username, String pwd) throws Exception {
-        return Global.httpApi().signUpByUsername(new SignUpInByUsernameReq(username, pwd)).execute().body();
+        User user = Global.httpApi().signUpByUsername(new SignUpInByUsernameReq(username, pwd)).execute().body();
+        signIn(user);
+        return user;
     }
 
     /**
