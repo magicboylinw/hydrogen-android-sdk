@@ -1,5 +1,6 @@
 package com.minapp.android.sdk.database;
 
+import android.telephony.gsm.GsmCellLocation;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.util.Log;
@@ -10,9 +11,11 @@ import com.minapp.android.sdk.Global;
 import com.minapp.android.sdk.storage.CloudFile;
 import com.minapp.android.sdk.util.Function;
 import com.minapp.android.sdk.util.Util;
+import com.minapp.android.sdk.util.Callback;
 
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.concurrent.Callable;
 
 public class Record {
 
@@ -71,24 +74,12 @@ public class Record {
         return this;
     }
 
-    public void saveInBackground() {
-        saveInBackground(null);
-    }
-
-    public void saveInBackground(final Callback callback) {
-        Global.submit(new Runnable() {
+    public void saveInBackground(@NonNull final Callback<Record> callback) {
+        Util.inBackground(callback, new Callable<Record>() {
             @Override
-            public void run() {
-                try {
-                    save();
-                    if (callback != null) {
-                        callback.onSuccess(Record.this);
-                    }
-                } catch (Exception e) {
-                    if (callback != null) {
-                        callback.onFailure(Record.this, e);
-                    }
-                }
+            public Record call() throws Exception {
+                save();
+                return Record.this;
             }
         });
     }
@@ -97,24 +88,12 @@ public class Record {
         Database.delete(this);
     }
 
-    public void deleteInBackground() {
-        deleteInBackground(null);
-    }
-
-    public void deleteInBackground(final Callback callback) {
-        Global.submit(new Runnable() {
+    public void deleteInBackground(@NonNull final Callback<Record> callback) {
+        Util.inBackground(callback, new Callable<Record>() {
             @Override
-            public void run() {
-                try {
-                    delete();
-                    if (callback != null) {
-                        callback.onSuccess(Record.this);
-                    }
-                } catch (Exception e) {
-                    if (callback != null) {
-                        callback.onFailure(Record.this, e);
-                    }
-                }
+            public Record call() throws Exception {
+                delete();
+                return Record.this;
             }
         });
     }
