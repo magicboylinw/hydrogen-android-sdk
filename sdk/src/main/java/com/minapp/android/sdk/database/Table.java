@@ -1,11 +1,17 @@
 package com.minapp.android.sdk.database;
 
+import android.telecom.Call;
 import android.text.TextUtils;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import com.minapp.android.sdk.Global;
 import com.minapp.android.sdk.database.query.Query;
 import com.minapp.android.sdk.util.PagedList;
+import com.minapp.android.sdk.util.Callback;
+import com.minapp.android.sdk.util.Util;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 
 public class Table {
 
@@ -48,26 +54,45 @@ public class Table {
         return Database.fetch(this, recordId, query);
     }
 
-    /**
-     * 获取一条记录
-     * @see #fetchRecord(String, Query)
-     * @param recordId
-     * @param callback
-     */
-    public void fetchRecordInBackground(final String recordId, final Callback callback) {
-        Global.submit(new Runnable() {
+    public Record fetchRecord(String recordId, @Nullable String expand, @Nullable String keys) throws Exception {
+        Query query = new Query();
+        if (expand != null) {
+            query.put(Query.EXPAND, expand);
+        }
+        if (keys != null) {
+            query.put(Query.KEYS, keys);
+        }
+        return fetchRecord(recordId, query);
+    }
+
+    public Record fetchRecord(String recordId) throws Exception {
+        return Database.fetch(this, recordId, null);
+    }
+
+    public void fetchRecordInBackground(final String recordId, final Query query, @NonNull final Callback<Record> cb) {
+        Util.inBackground(cb, new Callable<Record>() {
             @Override
-            public void run() {
-                try {
-                    Record record = fetchRecord(recordId, null);
-                    if (callback != null) {
-                        callback.onSuccess(record);
-                    }
-                } catch (Exception e) {
-                    if (callback != null) {
-                        callback.onFailure(null, e);
-                    }
-                }
+            public Record call() throws Exception {
+                return fetchRecord(recordId, query);
+            }
+        });
+    }
+
+    public void fetchRecordInBackground(
+            final String recordId, @Nullable final String expand, @Nullable final String keys, @NonNull Callback<Record> cb) {
+        Util.inBackground(cb, new Callable<Record>() {
+            @Override
+            public Record call() throws Exception {
+                return fetchRecord(recordId, expand, keys);
+            }
+        });
+    }
+
+    public void fetchRecordInBackground(final String recordId, @NonNull Callback<Record> cb) throws Exception {
+        Util.inBackground(cb, new Callable<Record>() {
+            @Override
+            public Record call() throws Exception {
+                return fetchRecord(recordId);
             }
         });
     }
@@ -86,22 +111,13 @@ public class Table {
      * 查询
      * @see #query(Query)
      * @param query
-     * @param callback
+     * @param cb
      */
-    public void queryInBackground(final Query query, final QueryCallback callback) {
-        Global.submit(new Runnable() {
+    public void queryInBackground(final Query query, @NonNull final Callback<PagedList<Record>> cb) {
+        Util.inBackground(cb, new Callable<PagedList<Record>>() {
             @Override
-            public void run() {
-                try {
-                    PagedList<Record> list = Database.query(Table.this, query);
-                    if (callback != null) {
-                        callback.onSuccess(list);
-                    }
-                } catch (Exception e) {
-                    if (callback != null) {
-                        callback.onFailure(Table.this, e);
-                    }
-                }
+            public PagedList<Record> call() throws Exception {
+                return query(query);
             }
         });
     }
@@ -149,6 +165,34 @@ public class Table {
      */
     private BatchResult batchUpdate(Query query, Record update) throws Exception {
         return Database.batchUpdate(this, query, update);
+    }
+
+
+    public void batchDeleteInBackground(final Query query, @NonNull final Callback<BatchResult> cb) {
+        Util.inBackground(cb, new Callable<BatchResult>() {
+            @Override
+            public BatchResult call() throws Exception {
+                return batchDelete(query);
+            }
+        });
+    }
+
+    public void batchSaveInBackground(final List<Record> records, @NonNull final Callback<BatchResult> cb) {
+        Util.inBackground(cb, new Callable<BatchResult>() {
+            @Override
+            public BatchResult call() throws Exception {
+                return batchSave(records);
+            }
+        });
+    }
+
+    public void batchUpdateInBackground(final Query query, final Record update, @NonNull final Callback<BatchResult> cb) {
+        Util.inBackground(cb, new Callable<BatchResult>() {
+            @Override
+            public BatchResult call() throws Exception {
+                return batchUpdate(query, update);
+            }
+        });
     }
 
 }

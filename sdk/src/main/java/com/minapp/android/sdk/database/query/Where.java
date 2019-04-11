@@ -122,4 +122,8 @@ public class Where {
         return _and(WhereOperator.IS_NULL, lvalue, null);
     }
 
+    public Where exists(String lvalue) {
+        return _and(WhereOperator.EXISTS, lvalue, null);
+    }
+
 }

@@ -19,7 +19,7 @@ class UserListViewModel: BaseViewModel() {
         ioScope.launch {
             loadingDialog.postValue(true)
             try {
-                userDetail.postValue(Global.gsonPrint().toJson(Users.use(id)))
+                userDetail.postValue(Global.gsonPrint().toJson(Users.user(id)))
             } catch (e: Exception) {
                 Log.e(Const.TAG, e.message, e)
                 opToast.postValue(false)

@@ -6,10 +6,12 @@ import androidx.annotation.Nullable;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.minapp.android.sdk.Const;
+import com.minapp.android.sdk.Global;
 import com.minapp.android.sdk.database.Record;
 
 import java.io.InputStream;
 import java.util.*;
+import java.util.concurrent.Callable;
 import java.util.regex.Pattern;
 
 public abstract class Util {
@@ -18,6 +20,31 @@ public abstract class Util {
             Record.ID, Record.TABLE
     };
 
+
+    public static <T> void inBackground(@NonNull final Callback<T> cb, @NonNull final Callable<T> callable) {
+        Global.submit(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    final T t = callable.call();
+                    Global.postOnMain(new Runnable() {
+                        @Override
+                        public void run() {
+                            cb.onSuccess(t);
+                        }
+                    });
+
+                } catch (final Exception e) {
+                    Global.postOnMain(new Runnable() {
+                        @Override
+                        public void run() {
+                            cb.onFailure(e);
+                        }
+                    });
+                }
+            }
+        });
+    }
 
     public static Map singleMap(@NonNull Object key, Object value) {
         Map retVal = new HashMap(1);

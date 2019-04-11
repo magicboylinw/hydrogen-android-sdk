@@ -9,6 +9,10 @@ import com.minapp.android.sdk.auth.model.UpdateUserResp;
 import com.minapp.android.sdk.database.Table;
 import com.minapp.android.sdk.exception.AnonymousNotAllowedException;
 import com.minapp.android.sdk.user.User;
+import com.minapp.android.sdk.util.Callback;
+import com.minapp.android.sdk.util.Util;
+
+import java.util.concurrent.Callable;
 
 public class CurrentUser extends User {
 
@@ -32,6 +36,17 @@ public class CurrentUser extends User {
         return Global.httpApi().resetPwd(request).execute().body().isOk();
     }
 
+
+    public void resetPwdInBackground(final String email, @NonNull Callback<Boolean> cb) {
+        Util.inBackground(cb, new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                return resetPwd(email);
+            }
+        });
+    }
+
+
     /**
      * 修改用户用于登录的基本信息
      * @param request
@@ -42,6 +57,15 @@ public class CurrentUser extends User {
         return Global.httpApi().updateUser(request).execute().body();
     }
 
+    public void updateUserInBackground(final UpdateUserReq request, @NonNull Callback<UpdateUserResp> cb) {
+        Util.inBackground(cb, new Callable<UpdateUserResp>() {
+            @Override
+            public UpdateUserResp call() throws Exception {
+                return updateUser(request);
+            }
+        });
+    }
+
     /**
      * 发送验证邮件
      * @return
@@ -49,6 +73,15 @@ public class CurrentUser extends User {
      */
     public boolean emailVerify() throws Exception {
         return Global.httpApi().emailVerify(new Object()).execute().body().isOk();
+    }
+
+    public void emailVerifyInBackground(@NonNull Callback<Boolean> cb) {
+        Util.inBackground(cb, new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                return emailVerify();
+            }
+        });
     }
 
 }

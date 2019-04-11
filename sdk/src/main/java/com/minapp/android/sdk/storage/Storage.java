@@ -1,15 +1,19 @@
 package com.minapp.android.sdk.storage;
 
+import androidx.annotation.NonNull;
 import com.minapp.android.sdk.Global;
 import com.minapp.android.sdk.database.query.Query;
 import com.minapp.android.sdk.storage.model.BatchDeleteReq;
 import com.minapp.android.sdk.storage.model.UploadInfoReq;
 import com.minapp.android.sdk.storage.model.UploadInfoResp;
+import com.minapp.android.sdk.util.Callback;
 import com.minapp.android.sdk.util.PagedList;
+import com.minapp.android.sdk.util.Util;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 
 import java.util.*;
+import java.util.concurrent.Callable;
 
 public abstract class Storage {
 
@@ -66,6 +70,17 @@ public abstract class Storage {
     }
 
 
+    public static void uploadFileInBackground(
+            final String filename, final String categoryId, final byte[] data, @NonNull final Callback<CloudFile> cb) {
+        Util.inBackground(cb, new Callable<CloudFile>() {
+            @Override
+            public CloudFile call() throws Exception {
+                return Storage.uploadFile(filename, categoryId, data);
+            }
+        });
+    }
+
+
     /**
      * 文件信息
      * @param id
@@ -76,6 +91,15 @@ public abstract class Storage {
         return Global.httpApi().file(id).execute().body();
     }
 
+    public static void fileInBackground(final String id, @NonNull Callback<CloudFile> cb) {
+        Util.inBackground(cb, new Callable<CloudFile>() {
+            @Override
+            public CloudFile call() throws Exception {
+                return Storage.file(id);
+            }
+        });
+    }
+
 
     /**
      * 查询文件列表
@@ -83,6 +107,16 @@ public abstract class Storage {
      */
     public static PagedList<CloudFile> files(Query query) throws Exception {
         return Global.httpApi().files(query != null ? query : new Query()).execute().body().readonly();
+    }
+
+
+    public static void filesInBackground(final Query query, @NonNull Callback<PagedList<CloudFile>> cb) {
+        Util.inBackground(cb, new Callable<PagedList<CloudFile>>() {
+            @Override
+            public PagedList<CloudFile> call() throws Exception {
+                return Storage.files(query);
+            }
+        });
     }
 
     /**
@@ -102,6 +136,16 @@ public abstract class Storage {
         }
     }
 
+    public static void deleteFilesInBackground(final Collection<String> ids, @NonNull Callback<Void> cb) {
+        Util.inBackground(cb, new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                Storage.deleteFiles(ids);
+                return null;
+            }
+        });
+    }
+
     /**
      * 获取分类
      * @param id
@@ -112,6 +156,15 @@ public abstract class Storage {
         return Global.httpApi().fileCategory(id).execute().body();
     }
 
+    public static void categoryInBackground(final String id, @NonNull Callback<FileCategory> cb) {
+        Util.inBackground(cb, new Callable<FileCategory>() {
+            @Override
+            public FileCategory call() throws Exception {
+                return Storage.category(id);
+            }
+        });
+    }
+
     /**
      * 列表查询分类
      * @return
@@ -119,6 +172,15 @@ public abstract class Storage {
      */
     public static PagedList<FileCategory> categories(Query query) throws Exception {
         return Global.httpApi().fileCategories(query).execute().body().readonly();
+    }
+
+    public static void categoriesInBackground(final Query query, @NonNull Callback<PagedList<FileCategory>> cb) {
+        Util.inBackground(cb, new Callable<PagedList<FileCategory>>() {
+            @Override
+            public PagedList<FileCategory> call() throws Exception {
+                return Storage.categories(query);
+            }
+        });
     }
 
 }

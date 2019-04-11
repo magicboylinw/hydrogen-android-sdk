@@ -1,10 +1,11 @@
 package com.minapp.android.sdk.database.query;
 
 import android.text.TextUtils;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import com.minapp.android.sdk.util.Util;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 对于 filed 的查询有两种方式
@@ -96,6 +97,10 @@ public class Query extends HashMap<String, String> {
         return null;
     }
 
+    public void put(String key, Number number) {
+        put(key, number != null ? number.toString() : null);
+    }
+
 
     public Query put(Where where) {
         String json = where.toString();
@@ -126,4 +131,41 @@ public class Query extends HashMap<String, String> {
         return null;
     }
 
+
+    /*************************  convenient method  ******************************/
+
+
+    public Query limit(@NonNull Number limit) {
+        put(LIMIT, limit);
+        return this;
+    }
+
+    public Query offset(@NonNull Number offset) {
+        put(OFFSET, offset);
+        return this;
+    }
+
+    public Query orderBy(@NonNull Collection<String> orderBy) {
+        put(ORDER_BY, Util.join(orderBy, ","));
+        return this;
+    }
+
+    public Query orderBy(String... orderBy) {
+        if (orderBy != null) {
+            orderBy(Arrays.asList(orderBy));
+        }
+        return this;
+    }
+
+    public Query keys(@NonNull Collection<String> keys) {
+        put(KEYS, Util.join(keys, ","));
+        return this;
+    }
+
+    public Query keys(String... keys) {
+        if (keys != null) {
+            keys(Arrays.asList(keys));
+        }
+        return this;
+    }
 }
