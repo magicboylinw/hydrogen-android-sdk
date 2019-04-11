@@ -35,17 +35,23 @@ public abstract class Users {
      * @return
      * @throws Exception
      */
-    public static User use(String id) throws Exception {
+    public static User user(String id) throws Exception {
         return Global.httpApi().user(id).execute().body();
     }
 
 
-    public static void useInBackground(final String id, @NonNull Callback<User> cb) {
+    public static void userInBackground(final String id, @NonNull Callback<User> cb) {
         Util.inBackground(cb, new Callable<User>() {
             @Override
             public User call() throws Exception {
-                return Users.use(id);
+                return Users.user(id);
             }
         });
+    }
+
+    public static User userWithoutData(Number id) {
+        User user = new User();
+        user.put(User.ID, id);
+        return user;
     }
 }

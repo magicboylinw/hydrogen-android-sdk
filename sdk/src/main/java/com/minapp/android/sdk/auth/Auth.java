@@ -8,7 +8,6 @@ import com.minapp.android.sdk.Const;
 import com.minapp.android.sdk.Global;
 import com.minapp.android.sdk.HttpApi;
 import com.minapp.android.sdk.auth.model.*;
-import com.minapp.android.sdk.exception.AnonymousNotAllowedException;
 import com.minapp.android.sdk.user.User;
 import com.minapp.android.sdk.user.Users;
 import com.minapp.android.sdk.util.Callback;
@@ -18,7 +17,6 @@ import com.minapp.android.sdk.util.Util;
 import okhttp3.*;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.Body;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -59,7 +57,7 @@ public abstract class Auth {
     public static @Nullable CurrentUser currentUser() throws Exception {
         String userId = (String) AUTH_INFO.get(USER_ID);
         if (userId != null) {
-            return new CurrentUser(Users.use(userId));
+            return new CurrentUser(Users.user(userId));
         }
         return null;
     }

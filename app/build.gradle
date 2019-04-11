@@ -76,7 +76,7 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
 
-    implementation "com.minapp.android:sdk:0.0.8"
+    implementation "com.minapp.android:sdk:0.0.9"
     /*implementation project(':sdk')*/
 
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'

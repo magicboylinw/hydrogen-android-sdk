@@ -14,6 +14,7 @@ enum WhereOperator {
     NIN("$nin"),               // 不包含任意一个数组值
     IN("$in"),                 // 包含任意一个数组值
     IS_NULL("$isnull"),        // 是否为 NULL
+    EXISTS("$exists"),         // 某个字段是否存在于记录中
     RANGE("$range");           // 包含数组值区间的值
 
     final String value;
@@ -45,6 +46,8 @@ enum WhereOperator {
             return IS_NULL;
         } else if (TextUtils.equals(op, RANGE.value)) {
             return RANGE;
+        } else if (TextUtils.equals(op, EXISTS.value)) {
+            return EXISTS;
         } else {
             throw new IllegalArgumentException(String.format("can't recognize operator [%s]", op));
         }
