@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 
-def sdkVersionCode = 10
-def sdkVersionName = "0.1.0"
+def sdkVersionCode = 13
+def sdkVersionName = "0.1.3"
 
 android {
     compileSdkVersion 28
@@ -11,9 +11,6 @@ android {
         targetSdkVersion 28
         versionCode sdkVersionCode
         versionName sdkVersionName
-
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
     }
 
     buildTypes {
@@ -32,13 +29,7 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-
-    implementation 'androidx.appcompat:appcompat:1.0.0-beta01'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
-
+    implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation("com.squareup.okhttp3:okhttp:3.13.1")
     implementation("com.squareup.retrofit2:retrofit:2.5.0")
     api("com.squareup.retrofit2:converter-gson:2.5.0")

@@ -1,9 +1,13 @@
 package com.minapp.android.sdk.auth;
 
+import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.minapp.android.sdk.BaaS;
 import com.minapp.android.sdk.Const;
 import com.minapp.android.sdk.Global;
 import com.minapp.android.sdk.HttpApi;
@@ -34,12 +38,29 @@ public abstract class Auth {
     private static final Object API_LOCK = new Object();
     public static final Map<Object, Object> AUTH_INFO = new HashMap<>();
 
+    /**
+     * 当 sdk 初始化时 {@link BaaS#init(String, Application)}，必须调用此方法初始化 auth 模块
+     */
+    public static void init() {
+        Global.submit(new Runnable() {
+            @Override
+            public void run() {
+                synchronized (AUTH_INFO) {
+                    restoreAuthData();
+                }
+            }
+        });
+    }
+
 
     /**
      * 登出
      */
     public static void logout() {
-        AUTH_INFO.clear();
+        synchronized (AUTH_INFO) {
+            AUTH_INFO.clear();
+            storeAuthData();
+        }
     }
 
     /**
@@ -210,20 +231,60 @@ public abstract class Auth {
      * @param info
      */
     private static void signIn(User info) {
-        if (info != null) {
-            AUTH_INFO.clear();
+        synchronized (AUTH_INFO) {
+            if (info != null) {
+                AUTH_INFO.clear();
 
-            String token = info.getString(User.TOKEN);
-            if (token != null) {
-                AUTH_INFO.put(TOKEN, token);
-            }
+                String token = info.getString(User.TOKEN);
+                if (token != null) {
+                    AUTH_INFO.put(TOKEN, token);
+                }
 
-            String userId = info.getString(User.USER_ID);
-            if (userId != null) {
-                AUTH_INFO.put(USER_ID, userId);
+                String userId = info.getString(User.USER_ID);
+                if (userId != null) {
+                    AUTH_INFO.put(USER_ID, userId);
+                }
             }
+            storeAuthData();
         }
     }
+
+    /**
+     * 把登录信息持久化
+     */
+    static void storeAuthData() {
+        SharedPreferences sp = getGlobalSP();
+        if (sp != null) {
+            Boolean anonymous = (Boolean) AUTH_INFO.get(SIGN_IN_ANONYMOUS);
+            sp.edit()
+                    .putString(TOKEN, (String) AUTH_INFO.get(TOKEN))
+                    .putString(USER_ID, (String) AUTH_INFO.get(USER_ID))
+                    .putBoolean(SIGN_IN_ANONYMOUS, anonymous != null ? anonymous : false)
+                    .apply();
+        }
+    }
+
+    /**
+     * 从持久化数据源中恢复登录信息
+     */
+    static void restoreAuthData() {
+        SharedPreferences sp = getGlobalSP();
+        if (sp != null) {
+            AUTH_INFO.put(TOKEN, sp.getString(TOKEN, null));
+            AUTH_INFO.put(USER_ID, sp.getString(USER_ID, null));
+            AUTH_INFO.put(SIGN_IN_ANONYMOUS, sp.getBoolean(SIGN_IN_ANONYMOUS, false));
+        }
+    }
+
+    static @Nullable SharedPreferences getGlobalSP() {
+        SharedPreferences sp = null;
+        Application app = Global.getApplication();
+        if (app != null) {
+            sp = app.getSharedPreferences(Const.SP_NAME, Context.MODE_PRIVATE);
+        }
+        return sp;
+    }
+
 
     static @Nullable String token() {
         return (String) AUTH_INFO.get(TOKEN);
