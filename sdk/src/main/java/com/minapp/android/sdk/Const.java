@@ -20,5 +20,6 @@ public abstract class Const {
     public static final String TABLE_USER_PROFILE = "_userprofile";
 
     public static final String COMMA = ",";
+    public static final String SP_NAME = "hydrogen_android_sdk";
 
 }

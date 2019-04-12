@@ -1,8 +1,12 @@
 package com.minapp.android.sdk;
 
+import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.minapp.android.sdk.auth.AuthInterceptor;
@@ -29,6 +33,16 @@ public abstract class Global {
     private static Gson GSON_PRINT;
     private static ExecutorService EXECUTOR_SERVICE;
     private static Handler MAIN_HANDLER = new Handler(Looper.getMainLooper());
+    private static Application APP = null;
+
+
+    public static @Nullable Application getApplication() {
+        return APP;
+    }
+
+    static void setApplicaiton(Application application) {
+        APP = application;
+    }
 
 
     public static void postOnMain(@NonNull Runnable runnable) {

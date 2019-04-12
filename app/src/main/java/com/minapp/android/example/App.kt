@@ -21,7 +21,7 @@ class App : Application() {
         GlobalScope.launch {
             try {
                 packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA)?.metaData?.getString("baasClientId").takeIf { !it.isNullOrBlank() }?.also {
-                    BaaS.init(it)
+                    BaaS.init(it, this@App)
                 }
             } catch (e: Exception) {
                 Log.e(Const.TAG, e.message, e)
