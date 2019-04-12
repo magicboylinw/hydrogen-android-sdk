@@ -15,41 +15,14 @@ enum WhereOperator {
     IN("$in"),                 // 包含任意一个数组值
     IS_NULL("$isnull"),        // 是否为 NULL
     EXISTS("$exists"),         // 某个字段是否存在于记录中
+    HAS_KEY("$has_key"),       // key 是否存在 object 字段中
+    ALL("$all"),               // 是否所有 filed 均存在于 list 字段中；list 是右值，它一个数组"[value1, value2]"；filed 必须是数组类型
+    REGEX("$regex"),           // string 字段是否匹配正则表达式
     RANGE("$range");           // 包含数组值区间的值
 
     final String value;
 
     WhereOperator(String value) {
         this.value = value;
-    }
-
-    public static WhereOperator from(String op) {
-        if (TextUtils.equals(op, EQ.value)) {
-            return EQ;
-        } else if (TextUtils.equals(op, NE.value)) {
-            return NE;
-        } else if (TextUtils.equals(op, LT.value)) {
-            return LT;
-        } else if (TextUtils.equals(op, LTE.value)) {
-            return LTE;
-        } else if (TextUtils.equals(op, GT.value)) {
-            return GT;
-        } else if (TextUtils.equals(op, GTE.value)) {
-            return GTE;
-        } else if (TextUtils.equals(op, CONTAINS.value)) {
-            return CONTAINS;
-        } else if (TextUtils.equals(op, NIN.value)) {
-            return NIN;
-        } else if (TextUtils.equals(op, IN.value)) {
-            return IN;
-        } else if (TextUtils.equals(op, IS_NULL.value)) {
-            return IS_NULL;
-        } else if (TextUtils.equals(op, RANGE.value)) {
-            return RANGE;
-        } else if (TextUtils.equals(op, EXISTS.value)) {
-            return EXISTS;
-        } else {
-            throw new IllegalArgumentException(String.format("can't recognize operator [%s]", op));
-        }
     }
 }

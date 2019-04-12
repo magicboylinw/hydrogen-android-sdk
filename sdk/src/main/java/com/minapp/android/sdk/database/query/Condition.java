@@ -7,6 +7,14 @@ import com.google.gson.JsonSerializer;
 
 import java.lang.reflect.Type;
 
+/**
+ * 要生成这么个 json 结构：
+ * {
+ *      "price（左值）": {
+ *          "$lt"（操作符）: 100（右值，不一定有）
+ *      }
+ * }
+ */
 public class Condition {
 
     private WhereOperator operator;

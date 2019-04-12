@@ -10,6 +10,8 @@ import com.minapp.android.sdk.util.PagedList;
 import com.minapp.android.sdk.util.Callback;
 import com.minapp.android.sdk.util.Util;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -54,19 +56,19 @@ public class Table {
         return Database.fetch(this, recordId, query);
     }
 
-    public Record fetchRecord(String recordId, @Nullable String expand, @Nullable String keys) throws Exception {
+    public Record fetchRecord(
+            String recordId,
+            @Nullable Collection<String> expands,
+            @Nullable Collection<String> keys) throws Exception {
+
         Query query = new Query();
-        if (expand != null) {
-            query.put(Query.EXPAND, expand);
-        }
-        if (keys != null) {
-            query.put(Query.KEYS, keys);
-        }
+        query.put(Query.EXPAND, Util.joinToNull(expands));
+        query.put(Query.KEYS, Util.joinToNull(keys));
         return fetchRecord(recordId, query);
     }
 
     public Record fetchRecord(String recordId) throws Exception {
-        return Database.fetch(this, recordId, null);
+        return fetchRecord(recordId, null);
     }
 
     public void fetchRecordInBackground(final String recordId, final Query query, @NonNull final Callback<Record> cb) {
@@ -79,16 +81,20 @@ public class Table {
     }
 
     public void fetchRecordInBackground(
-            final String recordId, @Nullable final String expand, @Nullable final String keys, @NonNull Callback<Record> cb) {
+            final String recordId,
+            @Nullable final Collection<String> expands,
+            @Nullable final Collection<String> keys,
+            @NonNull Callback<Record> cb) {
+
         Util.inBackground(cb, new Callable<Record>() {
             @Override
             public Record call() throws Exception {
-                return fetchRecord(recordId, expand, keys);
+                return fetchRecord(recordId, expands, keys);
             }
         });
     }
 
-    public void fetchRecordInBackground(final String recordId, @NonNull Callback<Record> cb) throws Exception {
+    public void fetchRecordInBackground(final String recordId, @NonNull Callback<Record> cb) {
         Util.inBackground(cb, new Callable<Record>() {
             @Override
             public Record call() throws Exception {
