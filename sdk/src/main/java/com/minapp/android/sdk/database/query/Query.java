@@ -146,7 +146,7 @@ public class Query extends HashMap<String, String> {
     }
 
     public Query orderBy(@NonNull Collection<String> orderBy) {
-        put(ORDER_BY, Util.join(orderBy, ","));
+        put(ORDER_BY, Util.joinToNull(orderBy));
         return this;
     }
 
@@ -158,13 +158,25 @@ public class Query extends HashMap<String, String> {
     }
 
     public Query keys(@NonNull Collection<String> keys) {
-        put(KEYS, Util.join(keys, ","));
+        put(KEYS, Util.joinToNull(keys));
         return this;
     }
 
     public Query keys(String... keys) {
         if (keys != null) {
             keys(Arrays.asList(keys));
+        }
+        return this;
+    }
+
+    public Query expand(Collection<String> fields) {
+        put(EXPAND, Util.joinToNull(fields));
+        return this;
+    }
+
+    public Query expand(String... fields) {
+        if (fields != null) {
+            expand(Arrays.asList(fields));
         }
         return this;
     }

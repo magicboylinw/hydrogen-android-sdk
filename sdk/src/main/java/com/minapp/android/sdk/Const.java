@@ -19,4 +19,6 @@ public abstract class Const {
 
     public static final String TABLE_USER_PROFILE = "_userprofile";
 
+    public static final String COMMA = ",";
+
 }

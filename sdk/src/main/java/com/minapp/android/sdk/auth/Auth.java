@@ -52,12 +52,22 @@ public abstract class Auth {
 
     /**
      * 当前登录用户的信息；它会执行一次网络请求，获取到的用户信息总是最新的
-     * @return 当未登录或者是匿名登录时，返回 null
+     * @return 当未登录时，返回 null
      */
     public static @Nullable CurrentUser currentUser() throws Exception {
         String userId = (String) AUTH_INFO.get(USER_ID);
         if (userId != null) {
             return new CurrentUser(Users.user(userId));
+        }
+        return null;
+    }
+
+    public static @Nullable CurrentUser currentUserWithoutData() {
+        String userId = (String) AUTH_INFO.get(USER_ID);
+        if (userId != null) {
+            CurrentUser user = new CurrentUser();
+            user.put(CurrentUser.ID, userId);
+            return user;
         }
         return null;
     }

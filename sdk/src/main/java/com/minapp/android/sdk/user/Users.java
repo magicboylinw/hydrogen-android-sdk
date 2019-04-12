@@ -39,6 +39,10 @@ public abstract class Users {
         return Global.httpApi().user(id).execute().body();
     }
 
+    public static User user(Number id) throws Exception {
+        return Users.user(id != null ? id.toString() : "");
+    }
+
 
     public static void userInBackground(final String id, @NonNull Callback<User> cb) {
         Util.inBackground(cb, new Callable<User>() {
@@ -47,6 +51,10 @@ public abstract class Users {
                 return Users.user(id);
             }
         });
+    }
+
+    public static void userInBackground(Number id, @NonNull Callback<User> cb) {
+        Users.userInBackground(id != null ? id.toString() : "", cb);
     }
 
     public static User userWithoutData(Number id) {

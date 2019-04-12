@@ -1,7 +1,10 @@
 package com.minapp.android.sdk.database.query;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import com.minapp.android.sdk.Global;
+import com.minapp.android.sdk.database.Record;
+import com.minapp.android.sdk.util.Callback;
 
 import java.util.Collection;
 import java.util.List;
@@ -104,26 +107,45 @@ public class Where {
         return _and(WhereOperator.NIN, lvalue, rvalue);
     }
 
-
-
-    /*************************  字符串相关  ******************************/
-
-
-    public Where contains(String lvalue, String rvalue) {
+    public Where contains(String lvalue, Object rvalue) {
         return _and(WhereOperator.CONTAINS, lvalue, rvalue);
     }
 
 
 
-    /*************************  misc  ******************************/
+    /*************************  null & exists  ******************************/
 
 
     public Where isNull(String lvalue) {
-        return _and(WhereOperator.IS_NULL, lvalue, null);
+        return _and(WhereOperator.IS_NULL, lvalue, true);
+    }
+
+    public Where isNotNull(String lvalue) {
+        return _and(WhereOperator.IS_NULL, lvalue, false);
     }
 
     public Where exists(String lvalue) {
-        return _and(WhereOperator.EXISTS, lvalue, null);
+        return _and(WhereOperator.EXISTS, lvalue, true);
+    }
+
+    public Where notExists(String lvalue) {
+        return _and(WhereOperator.EXISTS, lvalue, false);
+    }
+
+
+    /*************************  misc  ******************************/
+
+
+    public Where hasKey(String lvalue, String rvalue) {
+        return _and(WhereOperator.HAS_KEY, lvalue, rvalue);
+    }
+
+    public Where arrayContains(String lvalue, Collection rvalue) {
+        return _and(WhereOperator.ALL, lvalue, rvalue);
+    }
+
+    public Where matchs(String lvalue, Object rvalue) {
+        return _and(WhereOperator.REGEX, lvalue, rvalue);
     }
 
 }

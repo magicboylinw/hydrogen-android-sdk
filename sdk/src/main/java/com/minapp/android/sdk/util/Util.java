@@ -1,5 +1,6 @@
 package com.minapp.android.sdk.util;
 
+import android.text.TextUtils;
 import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -8,6 +9,7 @@ import com.google.gson.JsonObject;
 import com.minapp.android.sdk.Const;
 import com.minapp.android.sdk.Global;
 import com.minapp.android.sdk.database.Record;
+import com.minapp.android.sdk.database.query.Query;
 
 import java.io.InputStream;
 import java.util.*;
@@ -180,5 +182,19 @@ public abstract class Util {
             return sb.toString();
         }
         return "";
+    }
+
+    public static @NonNull String join(Collection data) {
+        return join(data, Const.COMMA);
+    }
+
+    /**
+     * 如果集合为 null or empty，返回 null
+     * @param data
+     * @return
+     */
+    public static @Nullable String joinToNull(Collection data) {
+        String result = join(data);
+        return TextUtils.isEmpty(result) ? null : result;
     }
 }
