@@ -1,6 +1,7 @@
 package com.minapp.android.sdk.auth;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import com.minapp.android.sdk.Const;
 import com.minapp.android.sdk.Global;
 import com.minapp.android.sdk.auth.model.ResetPwdReq;
@@ -82,6 +83,14 @@ public class CurrentUser extends User {
                 return emailVerify();
             }
         });
+    }
+
+    /**
+     * session 过期时间戳，单位毫秒
+     * @return
+     */
+    public @Nullable Long getExpiresAt() {
+        return Auth.getExpiresAt();
     }
 
 }

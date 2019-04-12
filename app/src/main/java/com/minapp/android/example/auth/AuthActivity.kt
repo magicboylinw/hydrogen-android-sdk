@@ -77,7 +77,7 @@ class AuthActivity : BaseActivity(), LoaderCallbacks<Cursor> {
         }
 
         editUserBtn.setOnClickListener {
-            if (Auth.isSignIn()) {
+            if (Auth.signedIn()) {
                 startActivity(Intent(this, EditUserActivity::class.java))
             } else {
                 Util.toast(this, "请先登录")

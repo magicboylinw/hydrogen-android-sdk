@@ -18,6 +18,26 @@ public abstract class DateUtil {
     private static final String DB_DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSXXX";
 
     /**
+     * 北京时间
+     * @return
+     */
+    public static Calendar pekingCalendar() {
+        return Calendar.getInstance(getTimeZone(8));
+    }
+
+
+    /**
+     * 拿时区
+     * @param zone 比如东八区是 +8
+     * @return
+     */
+    public static TimeZone getTimeZone(int zone) {
+        String[] timeZoneIds = TimeZone.getAvailableIDs( 1000 * 60 * 60 * zone);
+        TimeZone timeZone = timeZoneIds != null && timeZoneIds.length > 0 ? TimeZone.getTimeZone(timeZoneIds[0]) : TimeZone.getDefault();
+        return timeZone;
+    }
+
+    /**
      * 知晓云数据库 Date 类型字段返回 ISO8601 格式的日期字符串，例如："2018-09-01T18:31:02.631000+08:00"
      * 这里把它转换为 {@link Calendar}
      * @param str

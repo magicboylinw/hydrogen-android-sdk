@@ -14,14 +14,13 @@ import com.minapp.android.sdk.HttpApi;
 import com.minapp.android.sdk.auth.model.*;
 import com.minapp.android.sdk.user.User;
 import com.minapp.android.sdk.user.Users;
+import com.minapp.android.sdk.util.*;
 import com.minapp.android.sdk.util.Callback;
-import com.minapp.android.sdk.util.ContentTypeInterceptor;
-import com.minapp.android.sdk.util.MemoryCookieJar;
-import com.minapp.android.sdk.util.Util;
 import okhttp3.*;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -29,14 +28,20 @@ import java.util.concurrent.TimeUnit;
 
 public abstract class Auth {
 
-    static final String TOKEN = "TOKEN";
-    static final String USER_ID = "USER_ID";
-    static final String SIGN_IN_ANONYMOUS = "SIGN_IN_ANONYMOUS";
+    static final String TOKEN = "TOKEN";                            // String
+    static final String USER_ID = "USER_ID";                        // String
+    static final String SIGN_IN_ANONYMOUS = "SIGN_IN_ANONYMOUS";    // Boolean
+    static final String EXPIRES_IN = "EXPIRES_IN";                  // Long，时间戳，单位毫秒
 
     private static final MemoryCookieJar COOKIE_JAR = new MemoryCookieJar();
     private static HttpApi API;
     private static final Object API_LOCK = new Object();
     public static final Map<Object, Object> AUTH_INFO = new HashMap<>();
+
+
+    static @Nullable Long getExpiresAt() {
+        return (Long) AUTH_INFO.get(EXPIRES_IN);
+    }
 
     /**
      * 当 sdk 初始化时 {@link BaaS#init(String, Application)}，必须调用此方法初始化 auth 模块
@@ -67,8 +72,28 @@ public abstract class Auth {
      * 是否已登录
      * @return
      */
-    public static boolean isSignIn() {
-        return AUTH_INFO.get(TOKEN) != null;
+    public static boolean signedIn() {
+        boolean signedIn = true;
+
+        Long expiresAt = getExpiresAt();
+        if (expiresAt != null && expiresAt > 0) {
+            Calendar now = DateUtil.pekingCalendar();
+            Calendar expiresIn = DateUtil.pekingCalendar();
+            expiresIn.setTimeInMillis(expiresAt);
+            if (now.after(expiresIn)) {
+                signedIn = false;
+            }
+        }
+
+        if (AUTH_INFO.get(TOKEN) == null) {
+            signedIn = false;
+        }
+
+        if (!signedIn) {
+            logout();
+        }
+
+        return signedIn;
     }
 
     /**
@@ -110,7 +135,7 @@ public abstract class Auth {
      * 判断用户是否是匿名用户
      * @return true 已登录并且是匿名登录
      */
-    public static boolean isSignInAnonymous() {
+    public static boolean isAnonymous() {
         return Boolean.TRUE.equals(AUTH_INFO.get(SIGN_IN_ANONYMOUS));
     }
 
@@ -244,10 +269,15 @@ public abstract class Auth {
                 if (userId != null) {
                     AUTH_INFO.put(USER_ID, userId);
                 }
+
+                try {
+                    AUTH_INFO.put(EXPIRES_IN, Long.valueOf(info.getString(User.EXPIRES_IN)) * 1000 + System.currentTimeMillis());
+                } catch (Exception ignored) {}
             }
             storeAuthData();
         }
     }
+
 
     /**
      * 把登录信息持久化
@@ -256,10 +286,12 @@ public abstract class Auth {
         SharedPreferences sp = getGlobalSP();
         if (sp != null) {
             Boolean anonymous = (Boolean) AUTH_INFO.get(SIGN_IN_ANONYMOUS);
+            Long expiresIn = (Long) AUTH_INFO.get(EXPIRES_IN);
             sp.edit()
                     .putString(TOKEN, (String) AUTH_INFO.get(TOKEN))
                     .putString(USER_ID, (String) AUTH_INFO.get(USER_ID))
                     .putBoolean(SIGN_IN_ANONYMOUS, anonymous != null ? anonymous : false)
+                    .putLong(EXPIRES_IN, expiresIn != null ? expiresIn : 0)
                     .apply();
         }
     }
@@ -273,6 +305,7 @@ public abstract class Auth {
             AUTH_INFO.put(TOKEN, sp.getString(TOKEN, null));
             AUTH_INFO.put(USER_ID, sp.getString(USER_ID, null));
             AUTH_INFO.put(SIGN_IN_ANONYMOUS, sp.getBoolean(SIGN_IN_ANONYMOUS, false));
+            AUTH_INFO.put(EXPIRES_IN, sp.getLong(EXPIRES_IN, 0));
         }
     }
 
