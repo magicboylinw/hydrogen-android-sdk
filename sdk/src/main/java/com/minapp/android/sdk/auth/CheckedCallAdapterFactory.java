@@ -88,8 +88,8 @@ public class CheckedCallAdapterFactory extends CallAdapter.Factory {
          * @throws EmptyResponseException
          */
         private Response postProcess(Call call, Response response) throws IOException, HttpException, EmptyResponseException, SessionMissingException {
-            // TODO 自动重新登录？
             if (response.code() == 401) {
+                Auth.logout();
             }
 
             if (checked) {
