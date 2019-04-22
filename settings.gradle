@@ -1,1 +1,1 @@
-include ':app', ':sdk', ':my_books'
+include ':app', ':sdk'
