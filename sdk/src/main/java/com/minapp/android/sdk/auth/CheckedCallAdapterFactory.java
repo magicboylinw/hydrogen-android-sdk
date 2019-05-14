@@ -1,23 +1,28 @@
 package com.minapp.android.sdk.auth;
 
 import androidx.annotation.Nullable;
+import com.google.gson.JsonSyntaxException;
+import com.minapp.android.sdk.Global;
 import com.minapp.android.sdk.exception.EmptyResponseException;
 import com.minapp.android.sdk.exception.HttpException;
 import com.minapp.android.sdk.exception.SessionMissingException;
+import com.minapp.android.sdk.model.ErrorResp;
 import okhttp3.Request;
+import okhttp3.ResponseBody;
 import retrofit2.*;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.concurrent.Executor;
 
 
 public class CheckedCallAdapterFactory extends CallAdapter.Factory {
 
     @Nullable
     @Override
-    public CallAdapter<?, ?> get(final Type returnType, Annotation[] annotations, Retrofit retrofit) {
+    public CallAdapter<?, ?> get(final Type returnType, Annotation[] annotations, final Retrofit retrofit) {
 
         // retrofit method 的返回类型（外部类型，不是 body 的类型）
         final Class returnClz = getRawType(returnType);
@@ -35,7 +40,7 @@ public class CheckedCallAdapterFactory extends CallAdapter.Factory {
 
                 @Override
                 public Object adapt(Call<Object> call) {
-                    return new CheckedCallImpl(call, returnClz == CheckedCall.class, bodyClz != null && bodyClz != Void.class);
+                    return new CheckedCallImpl(call, retrofit.callbackExecutor(), returnClz == CheckedCall.class, bodyClz != null && bodyClz != Void.class);
                 }
             };
         }
@@ -47,11 +52,13 @@ public class CheckedCallAdapterFactory extends CallAdapter.Factory {
         private Call realCall;
         private boolean checked;
         private boolean hasBody;
+        private Executor callbackExecutor;
 
-        public CheckedCallImpl(Call realCall, boolean checked, boolean hasBody) {
+        public CheckedCallImpl(Call realCall, Executor callbackExecutor, boolean checked, boolean hasBody) {
             this.realCall = realCall;
             this.checked = checked;
             this.hasBody = hasBody;
+            this.callbackExecutor = callbackExecutor;
         }
 
         @Override
@@ -63,17 +70,33 @@ public class CheckedCallAdapterFactory extends CallAdapter.Factory {
         public void enqueue(final Callback callback) {
             realCall.enqueue(new Callback() {
                 @Override
-                public void onResponse(Call call, Response response) {
+                public void onResponse(final Call call, Response response) {
                     try {
-                        callback.onResponse(call, postProcess(call, response));
-                    } catch (Exception e) {
-                        callback.onFailure(call, e);
+                        final Response resp = postProcess(call, response);
+                        callbackExecutor.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onResponse(call, resp);
+                            }
+                        });
+                    } catch (final Exception e) {
+                        callbackExecutor.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onFailure(call, e);
+                            }
+                        });
                     }
                 }
 
                 @Override
-                public void onFailure(Call call, Throwable t) {
-                    callback.onFailure(call, t);
+                public void onFailure(final Call call, final Throwable t) {
+                    callbackExecutor.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            callback.onFailure(call, t);
+                        }
+                    });
                 }
             });
         }
@@ -97,10 +120,17 @@ public class CheckedCallAdapterFactory extends CallAdapter.Factory {
                     if (response.code() == 401) {
                         throw new SessionMissingException();
                     } else {
-                        throw new HttpException(
-                                response.code(),
-                                response.errorBody() != null ? response.errorBody().string() : null
-                        );
+
+                        String errorMsg = null;
+                        ResponseBody errorBody = response.errorBody();
+                        if (errorBody != null) {
+                            errorMsg = new String(errorBody.bytes(), "utf-8");
+                            try {
+                                ErrorResp json = Global.gson().fromJson(errorMsg, ErrorResp.class);
+                                errorMsg = json.getErrorMsg();
+                            } catch (Exception e) {}
+                        }
+                        throw new HttpException(response.code(), errorMsg);
                     }
                 }
                 if (hasBody && response.body() == null) {

@@ -6,7 +6,7 @@ import com.minapp.android.sdk.database.query.Query;
 import com.minapp.android.sdk.storage.model.BatchDeleteReq;
 import com.minapp.android.sdk.storage.model.UploadInfoReq;
 import com.minapp.android.sdk.storage.model.UploadInfoResp;
-import com.minapp.android.sdk.util.Callback;
+import com.minapp.android.sdk.util.BaseCallback;
 import com.minapp.android.sdk.util.PagedList;
 import com.minapp.android.sdk.util.Util;
 import okhttp3.MultipartBody;
@@ -71,7 +71,7 @@ public abstract class Storage {
 
 
     public static void uploadFileInBackground(
-            final String filename, final String categoryId, final byte[] data, @NonNull final Callback<CloudFile> cb) {
+            final String filename, final String categoryId, final byte[] data, @NonNull final BaseCallback<CloudFile> cb) {
         Util.inBackground(cb, new Callable<CloudFile>() {
             @Override
             public CloudFile call() throws Exception {
@@ -91,7 +91,7 @@ public abstract class Storage {
         return Global.httpApi().file(id).execute().body();
     }
 
-    public static void fileInBackground(final String id, @NonNull Callback<CloudFile> cb) {
+    public static void fileInBackground(final String id, @NonNull BaseCallback<CloudFile> cb) {
         Util.inBackground(cb, new Callable<CloudFile>() {
             @Override
             public CloudFile call() throws Exception {
@@ -110,7 +110,7 @@ public abstract class Storage {
     }
 
 
-    public static void filesInBackground(final Query query, @NonNull Callback<PagedList<CloudFile>> cb) {
+    public static void filesInBackground(final Query query, @NonNull BaseCallback<PagedList<CloudFile>> cb) {
         Util.inBackground(cb, new Callable<PagedList<CloudFile>>() {
             @Override
             public PagedList<CloudFile> call() throws Exception {
@@ -136,7 +136,7 @@ public abstract class Storage {
         }
     }
 
-    public static void deleteFilesInBackground(final Collection<String> ids, @NonNull Callback<Void> cb) {
+    public static void deleteFilesInBackground(final Collection<String> ids, @NonNull BaseCallback<Void> cb) {
         Util.inBackground(cb, new Callable<Void>() {
             @Override
             public Void call() throws Exception {
@@ -156,7 +156,7 @@ public abstract class Storage {
         return Global.httpApi().fileCategory(id).execute().body();
     }
 
-    public static void categoryInBackground(final String id, @NonNull Callback<FileCategory> cb) {
+    public static void categoryInBackground(final String id, @NonNull BaseCallback<FileCategory> cb) {
         Util.inBackground(cb, new Callable<FileCategory>() {
             @Override
             public FileCategory call() throws Exception {
@@ -174,7 +174,7 @@ public abstract class Storage {
         return Global.httpApi().fileCategories(query).execute().body().readonly();
     }
 
-    public static void categoriesInBackground(final Query query, @NonNull Callback<PagedList<FileCategory>> cb) {
+    public static void categoriesInBackground(final Query query, @NonNull BaseCallback<PagedList<FileCategory>> cb) {
         Util.inBackground(cb, new Callable<PagedList<FileCategory>>() {
             @Override
             public PagedList<FileCategory> call() throws Exception {

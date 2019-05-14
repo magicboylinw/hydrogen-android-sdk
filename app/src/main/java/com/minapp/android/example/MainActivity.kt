@@ -63,6 +63,11 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         userBtn.setOnClickListener { startActivity(Intent(this, UserListActivity::class.java)) }
         contentBtn.setOnClickListener { startActivity(Intent(this, ContentListActivity::class.java)) }
         fileBtn.setOnClickListener { startActivity(Intent(this, FileListActivity::class.java)) }
+        smsBtn.setOnClickListener { startActivity(Intent(this, SmsActivity::class.java)) }
+    }
+
+    private fun printSignStatus() {
+        signTv.text = if (Auth.signedIn()) "已登录" else "未登录"
     }
 
     fun checkClientId() {
@@ -79,6 +84,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     override fun onResume() {
         super.onResume()
         checkClientId()
+        printSignStatus()
     }
 
     fun openImagePicker() {

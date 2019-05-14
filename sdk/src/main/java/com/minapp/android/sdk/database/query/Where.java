@@ -1,13 +1,9 @@
 package com.minapp.android.sdk.database.query;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import com.minapp.android.sdk.Global;
-import com.minapp.android.sdk.database.Record;
-import com.minapp.android.sdk.util.Callback;
 
 import java.util.Collection;
-import java.util.List;
 
 public class Where {
 

@@ -3,7 +3,7 @@ package com.minapp.android.sdk.content;
 import androidx.annotation.NonNull;
 import com.minapp.android.sdk.Global;
 import com.minapp.android.sdk.database.query.Query;
-import com.minapp.android.sdk.util.Callback;
+import com.minapp.android.sdk.util.BaseCallback;
 import com.minapp.android.sdk.util.PagedList;
 import com.minapp.android.sdk.util.Util;
 
@@ -24,7 +24,7 @@ public abstract class Contents {
         return Global.httpApi().contents(query).execute().body().readonly();
     }
 
-    public static void contentsInBackground(@NonNull final Query query, @NonNull Callback<PagedList<Content>> cb) {
+    public static void contentsInBackground(@NonNull final Query query, @NonNull BaseCallback<PagedList<Content>> cb) {
         Util.inBackground(cb, new Callable<PagedList<Content>>() {
             @Override
             public PagedList<Content> call() throws Exception {
@@ -43,7 +43,7 @@ public abstract class Contents {
         return Global.httpApi().content(id).execute().body();
     }
 
-    public static void contentInBackground(final String id, @NonNull Callback<Content> cb) {
+    public static void contentInBackground(final String id, @NonNull BaseCallback<Content> cb) {
         Util.inBackground(cb, new Callable<Content>() {
             @Override
             public Content call() throws Exception {
@@ -62,7 +62,7 @@ public abstract class Contents {
         return Global.httpApi().contentGroups(query).execute().body().readonly();
     }
 
-    public static void contentGroupsInBackground(@NonNull final Query query, @NonNull Callback<PagedList<ContentGroup>> cb) {
+    public static void contentGroupsInBackground(@NonNull final Query query, @NonNull BaseCallback<PagedList<ContentGroup>> cb) {
         Util.inBackground(cb, new Callable<PagedList<ContentGroup>>() {
             @Override
             public PagedList<ContentGroup> call() throws Exception {
@@ -81,7 +81,7 @@ public abstract class Contents {
         return Global.httpApi().contentCategories(query).execute().body().readonly();
     }
 
-    public static void contentCategoriesInBackground(@NonNull final Query query, @NonNull Callback<PagedList<ContentCategory>> cb) {
+    public static void contentCategoriesInBackground(@NonNull final Query query, @NonNull BaseCallback<PagedList<ContentCategory>> cb) {
         Util.inBackground(cb, new Callable<PagedList<ContentCategory>>() {
             @Override
             public PagedList<ContentCategory> call() throws Exception {
@@ -100,7 +100,7 @@ public abstract class Contents {
         return Global.httpApi().contentCategory(id).execute().body();
     }
 
-    public static void contentCategoryInBackground(final String id, @NonNull Callback<ContentCategory> cb) {
+    public static void contentCategoryInBackground(final String id, @NonNull BaseCallback<ContentCategory> cb) {
         Util.inBackground(cb, new Callable<ContentCategory>() {
             @Override
             public ContentCategory call() throws Exception {

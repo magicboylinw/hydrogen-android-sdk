@@ -1,6 +1,5 @@
 package com.minapp.android.sdk.database;
 
-import android.telephony.gsm.GsmCellLocation;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.util.Log;
@@ -11,7 +10,7 @@ import com.minapp.android.sdk.Global;
 import com.minapp.android.sdk.storage.CloudFile;
 import com.minapp.android.sdk.util.Function;
 import com.minapp.android.sdk.util.Util;
-import com.minapp.android.sdk.util.Callback;
+import com.minapp.android.sdk.util.BaseCallback;
 
 import java.lang.reflect.Type;
 import java.util.*;
@@ -74,7 +73,7 @@ public class Record {
         return this;
     }
 
-    public void saveInBackground(@NonNull final Callback<Record> callback) {
+    public void saveInBackground(@NonNull final BaseCallback<Record> callback) {
         Util.inBackground(callback, new Callable<Record>() {
             @Override
             public Record call() throws Exception {
@@ -88,7 +87,7 @@ public class Record {
         Database.delete(this);
     }
 
-    public void deleteInBackground(@NonNull final Callback<Record> callback) {
+    public void deleteInBackground(@NonNull final BaseCallback<Record> callback) {
         Util.inBackground(callback, new Callable<Record>() {
             @Override
             public Record call() throws Exception {

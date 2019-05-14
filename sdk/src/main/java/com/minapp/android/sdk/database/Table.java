@@ -1,16 +1,13 @@
 package com.minapp.android.sdk.database;
 
-import android.telecom.Call;
 import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import com.minapp.android.sdk.Global;
 import com.minapp.android.sdk.database.query.Query;
 import com.minapp.android.sdk.util.PagedList;
-import com.minapp.android.sdk.util.Callback;
+import com.minapp.android.sdk.util.BaseCallback;
 import com.minapp.android.sdk.util.Util;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -71,7 +68,7 @@ public class Table {
         return fetchRecord(recordId, null);
     }
 
-    public void fetchRecordInBackground(final String recordId, final Query query, @NonNull final Callback<Record> cb) {
+    public void fetchRecordInBackground(final String recordId, final Query query, @NonNull final BaseCallback<Record> cb) {
         Util.inBackground(cb, new Callable<Record>() {
             @Override
             public Record call() throws Exception {
@@ -84,7 +81,7 @@ public class Table {
             final String recordId,
             @Nullable final Collection<String> expands,
             @Nullable final Collection<String> keys,
-            @NonNull Callback<Record> cb) {
+            @NonNull BaseCallback<Record> cb) {
 
         Util.inBackground(cb, new Callable<Record>() {
             @Override
@@ -94,7 +91,7 @@ public class Table {
         });
     }
 
-    public void fetchRecordInBackground(final String recordId, @NonNull Callback<Record> cb) {
+    public void fetchRecordInBackground(final String recordId, @NonNull BaseCallback<Record> cb) {
         Util.inBackground(cb, new Callable<Record>() {
             @Override
             public Record call() throws Exception {
@@ -119,7 +116,7 @@ public class Table {
      * @param query
      * @param cb
      */
-    public void queryInBackground(final Query query, @NonNull final Callback<PagedList<Record>> cb) {
+    public void queryInBackground(final Query query, @NonNull final BaseCallback<PagedList<Record>> cb) {
         Util.inBackground(cb, new Callable<PagedList<Record>>() {
             @Override
             public PagedList<Record> call() throws Exception {
@@ -174,7 +171,7 @@ public class Table {
     }
 
 
-    public void batchDeleteInBackground(final Query query, @NonNull final Callback<BatchResult> cb) {
+    public void batchDeleteInBackground(final Query query, @NonNull final BaseCallback<BatchResult> cb) {
         Util.inBackground(cb, new Callable<BatchResult>() {
             @Override
             public BatchResult call() throws Exception {
@@ -183,7 +180,7 @@ public class Table {
         });
     }
 
-    public void batchSaveInBackground(final List<Record> records, @NonNull final Callback<BatchResult> cb) {
+    public void batchSaveInBackground(final List<Record> records, @NonNull final BaseCallback<BatchResult> cb) {
         Util.inBackground(cb, new Callable<BatchResult>() {
             @Override
             public BatchResult call() throws Exception {
@@ -192,7 +189,7 @@ public class Table {
         });
     }
 
-    public void batchUpdateInBackground(final Query query, final Record update, @NonNull final Callback<BatchResult> cb) {
+    public void batchUpdateInBackground(final Query query, final Record update, @NonNull final BaseCallback<BatchResult> cb) {
         Util.inBackground(cb, new Callable<BatchResult>() {
             @Override
             public BatchResult call() throws Exception {
