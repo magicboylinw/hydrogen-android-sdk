@@ -64,6 +64,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         contentBtn.setOnClickListener { startActivity(Intent(this, ContentListActivity::class.java)) }
         fileBtn.setOnClickListener { startActivity(Intent(this, FileListActivity::class.java)) }
         smsBtn.setOnClickListener { startActivity(Intent(this, SmsActivity::class.java)) }
+        cloudFuncBtn.setOnClickListener { startActivity(Intent(this, CloudFuncActivity::class.java))}
     }
 
     private fun printSignStatus() {

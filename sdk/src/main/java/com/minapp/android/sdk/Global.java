@@ -63,6 +63,7 @@ public abstract class Global {
                             .retryOnConnectionFailure(true)
                             .addNetworkInterceptor(new AuthInterceptor())
                             .addNetworkInterceptor(new ContentTypeInterceptor())
+                            .addInterceptor(new PrintInterceptor())
                             .build();
 
                     if (GSON == null) {

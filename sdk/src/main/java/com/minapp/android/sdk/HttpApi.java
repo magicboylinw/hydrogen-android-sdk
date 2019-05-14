@@ -1,13 +1,12 @@
 package com.minapp.android.sdk;
 
+import com.google.gson.JsonObject;
 import com.minapp.android.sdk.auth.*;
 import com.minapp.android.sdk.auth.model.*;
 import com.minapp.android.sdk.content.ContentCategory;
 import com.minapp.android.sdk.content.ContentGroup;
 import com.minapp.android.sdk.database.BatchResult;
-import com.minapp.android.sdk.model.SendSmsCodeReq;
-import com.minapp.android.sdk.model.StatusResp;
-import com.minapp.android.sdk.model.VerifySmsCodeReq;
+import com.minapp.android.sdk.model.*;
 import com.minapp.android.sdk.storage.FileCategory;
 import com.minapp.android.sdk.content.Content;
 import com.minapp.android.sdk.database.Record;
@@ -18,6 +17,7 @@ import com.minapp.android.sdk.user.User;
 import com.minapp.android.sdk.util.BaseStatusResp;
 import com.minapp.android.sdk.util.PagedListResponse;
 import okhttp3.RequestBody;
+import retrofit2.Call;
 import retrofit2.http.*;
 
 import java.util.List;
@@ -27,6 +27,18 @@ import java.util.List;
  * cloud.minapp.com 提供的 http api
  */
 public interface HttpApi {
+
+    /********************************* cloud func api ****************************************/
+
+    /**
+     * 触发云函数执行
+     * @param req
+     * @return
+     */
+    @POST("hserve/v1/cloud-function/job/")
+    CheckedCall<CloudFuncResp> invokeCloudFunc(
+            @Body CloudFuncReq req
+    );
 
 
     /********************************* sms api ****************************************/

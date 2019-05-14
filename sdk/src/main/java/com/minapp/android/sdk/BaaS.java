@@ -3,10 +3,11 @@ package com.minapp.android.sdk;
 import android.app.Application;
 import android.content.Context;
 import androidx.annotation.NonNull;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.minapp.android.sdk.auth.Auth;
-import com.minapp.android.sdk.model.SendSmsCodeReq;
-import com.minapp.android.sdk.model.StatusResp;
-import com.minapp.android.sdk.model.VerifySmsCodeReq;
+import com.minapp.android.sdk.model.*;
 import com.minapp.android.sdk.util.BaseCallback;
 import com.minapp.android.sdk.util.Retrofit2CallbackAdapter;
 import com.minapp.android.sdk.util.Util;
@@ -52,6 +53,21 @@ public class BaaS {
      */
     public static void verifySmsCode(String phone, String code, BaseCallback<StatusResp> cb) {
         Global.httpApi().verifySmsCode(new VerifySmsCodeReq(phone, code)).enqueue(new Retrofit2CallbackAdapter<StatusResp>(cb));
+    }
+
+    /**
+     * 触发云函数的执行
+     * @param funcName 要运行的云函数名
+     * @param data     要传进云函数的 event.data
+     * @param sync     true 表示同步，false 表示异步
+     * @param cb       返回云函数的执行结果
+     */
+    public static void invokeCloudFunc(String funcName, String data, Boolean sync, BaseCallback<CloudFuncResp> cb) {
+        JsonElement json = null;
+        try {
+            json = Global.gson().fromJson(data, JsonElement.class);
+        } catch (Exception e) {}
+        Global.httpApi().invokeCloudFunc(new CloudFuncReq(funcName, json, sync)).enqueue(new Retrofit2CallbackAdapter<CloudFuncResp>(cb));
     }
 
 }
