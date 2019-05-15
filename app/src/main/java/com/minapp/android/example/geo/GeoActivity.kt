@@ -93,7 +93,7 @@ class GeoActivity : BaseActivity() {
 
         result = table.query(Query().apply {
             put(Where().apply {
-                withinRegion(LOCATION_POINT, GeoPoint(113.3144f, 23.1199f), 5f, 2f)
+                withinRegion(LOCATION_POINT, GeoPoint(113.3144f, 23.1199f), 5000f, 2000f)
             })
         })
         result.objects?.map { it.getString(LOCATION_NAME) }?.joinToString(separator = ",")?.also {

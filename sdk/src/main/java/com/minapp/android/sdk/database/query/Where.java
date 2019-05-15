@@ -54,8 +54,8 @@ public class Where {
      * 在指定点集合中，查找包含在以指定点为圆点，以最大和最小距离为半径，所构成的圆环区域中的点（返回结果按从近到远排序）
      * @param lvalue
      * @param center
-     * @param maxDistance km
-     * @param minDistance km
+     * @param maxDistance m
+     * @param minDistance m
      * @return
      */
     public Where withinRegion(String lvalue, GeoPoint center, float maxDistance, float minDistance) {
