@@ -11,8 +11,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.minapp.android.sdk.auth.AuthInterceptor;
 import com.minapp.android.sdk.auth.CheckedCallAdapterFactory;
+import com.minapp.android.sdk.database.GeoPoint;
+import com.minapp.android.sdk.database.GeoPolygon;
 import com.minapp.android.sdk.database.query.Condition;
 import com.minapp.android.sdk.database.query.ConditionNode;
+import com.minapp.android.sdk.database.query.WithinCircle;
+import com.minapp.android.sdk.database.query.WithinRegion;
 import com.minapp.android.sdk.typeadapter.*;
 import com.minapp.android.sdk.util.*;
 import okhttp3.OkHttpClient;
@@ -133,7 +137,14 @@ public abstract class Global {
                 .registerTypeAdapter(Calendar.class, new CalendarDeserializer())
                 .registerTypeAdapter(GregorianCalendar.class, new GregorianCalendarSerializer())
                 .registerTypeAdapter(GregorianCalendar.class, new GregorianCalendarDeserializer())
-                .registerTypeAdapterFactory(new RecordTypeAdapterFactory());
+                .registerTypeAdapterFactory(new RecordTypeAdapterFactory())
+                .registerTypeAdapter(GeoPoint.class, new GeoPointSerializer())
+                .registerTypeAdapter(GeoPoint.class, new GeoPointDeserializer())
+                .registerTypeAdapter(GeoPolygon.class, new GeoPolygonSerializer())
+                .registerTypeAdapter(GeoPolygon.class, new GeoPolygenDeserializer())
+                .registerTypeAdapter(WithinCircle.class, new WithinCircleSerializer())
+                .registerTypeAdapter(WithinRegion.class, new WithinRegionSerializer())
+                ;
     }
 
 }

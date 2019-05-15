@@ -328,6 +328,14 @@ public class Record {
         }
     }
 
+    public @Nullable GeoPoint getGeoPoint(String key) {
+        return getObject(key, GeoPoint.class);
+    }
+
+    public @Nullable GeoPolygon getGeoPolygon(String key) {
+        return getObject(key, GeoPolygon.class);
+    }
+
 
     /**
      * 1，对应 date 列类型（日期时间，ISO8601 格式的日期字符串，例如："2018-09-01T18:31:02.631000+08:00"）
@@ -335,14 +343,8 @@ public class Record {
      * @param key
      * @return
      */
-    public @Nullable Calendar getCalendar(@NonNull String key) {
-        Util.assetNotNull(key);
-        try {
-            return Global.gson().fromJson(json.get(key), Calendar.class);
-        } catch (Exception e) {
-            Log.e(Const.TAG, e.getMessage(), e);
-            return null;
-        }
+    public @Nullable Calendar getCalendar(String key) {
+        return getObject(key, Calendar.class);
     }
 
 
@@ -351,14 +353,8 @@ public class Record {
      * @param key
      * @return
      */
-    public @Nullable
-    CloudFile getFile(@NonNull String key) {
-        Util.assetNotNull(key);
-        try {
-            return Global.gson().fromJson(json.getAsJsonObject(key), CloudFile.class);
-        } catch (Exception e) {
-            return null;
-        }
+    public @Nullable CloudFile getFile(String key) {
+        return getObject(key, CloudFile.class);
     }
 
 

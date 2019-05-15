@@ -4,13 +4,14 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import com.google.gson.JsonObject
+import com.minapp.android.example.base.BaseActivity
 import com.minapp.android.sdk.BaaS
 import com.minapp.android.sdk.Global
 import com.minapp.android.sdk.model.CloudFuncResp
 import com.minapp.android.sdk.util.BaseCallback
 import kotlinx.android.synthetic.main.activity_cloud_func.*
 
-class CloudFuncActivity : AppCompatActivity() {
+class CloudFuncActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

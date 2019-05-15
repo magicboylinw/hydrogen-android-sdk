@@ -15,6 +15,7 @@ import com.minapp.android.example.base.BaseActivity
 import com.minapp.android.example.content.list.ContentListActivity
 import com.minapp.android.example.database.list.RecordListActivity
 import com.minapp.android.example.file.list.FileListActivity
+import com.minapp.android.example.geo.GeoActivity
 import com.minapp.android.example.user.list.UserListActivity
 import com.minapp.android.example.util.Glide4Engine
 import com.minapp.android.example.util.Util
@@ -65,6 +66,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         fileBtn.setOnClickListener { startActivity(Intent(this, FileListActivity::class.java)) }
         smsBtn.setOnClickListener { startActivity(Intent(this, SmsActivity::class.java)) }
         cloudFuncBtn.setOnClickListener { startActivity(Intent(this, CloudFuncActivity::class.java))}
+        geoBtn.setOnClickListener { startActivity(Intent(this, GeoActivity::class.java)) }
     }
 
     private fun printSignStatus() {
