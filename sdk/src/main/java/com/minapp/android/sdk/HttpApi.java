@@ -157,7 +157,7 @@ public interface HttpApi {
      * @param tableName
      * @return
      */
-    @POST("hserve/v2.0/table/{table_name}/record/")
+    @POST("hserve/v2.1/table/{table_name}/record/")
     CheckedCall<Record> saveRecord(
             @Path("table_name") String tableName,
             @Body Record body
@@ -170,7 +170,7 @@ public interface HttpApi {
      * @param body
      * @return
      */
-    @POST("hserve/v2.0/table/{table_name}/record/")
+    @POST("hserve/v2.1/table/{table_name}/record/")
     CheckedCall<BatchResult> batchSaveRecord(
             @Path("table_name") String tableName,
             @Body List<Record> body
@@ -184,7 +184,7 @@ public interface HttpApi {
      * @param body
      * @return
      */
-    @PUT("hserve/v2.0/table/{table_name}/record/{record_id}/")
+    @PUT("hserve/v2.1/table/{table_name}/record/{record_id}/")
     CheckedCall<Record> updateRecord(
             @Path("table_name") String tableName,
             @Path("record_id") String recordId,
@@ -211,7 +211,7 @@ public interface HttpApi {
      * @param recordId
      * @return
      */
-    @DELETE("hserve/v2.0/table/{table_name}/record/{record_id}/")
+    @DELETE("hserve/v2.1/table/{table_name}/record/{record_id}/")
     CheckedCall<Void> deleteRecord(
             @Path("table_name") String tableName,
             @Path("record_id") String recordId
@@ -223,7 +223,7 @@ public interface HttpApi {
      * @param recordId
      * @return
      */
-    @GET("hserve/v2.0/table/{table_name}/record/{record_id}/")
+    @GET("hserve/v2.1/table/{table_name}/record/{record_id}/")
     CheckedCall<Record> fetchRecord(
             @Path("table_name") String tableName,
             @Path("record_id") String recordId,
@@ -236,7 +236,7 @@ public interface HttpApi {
      * @param tableName
      * @return
      */
-    @GET("hserve/v2.0/table/{table_name}/record/")
+    @GET("hserve/v2.1/table/{table_name}/record/")
     CheckedCall<PagedListResponse<Record>> queryRecord(
             @Path("table_name") String tableName,
             @QueryMap Query query
@@ -247,7 +247,7 @@ public interface HttpApi {
      * @param tableName
      * @return
      */
-    @DELETE("hserve/v2.0/table/{tableName}/record/")
+    @DELETE("hserve/v2.1/table/{tableName}/record/")
     CheckedCall<BatchResult> batchDelete(
             @Path("tableName") String tableName,
             @QueryMap Query query
@@ -345,7 +345,7 @@ public interface HttpApi {
      * 用户列表
      * @return
      */
-    @GET("hserve/v2.0/user/info/")
+    @GET("hserve/v2.1/user/info/")
     CheckedCall<PagedListResponse<User>> users(
             @QueryMap Query query
     );
@@ -355,7 +355,7 @@ public interface HttpApi {
      * @param id
      * @return
      */
-    @GET("hserve/v2.0/user/info/{id}/")
+    @GET("hserve/v2.1/user/info/{id}/")
     CheckedCall<User> user(
             @Path("id") String id
     );
