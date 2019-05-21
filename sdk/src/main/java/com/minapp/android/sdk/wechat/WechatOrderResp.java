@@ -1,9 +1,11 @@
 package com.minapp.android.sdk.wechat;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 import com.minapp.android.sdk.model.BaseOrderResp;
 
-public class WechatOrderResp extends BaseOrderResp {
+public class WechatOrderResp extends BaseOrderResp implements Parcelable {
 
     @SerializedName("appid")
     private String appId;
@@ -17,20 +19,58 @@ public class WechatOrderResp extends BaseOrderResp {
     @SerializedName("package")
     private String packageValue = "Sign=WXPay";
 
-    @SerializedName("timeStamp")
+    @SerializedName("timestamp")
     private String timestamp;
 
-    @SerializedName("nonceStr")
+    @SerializedName("noncestr")
     private String nonceStr;
 
     @SerializedName("sign")
     private String sign;
 
-    @SerializedName("transaction_no")
-    private String transactionNo;
+    public WechatOrderResp() {
+        super();
+    }
 
-    @SerializedName("trade_no")
-    private String tradeNo;
+    protected WechatOrderResp(Parcel in) {
+        super(in);
+        appId = in.readString();
+        partnerId = in.readString();
+        prepayId = in.readString();
+        packageValue = in.readString();
+        timestamp = in.readString();
+        nonceStr = in.readString();
+        sign = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeString(appId);
+        dest.writeString(partnerId);
+        dest.writeString(prepayId);
+        dest.writeString(packageValue);
+        dest.writeString(timestamp);
+        dest.writeString(nonceStr);
+        dest.writeString(sign);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<WechatOrderResp> CREATOR = new Creator<WechatOrderResp>() {
+        @Override
+        public WechatOrderResp createFromParcel(Parcel in) {
+            return new WechatOrderResp(in);
+        }
+
+        @Override
+        public WechatOrderResp[] newArray(int size) {
+            return new WechatOrderResp[size];
+        }
+    };
 
     public String getAppId() {
         return appId;
@@ -86,21 +126,5 @@ public class WechatOrderResp extends BaseOrderResp {
 
     public void setSign(String sign) {
         this.sign = sign;
-    }
-
-    public String getTransactionNo() {
-        return transactionNo;
-    }
-
-    public void setTransactionNo(String transactionNo) {
-        this.transactionNo = transactionNo;
-    }
-
-    public String getTradeNo() {
-        return tradeNo;
-    }
-
-    public void setTradeNo(String tradeNo) {
-        this.tradeNo = tradeNo;
     }
 }

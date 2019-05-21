@@ -8,6 +8,11 @@ import com.tencent.mm.opensdk.modelpay.PayResp;
 public class WechatOrderResult implements Parcelable {
 
     /**
+     * 如果后台成功创建预付单，相关信息保存在这里
+     */
+    private WechatOrderResp orderInfo;
+
+    /**
      * 如果微信 sdk 返回了信息，则保存在这里
      */
     private PayResp payResp;
@@ -19,10 +24,6 @@ public class WechatOrderResult implements Parcelable {
 
     public WechatOrderResult() {}
 
-    public WechatOrderResult(PayResp payResp) {
-        this.payResp = payResp;
-    }
-
     protected WechatOrderResult(Parcel in) {
         Bundle payResp = in.readBundle();
         if (payResp != null) {
@@ -30,6 +31,7 @@ public class WechatOrderResult implements Parcelable {
             this.payResp.fromBundle(payResp);
         }
         exception = (Exception) in.readSerializable();
+        orderInfo = in.readParcelable(WechatOrderResp.class.getClassLoader());
     }
 
     @Override
@@ -41,6 +43,7 @@ public class WechatOrderResult implements Parcelable {
         }
         dest.writeBundle(payResp);
         dest.writeSerializable(exception);
+        dest.writeParcelable(orderInfo, flags);
     }
 
     @Override
@@ -74,5 +77,13 @@ public class WechatOrderResult implements Parcelable {
 
     public void setException(Exception exception) {
         this.exception = exception;
+    }
+
+    public WechatOrderResp getOrderInfo() {
+        return orderInfo;
+    }
+
+    public void setOrderInfo(WechatOrderResp orderInfo) {
+        this.orderInfo = orderInfo;
     }
 }

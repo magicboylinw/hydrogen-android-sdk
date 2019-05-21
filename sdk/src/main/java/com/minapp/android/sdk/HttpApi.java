@@ -49,6 +49,16 @@ public interface HttpApi {
             @Body OrderReq req
     );
 
+    /**
+     * 获取订单详情
+     * @param transactionNo
+     * @return
+     */
+    @GET("hserve/v2.0/idp/pay/order/{transaction_no}/")
+    CheckedCall<OrderResp> getOrderInfo (
+            @Path("transaction_no") String transactionNo
+    );
+
 
     /********************************* cloud func api ****************************************/
 

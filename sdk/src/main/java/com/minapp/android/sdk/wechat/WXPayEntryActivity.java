@@ -25,6 +25,7 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
 
     static final String DATA_RESULT = "DATA_RESULT";
     static final String PARAM = "PARAM";
+    private WechatOrderResp order;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +36,7 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
         content.setBackgroundColor(Color.TRANSPARENT);
         setContentView(content);
 
-        StatusBarUtil.setStatusBar(Color.TRANSPARENT, false, false, this);
+        StatusBarUtil.setStatusBar(Color.TRANSPARENT, true, false, this);
         sendOrder();
     }
 
@@ -55,6 +56,7 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
                     // 让 Baas 与微信服务器交互，客户端拿到预付单
                     assertInit();
                     WechatOrderResp resp = Global.httpApi().sendWechatOrder(request).execute().body();
+                    order = resp;
 
                     // 拉起微信支付
                     if (!isDestroyed()) {
@@ -66,7 +68,9 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
                         req.nonceStr = resp.getNonceStr();
                         req.timeStamp = resp.getTimestamp();
                         req.sign = resp.getSign();
-                        WECHAT_API.sendReq(req);
+                        if (!WECHAT_API.sendReq(req)) {
+                            close(false, null, new Exception("unable to launch wechat, refer to wechat sdk logcat"));
+                        }
                     }
 
                 } catch (Exception e) {
@@ -86,27 +90,22 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
      */
     private void close(boolean success, PayResp payResp, Exception exception) {
         int resultCode = success ? RESULT_OK : RESULT_CANCELED;
-        WechatOrderResult result = null;
+        WechatOrderResult result = new WechatOrderResult();
 
         if (payResp != null) {
-            if (result == null) {
-                result = new WechatOrderResult();
-            }
             result.setPayResp(payResp);
         }
 
         if (exception != null) {
-            if (result == null) {
-                result = new WechatOrderResult();
-            }
             result.setException(exception);
         }
 
-        Intent data = null;
-        if (result != null) {
-            data = new Intent();
-            data.putExtra(DATA_RESULT, result);
+        if (order != null) {
+            result.setOrderInfo(order);
         }
+
+        Intent data = new Intent();
+        data.putExtra(DATA_RESULT, result);
         setResult(resultCode, data);
         finish();
     }

@@ -17,6 +17,8 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
+        buildConfigField("String", "CLIENT_ID", '""')       // 这里填入 Baas client id
+        buildConfigField("String", "APP_ID", '""')          // 这里填入微信 app id
     }
 
     signingConfigs {
@@ -32,7 +34,7 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }

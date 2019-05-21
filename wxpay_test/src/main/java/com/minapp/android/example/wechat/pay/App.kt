@@ -7,8 +7,8 @@ class App: Application() {
 
     override fun onCreate() {
         super.onCreate()
-        BaaS.init("e33fcb18cb2c0a4763eb", this)
-        BaaS.initWechatComponent("wx4b3c1aff4c5389f5", this)
+        BaaS.init(BuildConfig.CLIENT_ID, this)
+        BaaS.initWechatComponent(BuildConfig.APP_ID, this)
     }
 
 }

@@ -24,9 +24,11 @@
         <activity
                 android:name="com.minapp.android.sdk.wechat.WXPayEntryActivity"
                 android:theme="@style/HyDrogenTranslucent"
+                android:launchMode="singleTop"
         />
 
         <activity-alias
+                android:exported="true"
                 android:name=".wxapi.WXPayEntryActivity"
                 android:targetActivity="com.minapp.android.sdk.wechat.WXPayEntryActivity"
         />

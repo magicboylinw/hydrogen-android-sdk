@@ -6,8 +6,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:padding="5dp"
         tools:context=".MainActivity">
+
+    <TextView android:id="@+id/tipTv" android:layout_width="match_parent" android:layout_height="wrap_content"/>
 
     <Button android:id="@+id/sendWxOrderBtn" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="发起微信支付（0.01）"/>
 
+    <TextView android:id="@+id/infoTv" android:layout_width="match_parent" android:layout_height="wrap_content"/>
 </LinearLayout>

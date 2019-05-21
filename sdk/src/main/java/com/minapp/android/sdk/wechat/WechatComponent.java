@@ -3,6 +3,10 @@ package com.minapp.android.sdk.wechat;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import com.minapp.android.sdk.Global;
+import com.minapp.android.sdk.model.OrderResp;
+import com.minapp.android.sdk.util.BaseCallback;
+import com.minapp.android.sdk.util.Retrofit2CallbackAdapter;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.IWXAPIEventHandler;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
@@ -19,6 +23,15 @@ public final class WechatComponent {
     public static void initWechatComponent(String appId, Context ctx) {
         WECHAT_API = WXAPIFactory.createWXAPI(ctx, null);
         WECHAT_API.registerApp(appId);
+    }
+
+    /**
+     * 获取订单详情
+     * @param transactionNo
+     * @param cb
+     */
+    public static void getOrderInfo(String transactionNo, BaseCallback<OrderResp> cb) {
+        Global.httpApi().getOrderInfo(transactionNo).enqueue(new Retrofit2CallbackAdapter<OrderResp>(cb));
     }
 
 
