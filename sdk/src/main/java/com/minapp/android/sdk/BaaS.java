@@ -3,16 +3,21 @@ package com.minapp.android.sdk;
 import android.app.Application;
 import android.content.Context;
 import androidx.annotation.NonNull;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.minapp.android.sdk.auth.Auth;
 import com.minapp.android.sdk.model.*;
 import com.minapp.android.sdk.util.BaseCallback;
 import com.minapp.android.sdk.util.Retrofit2CallbackAdapter;
 import com.minapp.android.sdk.util.Util;
+import com.minapp.android.sdk.wechat.WechatComponent;
+import com.minapp.android.sdk.wechat.WechatOrder;
+import com.minapp.android.sdk.wechat.WechatOrderResp;
+import com.tencent.mm.opensdk.modelpay.PayReq;
+import com.tencent.mm.opensdk.openapi.IWXAPI;
+import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 public class BaaS {
+
     private BaaS() {}
 
     /**
@@ -26,6 +31,14 @@ public class BaaS {
         Global.setApplicaiton(application);
         Auth.init();
     }
+
+    /**
+     * 如果要调用微信相关的 api，则需要初始化微信组件
+     */
+    public static void initWechatComponent(String appId, Context ctx) {
+        WechatComponent.initWechatComponent(appId, ctx);
+    }
+
 
 
     /**

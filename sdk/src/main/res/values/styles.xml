@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="HyDrogenNoAnimation" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/hydrogen_non</item>
+        <item name="android:activityOpenExitAnimation">@anim/hydrogen_non</item>
+        <item name="android:activityCloseEnterAnimation">@anim/hydrogen_non</item>
+        <item name="android:activityCloseExitAnimation">@anim/hydrogen_non</item>
+    </style>
+
+    <style name="HyDrogenTranslucent" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowAnimationStyle">@style/HyDrogenNoAnimation</item>
+    </style>
+</resources>

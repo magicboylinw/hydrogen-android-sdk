@@ -33,6 +33,8 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:3.13.1")
     implementation("com.squareup.retrofit2:retrofit:2.5.0")
     api("com.squareup.retrofit2:converter-gson:2.5.0")
+
+    api 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:5.3.1'
 }
 
 
