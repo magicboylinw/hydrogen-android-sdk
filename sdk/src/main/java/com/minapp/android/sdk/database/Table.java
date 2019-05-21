@@ -156,7 +156,17 @@ public class Table {
      * @throws Exception
      */
     public BatchResult batchSave(List<Record> records) throws Exception {
-        return Database.batchSave(this, records);
+        return Database.batchSave(this, records, null);
+    }
+
+    /**
+     * 批量保存
+     * @param records
+     * @return
+     * @throws Exception
+     */
+    public BatchResult batchSave(List<Record> records, Query query) throws Exception {
+        return Database.batchSave(this, records, query);
     }
 
     /**
@@ -185,6 +195,15 @@ public class Table {
             @Override
             public BatchResult call() throws Exception {
                 return batchSave(records);
+            }
+        });
+    }
+
+    public void batchSaveInBackground(final List<Record> records, final Query query, @NonNull final BaseCallback<BatchResult> cb) {
+        Util.inBackground(cb, new Callable<BatchResult>() {
+            @Override
+            public BatchResult call() throws Exception {
+                return batchSave(records, query);
             }
         });
     }

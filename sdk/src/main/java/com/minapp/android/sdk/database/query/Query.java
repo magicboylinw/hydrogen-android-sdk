@@ -61,6 +61,16 @@ public class Query extends HashMap<String, String> {
     public static final String KEYS = "keys";
 
 
+    /**
+     * 是否开启触发器
+     * @see #TRIGGER_ENABLE
+     * @see #TRIGGER_DISABLE
+     */
+    public static final String ENABLE_TRIGGER = "enable_trigger";
+    public static final String TRIGGER_ENABLE = "1";
+    public static final String TRIGGER_DISABLE = "0";
+
+
 
     private Map<String, String> queryMap = new HashMap<>();
 
@@ -133,6 +143,17 @@ public class Query extends HashMap<String, String> {
 
 
     /*************************  convenient method  ******************************/
+
+
+    /**
+     * 开启/关闭触发器
+     * @param enable
+     * @return
+     */
+    public Query enableTrigger(boolean enable) {
+        put(ENABLE_TRIGGER, enable ? TRIGGER_ENABLE : TRIGGER_DISABLE);
+        return this;
+    }
 
 
     public Query limit(@NonNull Number limit) {

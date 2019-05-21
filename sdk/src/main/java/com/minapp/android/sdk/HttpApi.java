@@ -173,7 +173,8 @@ public interface HttpApi {
     @POST("hserve/v2.1/table/{table_name}/record/")
     CheckedCall<BatchResult> batchSaveRecord(
             @Path("table_name") String tableName,
-            @Body List<Record> body
+            @Body List<Record> body,
+            @QueryMap Query query
     );
 
 

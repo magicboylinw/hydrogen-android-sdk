@@ -20,8 +20,8 @@ public abstract class Database {
      * @return
      * @throws Exception
      */
-    static BatchResult batchSave(Table table, List<Record> records) throws Exception {
-        return Global.httpApi().batchSaveRecord(table.getTableName(), records).execute().body();
+    static BatchResult batchSave(Table table, List<Record> records, Query query) throws Exception {
+        return Global.httpApi().batchSaveRecord(table.getTableName(), records, query).execute().body();
     }
 
     /**
