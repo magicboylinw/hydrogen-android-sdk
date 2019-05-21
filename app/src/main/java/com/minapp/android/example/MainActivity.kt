@@ -24,6 +24,7 @@ import com.minapp.android.sdk.auth.Auth
 import com.minapp.android.sdk.database.*
 import com.minapp.android.sdk.database.query.Query
 import com.minapp.android.sdk.storage.Storage
+import com.minapp.android.sdk.util.BaseCallback
 import com.zhihu.matisse.Matisse
 import com.zhihu.matisse.MimeType
 import kotlinx.android.synthetic.main.activity_main.*
@@ -44,19 +45,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         fab.setOnClickListener { view ->
             activityScope.launch {
                 try {
-                    val table = Table("my_horses")
-                    val list = arrayListOf<Record>().apply {
-                        add(table.createRecord().apply {
-                            put("horse_name", "one")
-                        })
-                        add(table.createRecord().apply {
-                            put("horse_name", "two")
-                        })
-                        add(table.createRecord().apply {
-                            put("horse_name", "three")
-                        })
-                    }
-                    table.batchSave(list, Query().apply { enableTrigger(false) })
+                    Example.main(null)
 
                 } catch (e : Exception) {
                     Log.e(Const.TAG, e.message, e)

@@ -37,6 +37,17 @@ public class Table {
 
     /******************************** simple curd **************************************/
 
+
+    public void countInBackground(final Query query, BaseCallback<Integer> cb) {
+        Util.inBackground(cb, new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                List list = query(query).getObjects();
+                return list != null ? list.size() : 0;
+            }
+        });
+    }
+
     /**
      * 通过此 api 创建一条新记录
      * @return
