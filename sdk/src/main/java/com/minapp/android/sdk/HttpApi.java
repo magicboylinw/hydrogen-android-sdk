@@ -1,6 +1,5 @@
 package com.minapp.android.sdk;
 
-import com.google.gson.JsonObject;
 import com.minapp.android.sdk.auth.*;
 import com.minapp.android.sdk.auth.model.*;
 import com.minapp.android.sdk.content.ContentCategory;
@@ -16,8 +15,8 @@ import com.minapp.android.sdk.storage.model.*;
 import com.minapp.android.sdk.user.User;
 import com.minapp.android.sdk.util.BaseStatusResp;
 import com.minapp.android.sdk.util.PagedListResponse;
+import com.minapp.android.sdk.wechat.WechatOrderResp;
 import okhttp3.RequestBody;
-import retrofit2.Call;
 import retrofit2.http.*;
 
 import java.util.List;
@@ -27,6 +26,39 @@ import java.util.List;
  * cloud.minapp.com 提供的 http api
  */
 public interface HttpApi {
+
+    /********************************* pay api ****************************************/
+
+    /**
+     * 发起微信支付
+     * @param req
+     * @return
+     */
+    @POST("hserve/v2.0/idp/pay/order/")
+    CheckedCall<WechatOrderResp> sendWechatOrder (
+            @Body OrderReq req
+    );
+
+    /**
+     * 发起支付宝支付
+     * @param req
+     * @return
+     */
+    @POST("hserve/v2.0/idp/pay/order/")
+    CheckedCall<AlipayOrderResp> sendAlipayOrder (
+            @Body OrderReq req
+    );
+
+    /**
+     * 获取订单详情
+     * @param transactionNo
+     * @return
+     */
+    @GET("hserve/v2.0/idp/pay/order/{transaction_no}/")
+    CheckedCall<OrderResp> getOrderInfo (
+            @Path("transaction_no") String transactionNo
+    );
+
 
     /********************************* cloud func api ****************************************/
 
