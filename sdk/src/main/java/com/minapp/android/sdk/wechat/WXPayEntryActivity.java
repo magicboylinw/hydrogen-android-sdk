@@ -8,12 +8,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import com.minapp.android.sdk.Global;
+import com.minapp.android.sdk.exception.HttpException;
 import com.minapp.android.sdk.util.StatusBarUtil;
 import com.tencent.mm.opensdk.modelbase.BaseReq;
 import com.tencent.mm.opensdk.modelbase.BaseResp;
 import com.tencent.mm.opensdk.modelpay.PayReq;
 import com.tencent.mm.opensdk.modelpay.PayResp;
 import com.tencent.mm.opensdk.openapi.IWXAPIEventHandler;
+import retrofit2.Response;
 
 import static com.minapp.android.sdk.wechat.WechatComponent.WECHAT_API;
 import static com.minapp.android.sdk.wechat.WechatComponent.assertInit;
@@ -55,19 +57,23 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
 
                     // 让 Baas 与微信服务器交互，客户端拿到预付单
                     assertInit();
-                    WechatOrderResp resp = Global.httpApi().sendWechatOrder(request).execute().body();
-                    order = resp;
+                    Response<WechatOrderResp> resp = Global.httpApi().sendWechatOrder(request).execute();
+                    if (!resp.isSuccessful()) {
+                        throw HttpException.valueOf(resp);
+                    }
+                    WechatOrderResp order = resp.body();
+                    WXPayEntryActivity.this.order = order;
 
                     // 拉起微信支付
                     if (!isDestroyed()) {
                         PayReq req = new PayReq();
-                        req.appId = resp.getAppId();
-                        req.partnerId = resp.getPartnerId();
-                        req.prepayId = resp.getPrepayId();
-                        req.packageValue = resp.getPackageValue();
-                        req.nonceStr = resp.getNonceStr();
-                        req.timeStamp = resp.getTimestamp();
-                        req.sign = resp.getSign();
+                        req.appId = order.getAppId();
+                        req.partnerId = order.getPartnerId();
+                        req.prepayId = order.getPrepayId();
+                        req.packageValue = order.getPackageValue();
+                        req.nonceStr = order.getNonceStr();
+                        req.timeStamp = order.getTimestamp();
+                        req.sign = order.getSign();
                         if (!WECHAT_API.sendReq(req)) {
                             close(false, null, new Exception("unable to launch wechat, refer to wechat sdk logcat"));
                         }

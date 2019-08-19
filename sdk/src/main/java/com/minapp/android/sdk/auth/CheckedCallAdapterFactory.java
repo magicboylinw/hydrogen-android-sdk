@@ -120,17 +120,7 @@ public class CheckedCallAdapterFactory extends CallAdapter.Factory {
                     if (response.code() == 401) {
                         throw new SessionMissingException();
                     } else {
-
-                        String errorMsg = null;
-                        ResponseBody errorBody = response.errorBody();
-                        if (errorBody != null) {
-                            errorMsg = new String(errorBody.bytes(), "utf-8");
-                            try {
-                                ErrorResp json = Global.gson().fromJson(errorMsg, ErrorResp.class);
-                                errorMsg = json.getErrorMsg();
-                            } catch (Exception e) {}
-                        }
-                        throw new HttpException(response.code(), errorMsg);
+                        throw HttpException.valueOf(response);
                     }
                 }
                 if (hasBody && response.body() == null) {

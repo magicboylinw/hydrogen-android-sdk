@@ -1,5 +1,6 @@
 package com.minapp.android.sdk;
 
+import com.minapp.android.sdk.alipay.AlipayOrder;
 import com.minapp.android.sdk.auth.*;
 import com.minapp.android.sdk.auth.model.*;
 import com.minapp.android.sdk.content.ContentCategory;
@@ -15,6 +16,7 @@ import com.minapp.android.sdk.storage.model.*;
 import com.minapp.android.sdk.user.User;
 import com.minapp.android.sdk.util.BaseStatusResp;
 import com.minapp.android.sdk.util.PagedListResponse;
+import com.minapp.android.sdk.wechat.WechatOrder;
 import com.minapp.android.sdk.wechat.WechatOrderResp;
 import okhttp3.RequestBody;
 import retrofit2.http.*;
@@ -36,7 +38,7 @@ public interface HttpApi {
      */
     @POST("hserve/v2.0/idp/pay/order/")
     CheckedCall<WechatOrderResp> sendWechatOrder (
-            @Body OrderReq req
+            @Body WechatOrder req
     );
 
     /**
@@ -46,7 +48,7 @@ public interface HttpApi {
      */
     @POST("hserve/v2.0/idp/pay/order/")
     CheckedCall<AlipayOrderResp> sendAlipayOrder (
-            @Body OrderReq req
+            @Body AlipayOrder req
     );
 
     /**

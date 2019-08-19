@@ -1,37 +1,46 @@
 package com.minapp.android.sdk.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 
-public class AlipayOrderResp extends BaseOrderResp {
+public class AlipayOrderResp extends BaseOrderResp implements Parcelable {
 
-    @SerializedName("transaction_no")
-    private String transactionNo;
-
-    @SerializedName("trade_no")
-    private String tradeNo;
-
+    /**
+     * SDK 发起支付所需 Query String
+     */
     @SerializedName("payment_url")
     private String paymentUrl;
 
-    @Override
-    public String getTransactionNo() {
-        return transactionNo;
+    public AlipayOrderResp() {}
+
+    protected AlipayOrderResp(Parcel in) {
+        super(in);
+        paymentUrl = in.readString();
     }
 
     @Override
-    public void setTransactionNo(String transactionNo) {
-        this.transactionNo = transactionNo;
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeString(paymentUrl);
     }
 
     @Override
-    public String getTradeNo() {
-        return tradeNo;
+    public int describeContents() {
+        return 0;
     }
 
-    @Override
-    public void setTradeNo(String tradeNo) {
-        this.tradeNo = tradeNo;
-    }
+    public static final Creator<AlipayOrderResp> CREATOR = new Creator<AlipayOrderResp>() {
+        @Override
+        public AlipayOrderResp createFromParcel(Parcel in) {
+            return new AlipayOrderResp(in);
+        }
+
+        @Override
+        public AlipayOrderResp[] newArray(int size) {
+            return new AlipayOrderResp[size];
+        }
+    };
 
     public String getPaymentUrl() {
         return paymentUrl;

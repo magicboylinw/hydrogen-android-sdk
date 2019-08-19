@@ -32,6 +32,10 @@
                 android:name=".wxapi.WXPayEntryActivity"
                 android:targetActivity="com.minapp.android.sdk.wechat.WXPayEntryActivity"
         />
+        <activity android:name="com.minapp.android.sdk.alipay.AlipayActivity"
+                  android:theme="@style/HyDrogenTranslucent"
+                  android:launchMode="singleTop"
+                  />
     </application>
 
 </manifest>
