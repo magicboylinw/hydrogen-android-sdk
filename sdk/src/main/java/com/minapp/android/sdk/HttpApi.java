@@ -37,7 +37,7 @@ public interface HttpApi {
      * @return
      */
     @POST("hserve/v2.0/idp/pay/order/")
-    CheckedCall<WechatOrderResp> sendWechatOrder (
+    CheckedCall<WechatOrderResp> requestWechatOrder(
             @Body WechatOrder req
     );
 
@@ -47,7 +47,7 @@ public interface HttpApi {
      * @return
      */
     @POST("hserve/v2.0/idp/pay/order/")
-    CheckedCall<AlipayOrderResp> sendAlipayOrder (
+    CheckedCall<AlipayOrderResp> requestAlipayOrder(
             @Body AlipayOrder req
     );
 

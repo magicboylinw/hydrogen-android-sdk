@@ -57,7 +57,7 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
 
                     // 让 Baas 与微信服务器交互，客户端拿到预付单
                     assertInit();
-                    Response<WechatOrderResp> resp = Global.httpApi().sendWechatOrder(request).execute();
+                    Response<WechatOrderResp> resp = Global.httpApi().requestWechatOrder(request).execute();
                     if (!resp.isSuccessful()) {
                         throw HttpException.valueOf(resp);
                     }

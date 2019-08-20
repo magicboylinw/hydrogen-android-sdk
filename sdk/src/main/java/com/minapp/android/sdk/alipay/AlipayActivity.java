@@ -9,14 +9,11 @@ import android.view.ViewGroup;
 import androidx.annotation.Nullable;
 import com.alipay.sdk.app.PayTask;
 import com.minapp.android.sdk.Global;
-import com.minapp.android.sdk.exception.EmptyResponseException;
 import com.minapp.android.sdk.exception.HttpException;
-import com.minapp.android.sdk.exception.SessionMissingException;
 import com.minapp.android.sdk.model.AlipayOrderResp;
 import com.minapp.android.sdk.util.StatusBarUtil;
 import retrofit2.Response;
 
-import java.io.IOException;
 import java.util.Map;
 
 public class AlipayActivity extends Activity {
@@ -34,10 +31,10 @@ public class AlipayActivity extends Activity {
         setContentView(content);
 
         StatusBarUtil.setStatusBar(Color.TRANSPARENT, true, false, this);
-        sendOrder();
+        sendPay();
     }
 
-    private void sendOrder() {
+    private void sendPay() {
         final AlipayOrder order = getIntent().getParcelableExtra(ORDER);
         Global.submit(new Runnable() {
             @Override
@@ -46,7 +43,7 @@ public class AlipayActivity extends Activity {
                 try {
 
                     // 与 Baas 交互，后端生成预付单，前端拿到 payment url
-                    Response<AlipayOrderResp> resp = Global.httpApi().sendAlipayOrder(order).execute();
+                    Response<AlipayOrderResp> resp = Global.httpApi().requestAlipayOrder(order).execute();
                     if (isDestroyed()) return;
                     if (!resp.isSuccessful()) {
                         throw HttpException.valueOf(resp);
