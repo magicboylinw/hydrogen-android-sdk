@@ -15,13 +15,16 @@ import com.minapp.android.example.base.BaseActivity
 import com.minapp.android.example.content.list.ContentListActivity
 import com.minapp.android.example.database.list.RecordListActivity
 import com.minapp.android.example.file.list.FileListActivity
+import com.minapp.android.example.geo.GeoActivity
 import com.minapp.android.example.user.list.UserListActivity
 import com.minapp.android.example.util.Glide4Engine
 import com.minapp.android.example.util.Util
 import com.minapp.android.sdk.Config
 import com.minapp.android.sdk.auth.Auth
 import com.minapp.android.sdk.database.*
+import com.minapp.android.sdk.database.query.Query
 import com.minapp.android.sdk.storage.Storage
+import com.minapp.android.sdk.util.BaseCallback
 import com.zhihu.matisse.Matisse
 import com.zhihu.matisse.MimeType
 import kotlinx.android.synthetic.main.activity_main.*
@@ -42,6 +45,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         fab.setOnClickListener { view ->
             activityScope.launch {
                 try {
+                    Example.main(null)
 
                 } catch (e : Exception) {
                     Log.e(Const.TAG, e.message, e)
@@ -63,6 +67,13 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         userBtn.setOnClickListener { startActivity(Intent(this, UserListActivity::class.java)) }
         contentBtn.setOnClickListener { startActivity(Intent(this, ContentListActivity::class.java)) }
         fileBtn.setOnClickListener { startActivity(Intent(this, FileListActivity::class.java)) }
+        smsBtn.setOnClickListener { startActivity(Intent(this, SmsActivity::class.java)) }
+        cloudFuncBtn.setOnClickListener { startActivity(Intent(this, CloudFuncActivity::class.java))}
+        geoBtn.setOnClickListener { startActivity(Intent(this, GeoActivity::class.java)) }
+    }
+
+    private fun printSignStatus() {
+        signTv.text = if (Auth.signedIn()) "已登录" else "未登录"
     }
 
     fun checkClientId() {
@@ -79,6 +90,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     override fun onResume() {
         super.onResume()
         checkClientId()
+        printSignStatus()
     }
 
     fun openImagePicker() {

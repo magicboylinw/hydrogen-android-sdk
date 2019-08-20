@@ -9,7 +9,6 @@ import com.google.gson.JsonObject;
 import com.minapp.android.sdk.Const;
 import com.minapp.android.sdk.Global;
 import com.minapp.android.sdk.database.Record;
-import com.minapp.android.sdk.database.query.Query;
 
 import java.io.InputStream;
 import java.util.*;
@@ -23,7 +22,7 @@ public abstract class Util {
     };
 
 
-    public static <T> void inBackground(@NonNull final Callback<T> cb, @NonNull final Callable<T> callable) {
+    public static <T> void inBackground(@NonNull final BaseCallback<T> cb, @NonNull final Callable<T> callable) {
         Global.submit(new Runnable() {
             @Override
             public void run() {

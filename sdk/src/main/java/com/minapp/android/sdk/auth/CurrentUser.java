@@ -8,9 +8,8 @@ import com.minapp.android.sdk.auth.model.ResetPwdReq;
 import com.minapp.android.sdk.auth.model.UpdateUserReq;
 import com.minapp.android.sdk.auth.model.UpdateUserResp;
 import com.minapp.android.sdk.database.Table;
-import com.minapp.android.sdk.exception.AnonymousNotAllowedException;
 import com.minapp.android.sdk.user.User;
-import com.minapp.android.sdk.util.Callback;
+import com.minapp.android.sdk.util.BaseCallback;
 import com.minapp.android.sdk.util.Util;
 
 import java.util.concurrent.Callable;
@@ -38,7 +37,7 @@ public class CurrentUser extends User {
     }
 
 
-    public void resetPwdInBackground(final String email, @NonNull Callback<Boolean> cb) {
+    public void resetPwdInBackground(final String email, @NonNull BaseCallback<Boolean> cb) {
         Util.inBackground(cb, new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
@@ -58,7 +57,7 @@ public class CurrentUser extends User {
         return Global.httpApi().updateUser(request).execute().body();
     }
 
-    public void updateUserInBackground(final UpdateUserReq request, @NonNull Callback<UpdateUserResp> cb) {
+    public void updateUserInBackground(final UpdateUserReq request, @NonNull BaseCallback<UpdateUserResp> cb) {
         Util.inBackground(cb, new Callable<UpdateUserResp>() {
             @Override
             public UpdateUserResp call() throws Exception {
@@ -76,7 +75,7 @@ public class CurrentUser extends User {
         return Global.httpApi().emailVerify(new Object()).execute().body().isOk();
     }
 
-    public void emailVerifyInBackground(@NonNull Callback<Boolean> cb) {
+    public void emailVerifyInBackground(@NonNull BaseCallback<Boolean> cb) {
         Util.inBackground(cb, new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {

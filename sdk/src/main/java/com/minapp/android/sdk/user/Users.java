@@ -3,7 +3,7 @@ package com.minapp.android.sdk.user;
 import androidx.annotation.NonNull;
 import com.minapp.android.sdk.Global;
 import com.minapp.android.sdk.database.query.Query;
-import com.minapp.android.sdk.util.Callback;
+import com.minapp.android.sdk.util.BaseCallback;
 import com.minapp.android.sdk.util.PagedList;
 import com.minapp.android.sdk.util.Util;
 
@@ -20,7 +20,7 @@ public abstract class Users {
         return Global.httpApi().users(query != null ? query : new Query()).execute().body().readonly();
     }
 
-    public static void usersInBackground(final Query query, @NonNull Callback<PagedList<User>> cb) {
+    public static void usersInBackground(final Query query, @NonNull BaseCallback<PagedList<User>> cb) {
         Util.inBackground(cb, new Callable<PagedList<User>>() {
             @Override
             public PagedList<User> call() throws Exception {
@@ -44,7 +44,7 @@ public abstract class Users {
     }
 
 
-    public static void userInBackground(final String id, @NonNull Callback<User> cb) {
+    public static void userInBackground(final String id, @NonNull BaseCallback<User> cb) {
         Util.inBackground(cb, new Callable<User>() {
             @Override
             public User call() throws Exception {
@@ -53,7 +53,7 @@ public abstract class Users {
         });
     }
 
-    public static void userInBackground(Number id, @NonNull Callback<User> cb) {
+    public static void userInBackground(Number id, @NonNull BaseCallback<User> cb) {
         Users.userInBackground(id != null ? id.toString() : "", cb);
     }
 

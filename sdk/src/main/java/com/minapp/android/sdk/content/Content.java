@@ -11,7 +11,7 @@ public class Content extends Record {
     public static final String GROUP_ID = "group_id";
     public static final String CONTENT = "content";
     public static final String VISIT_COUNT = "visit_count"; // 阅读数，开启阅读数统计功能就会返回此字段
-    public static final String CATEGORIES = "categories"; // TODO
+    public static final String CATEGORIES = "categories";
 
     public static final String QUERY_CATEGORY_ID = "category_id";               // 分类 ID
     public static final String QUERY_CONTENT_GROUP_ID = "content_group_id";     // 内容库 ID

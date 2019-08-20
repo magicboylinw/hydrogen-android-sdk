@@ -1,13 +1,11 @@
 package com.minapp.android.sdk.database.query;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import com.minapp.android.sdk.Global;
-import com.minapp.android.sdk.database.Record;
-import com.minapp.android.sdk.util.Callback;
+import com.minapp.android.sdk.database.GeoPoint;
+import com.minapp.android.sdk.database.GeoPolygon;
 
 import java.util.Collection;
-import java.util.List;
 
 public class Where {
 
@@ -25,6 +23,56 @@ public class Where {
         return Global.gson().toJson(where);
     }
 
+
+    /*************************  geo  ******************************/
+
+    /**
+     * 在指定多边形集合中找出包含某一点的多边形
+     * @param lvalue
+     * @param rvalue
+     * @return
+     */
+    public Where include(String lvalue, GeoPoint rvalue) {
+        _and(WhereOperator.INTERSECTS, lvalue, rvalue);
+        return this;
+    }
+
+    /**
+     * 在指定点集合中，查找包含在指定圆心和指定半径所构成的圆形区域中的点 (返回结果随机排序)
+     * @param lvalue
+     * @param center
+     * @param radius km
+     * @return
+     */
+    public Where withinCircle(String lvalue, GeoPoint center, float radius) {
+        _and(WhereOperator.CENTER, lvalue, new WithinCircle(center, radius));
+        return this;
+    }
+
+
+    /**
+     * 在指定点集合中，查找包含在以指定点为圆点，以最大和最小距离为半径，所构成的圆环区域中的点（返回结果按从近到远排序）
+     * @param lvalue
+     * @param center
+     * @param maxDistance m
+     * @param minDistance m
+     * @return
+     */
+    public Where withinRegion(String lvalue, GeoPoint center, float maxDistance, float minDistance) {
+        _and(WhereOperator.NEASPHERE, lvalue, new WithinRegion(center, maxDistance, minDistance));
+        return this;
+    }
+
+    /**
+     * 在指定点集合中，查找包含于指定的多边形区域的点
+     * @param lvalue
+     * @param rvalue
+     * @return
+     */
+    public Where withIn(String lvalue, GeoPolygon rvalue) {
+        _and(WhereOperator.WITHIN, lvalue, rvalue);
+        return this;
+    }
 
 
     /*************************  组合：and, or  ******************************/

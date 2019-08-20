@@ -15,7 +15,7 @@ import com.minapp.android.sdk.auth.model.*;
 import com.minapp.android.sdk.user.User;
 import com.minapp.android.sdk.user.Users;
 import com.minapp.android.sdk.util.*;
-import com.minapp.android.sdk.util.Callback;
+import com.minapp.android.sdk.util.BaseCallback;
 import okhttp3.*;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -122,7 +122,7 @@ public abstract class Auth {
      * @see #currentUser()
      * @param cb
      */
-    public static void currentUserInBackground(@NonNull final Callback<CurrentUser> cb) {
+    public static void currentUserInBackground(@NonNull final BaseCallback<CurrentUser> cb) {
         Util.inBackground(cb, new Callable<CurrentUser>() {
             @Override
             public CurrentUser call() throws Exception {
@@ -153,7 +153,7 @@ public abstract class Auth {
         return user;
     }
 
-    public static void signUpByEmailInBackground(final String email, final String pwd, @NonNull Callback<User> cb) {
+    public static void signUpByEmailInBackground(final String email, final String pwd, @NonNull BaseCallback<User> cb) {
         Util.inBackground(cb, new Callable<User>() {
             @Override
             public User call() throws Exception {
@@ -175,7 +175,7 @@ public abstract class Auth {
         return user;
     }
 
-    public static void signUpByUsernameInBackground(final String username, final String pwd, @NonNull Callback<User> cb) {
+    public static void signUpByUsernameInBackground(final String username, final String pwd, @NonNull BaseCallback<User> cb) {
         Util.inBackground(cb, new Callable<User>() {
             @Override
             public User call() throws Exception {
@@ -198,7 +198,7 @@ public abstract class Auth {
     }
 
 
-    public static void signInByEmailInBackground(final String email, final String pwd, @NonNull Callback<User> cb) {
+    public static void signInByEmailInBackground(final String email, final String pwd, @NonNull BaseCallback<User> cb) {
         Util.inBackground(cb, new Callable<User>() {
             @Override
             public User call() throws Exception {
@@ -221,7 +221,7 @@ public abstract class Auth {
         return info;
     }
 
-    public static void signInByUsernameInBackground(final String username, final String pwd, @NonNull Callback<User> cb) {
+    public static void signInByUsernameInBackground(final String username, final String pwd, @NonNull BaseCallback<User> cb) {
         Util.inBackground(cb, new Callable<User>() {
             @Override
             public User call() throws Exception {
@@ -241,7 +241,7 @@ public abstract class Auth {
         AUTH_INFO.put(SIGN_IN_ANONYMOUS, true);
     }
 
-    public static void signInAnonymousInBackground(@NonNull Callback<Void> cb) {
+    public static void signInAnonymousInBackground(@NonNull BaseCallback<Void> cb) {
         Util.inBackground(cb, new Callable<Void>() {
             @Override
             public Void call() throws Exception {

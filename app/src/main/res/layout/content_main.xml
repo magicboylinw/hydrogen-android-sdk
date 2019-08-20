@@ -26,6 +26,11 @@
                 android:paddingBottom="5dp"
         />
 
+        <LinearLayout android:padding="5dp" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="登录状态："/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/signTv"/>
+        </LinearLayout>
+
         <Button
                 android:id="@+id/authBtn"
                 android:text="注册/登录"
@@ -54,6 +59,24 @@
         <Button
                 android:id="@+id/fileBtn"
                 android:text="文件"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+        />
+        <Button
+                android:id="@+id/smsBtn"
+                android:text="短信相关"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+        />
+        <Button
+                android:id="@+id/cloudFuncBtn"
+                android:text="云函数"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+        />
+        <Button
+                android:id="@+id/geoBtn"
+                android:text="geo 地理位置"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
         />

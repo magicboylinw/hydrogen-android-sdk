@@ -265,12 +265,10 @@ class AuthActivity : BaseActivity(), LoaderCallbacks<Cursor> {
     }
 
     private fun isEmailValid(email: String): Boolean {
-        //TODO: Replace this with your own logic
         return email.contains("@")
     }
 
     private fun isPasswordValid(password: String): Boolean {
-        //TODO: Replace this with your own logic
         return password.length > 4
     }
 
@@ -375,7 +373,6 @@ class AuthActivity : BaseActivity(), LoaderCallbacks<Cursor> {
         AsyncTask<Void, Void, Boolean>() {
 
         override fun doInBackground(vararg params: Void): Boolean? {
-            // TODO: attempt authentication against a network service.
 
             try {
                 // Simulate network access.
@@ -421,7 +418,6 @@ class AuthActivity : BaseActivity(), LoaderCallbacks<Cursor> {
 
         /**
          * A dummy authentication store containing known user names and passwords.
-         * TODO: remove after connecting to a real authentication system.
          */
         private val DUMMY_CREDENTIALS = arrayOf("foo@example.com:hello", "bar@example.com:world")
     }

@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 
-def sdkVersionCode = 14
-def sdkVersionName = "0.1.4"
+def sdkVersionCode = 17
+def sdkVersionName = "0.1.7"
 
 android {
     compileSdkVersion 28
@@ -33,9 +33,12 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:3.13.1")
     implementation("com.squareup.retrofit2:retrofit:2.5.0")
     api("com.squareup.retrofit2:converter-gson:2.5.0")
+
+    api 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:5.3.1'
+    api fileTree(dir: 'libs', include: ['*.aar', '*.jar'])
 }
 
-
+// 把 sdk 发布到 bintray：./gradlew :sdk:clean :sdk:bintrayUpload
 def bintrayConfig = project.file('bintray.properties')
 if (bintrayConfig != null && bintrayConfig.exists()) {
     Properties prop = new Properties()

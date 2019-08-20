@@ -8,3 +8,5 @@
 .externalNativeBuild
 sdk/bintray.properties
 app/config.properties
+/.project
+/.settings

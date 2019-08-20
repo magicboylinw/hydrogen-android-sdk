@@ -1,10 +1,12 @@
 package com.minapp.android.sdk;
 
+import com.minapp.android.sdk.alipay.AlipayOrder;
 import com.minapp.android.sdk.auth.*;
 import com.minapp.android.sdk.auth.model.*;
 import com.minapp.android.sdk.content.ContentCategory;
 import com.minapp.android.sdk.content.ContentGroup;
 import com.minapp.android.sdk.database.BatchResult;
+import com.minapp.android.sdk.model.*;
 import com.minapp.android.sdk.storage.FileCategory;
 import com.minapp.android.sdk.content.Content;
 import com.minapp.android.sdk.database.Record;
@@ -14,6 +16,8 @@ import com.minapp.android.sdk.storage.model.*;
 import com.minapp.android.sdk.user.User;
 import com.minapp.android.sdk.util.BaseStatusResp;
 import com.minapp.android.sdk.util.PagedListResponse;
+import com.minapp.android.sdk.wechat.WechatOrder;
+import com.minapp.android.sdk.wechat.WechatOrderResp;
 import okhttp3.RequestBody;
 import retrofit2.http.*;
 
@@ -24,6 +28,75 @@ import java.util.List;
  * cloud.minapp.com 提供的 http api
  */
 public interface HttpApi {
+
+    /********************************* pay api ****************************************/
+
+    /**
+     * 发起微信支付
+     * @param req
+     * @return
+     */
+    @POST("hserve/v2.0/idp/pay/order/")
+    CheckedCall<WechatOrderResp> requestWechatOrder(
+            @Body WechatOrder req
+    );
+
+    /**
+     * 发起支付宝支付
+     * @param req
+     * @return
+     */
+    @POST("hserve/v2.0/idp/pay/order/")
+    CheckedCall<AlipayOrderResp> requestAlipayOrder(
+            @Body AlipayOrder req
+    );
+
+    /**
+     * 获取订单详情
+     * @param transactionNo
+     * @return
+     */
+    @GET("hserve/v2.0/idp/pay/order/{transaction_no}/")
+    CheckedCall<OrderResp> getOrderInfo (
+            @Path("transaction_no") String transactionNo
+    );
+
+
+    /********************************* cloud func api ****************************************/
+
+    /**
+     * 触发云函数执行
+     * @param req
+     * @return
+     */
+    @POST("hserve/v1/cloud-function/job/")
+    CheckedCall<CloudFuncResp> invokeCloudFunc(
+            @Body CloudFuncReq req
+    );
+
+
+    /********************************* sms api ****************************************/
+
+
+    /**
+     * 发送短信验证码
+     * @param req
+     * @return
+     */
+    @POST("hserve/v1.8/sms-verification-code/")
+    CheckedCall<StatusResp> sendSmsCode (
+            @Body SendSmsCodeReq req
+    );
+
+    /**
+     * 校验短信验证码
+     * @param req
+     * @return
+     */
+    @POST("hserve/v1.8/sms-verification-code/verify/")
+    CheckedCall<StatusResp> verifySmsCode (
+            @Body VerifySmsCodeReq req
+    );
 
 
     /********************************* auth api ****************************************/
@@ -118,7 +191,7 @@ public interface HttpApi {
      * @param tableName
      * @return
      */
-    @POST("hserve/v2.0/table/{table_name}/record/")
+    @POST("hserve/v2.1/table/{table_name}/record/")
     CheckedCall<Record> saveRecord(
             @Path("table_name") String tableName,
             @Body Record body
@@ -131,10 +204,11 @@ public interface HttpApi {
      * @param body
      * @return
      */
-    @POST("hserve/v2.0/table/{table_name}/record/")
+    @POST("hserve/v2.1/table/{table_name}/record/")
     CheckedCall<BatchResult> batchSaveRecord(
             @Path("table_name") String tableName,
-            @Body List<Record> body
+            @Body List<Record> body,
+            @QueryMap Query query
     );
 
 
@@ -145,7 +219,7 @@ public interface HttpApi {
      * @param body
      * @return
      */
-    @PUT("hserve/v2.0/table/{table_name}/record/{record_id}/")
+    @PUT("hserve/v2.1/table/{table_name}/record/{record_id}/")
     CheckedCall<Record> updateRecord(
             @Path("table_name") String tableName,
             @Path("record_id") String recordId,
@@ -172,7 +246,7 @@ public interface HttpApi {
      * @param recordId
      * @return
      */
-    @DELETE("hserve/v2.0/table/{table_name}/record/{record_id}/")
+    @DELETE("hserve/v2.1/table/{table_name}/record/{record_id}/")
     CheckedCall<Void> deleteRecord(
             @Path("table_name") String tableName,
             @Path("record_id") String recordId
@@ -184,7 +258,7 @@ public interface HttpApi {
      * @param recordId
      * @return
      */
-    @GET("hserve/v2.0/table/{table_name}/record/{record_id}/")
+    @GET("hserve/v2.1/table/{table_name}/record/{record_id}/")
     CheckedCall<Record> fetchRecord(
             @Path("table_name") String tableName,
             @Path("record_id") String recordId,
@@ -197,7 +271,7 @@ public interface HttpApi {
      * @param tableName
      * @return
      */
-    @GET("hserve/v2.0/table/{table_name}/record/")
+    @GET("hserve/v2.1/table/{table_name}/record/")
     CheckedCall<PagedListResponse<Record>> queryRecord(
             @Path("table_name") String tableName,
             @QueryMap Query query
@@ -208,7 +282,7 @@ public interface HttpApi {
      * @param tableName
      * @return
      */
-    @DELETE("hserve/v2.0/table/{tableName}/record/")
+    @DELETE("hserve/v2.1/table/{tableName}/record/")
     CheckedCall<BatchResult> batchDelete(
             @Path("tableName") String tableName,
             @QueryMap Query query
@@ -306,7 +380,7 @@ public interface HttpApi {
      * 用户列表
      * @return
      */
-    @GET("hserve/v2.0/user/info/")
+    @GET("hserve/v2.1/user/info/")
     CheckedCall<PagedListResponse<User>> users(
             @QueryMap Query query
     );
@@ -316,7 +390,7 @@ public interface HttpApi {
      * @param id
      * @return
      */
-    @GET("hserve/v2.0/user/info/{id}/")
+    @GET("hserve/v2.1/user/info/{id}/")
     CheckedCall<User> user(
             @Path("id") String id
     );
