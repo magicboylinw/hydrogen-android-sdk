@@ -60,7 +60,7 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.0"
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.0'
 
-    implementation "com.minapp.android:sdk:0.1.7"
+    implementation "com.minapp.android:sdk:0.1.8"
     /*implementation project(':sdk')*/
 
     testImplementation 'junit:junit:4.12'

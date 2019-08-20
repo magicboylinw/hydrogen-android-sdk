@@ -30,10 +30,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         sendWxOrderBtn.setOnClickListener {
-            WechatComponent.sendWechatOrder(WechatOrder(0.01f, "知晓云充值-微信支付"), SEND_WX_ORDER, this)
+            WechatComponent.pay(WechatOrder(0.01f, "知晓云充值-微信支付"), SEND_WX_ORDER, this)
         }
         alipayBtn.setOnClickListener {
-            AlipayComponent.sendAlipayOrder(AlipayOrder(0.01f, "知晓云充值-支付宝支付"), SEND_ALIPAY_ORDER, this)
+            AlipayComponent.pay(AlipayOrder(0.01f, "知晓云充值-支付宝支付"), SEND_ALIPAY_ORDER, this)
         }
         signIn()
     }
