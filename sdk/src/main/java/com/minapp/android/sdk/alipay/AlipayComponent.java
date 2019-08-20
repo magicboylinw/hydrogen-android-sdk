@@ -17,7 +17,7 @@ public abstract class AlipayComponent {
      * @param requestCode
      * @param activity
      */
-    public static void sendAlipayOrder(AlipayOrder order, int requestCode, Activity activity) {
+    public static void pay(AlipayOrder order, int requestCode, Activity activity) {
         AlipayActivity.startActivityForResult(order, requestCode, activity);
     }
 

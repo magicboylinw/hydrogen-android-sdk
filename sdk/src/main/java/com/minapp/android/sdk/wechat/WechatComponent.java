@@ -52,7 +52,7 @@ public final class WechatComponent {
      * 发起微信支付
      * @param order
      */
-    public static void sendWechatOrder(WechatOrder order, int requestCode, Activity activity) throws WechatNotInitException {
+    public static void pay(WechatOrder order, int requestCode, Activity activity) throws WechatNotInitException {
         assertInit();
         WXPayEntryActivity.startActivityForResult(requestCode, order, activity);
     }
