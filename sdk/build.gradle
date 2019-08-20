@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 
-def sdkVersionCode = 15
-def sdkVersionName = "0.1.5"
+def sdkVersionCode = 17
+def sdkVersionName = "0.1.7"
 
 android {
     compileSdkVersion 28
@@ -38,7 +38,7 @@ dependencies {
     api fileTree(dir: 'libs', include: ['*.aar', '*.jar'])
 }
 
-
+// 把 sdk 发布到 bintray：./gradlew :sdk:clean :sdk:bintrayUpload
 def bintrayConfig = project.file('bintray.properties')
 if (bintrayConfig != null && bintrayConfig.exists()) {
     Properties prop = new Properties()
