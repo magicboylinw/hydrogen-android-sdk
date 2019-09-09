@@ -4,8 +4,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 import com.minapp.android.sdk.Const;
+import com.minapp.android.sdk.Global;
 import com.minapp.android.sdk.database.Record;
 import com.minapp.android.sdk.database.Table;
+import com.minapp.android.sdk.util.Util;
 
 public class User extends Record {
 
@@ -80,11 +82,6 @@ public class User extends Record {
     public static final String COUNTRY = "country";
 
     /**
-     * 用户 id，{@link String} 类型
-     */
-    public static final String USER_ID = "user_id";
-
-    /**
      * 登录后得到的 token，{@link String} 类型
      */
     public static final String TOKEN = "token";
@@ -105,5 +102,24 @@ public class User extends Record {
 
     public User(Table table, JsonObject json) {
         super(new Table(Const.TABLE_USER_PROFILE), json);
+    }
+
+    @Override
+    public User save() throws Exception {
+
+        // 这里要处理下 pointer 类型
+        Record clone = _deepClone();
+        JsonObject json = clone._getJson();
+        for (String field : json.keySet()) {
+            String id = Util.getPointerId(json.get(field));
+            if (id != null) {
+                json.addProperty(field, id);
+            }
+        }
+
+        // 更新
+        User resp = Global.httpApi().updateUserCustomField(this).execute().body();
+        _setJson(resp._getJson());
+        return this;
     }
 }

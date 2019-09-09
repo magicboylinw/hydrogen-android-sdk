@@ -396,7 +396,14 @@ public interface HttpApi {
     );
 
 
-
+    /**
+     * 更新用户信息中的自定义字段
+     * @return
+     */
+    @PUT("/hserve/v2.1/user/info/")
+    CheckedCall<User> updateUserCustomField (
+            @Body User data
+    );
 
 
     /********************************* Content api ****************************************/

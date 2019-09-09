@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:orientation="vertical"
+            android:paddingLeft="5dp" android:paddingRight="5dp">
+
+        <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="10dp" >
+            <EditText
+                    android:id="@+id/emailTv" android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress" android:hint="邮箱" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="10dp" >
+            <EditText
+                    android:id="@+id/usernameTv" android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress" android:hint="用户名" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="10dp" >
+            <EditText
+                    android:id="@+id/pwdTv" android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:inputType="textPassword" android:hint="密码" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="10dp" >
+            <EditText
+                    android:id="@+id/newPwdTv" android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:inputType="textPassword" android:hint="新密码" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="10dp" >
+            <EditText
+                    android:id="@+id/fieldNameTv" android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress" android:hint="字段名" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="10dp" >
+            <EditText
+                    android:id="@+id/fieldValueTv" android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress" android:hint="字段值" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+                android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
+                android:layout_marginTop="10dp">
+            <Button
+                    android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+                    android:text="修改个人信息" android:id="@+id/updateInfoBtn"/>
+            <Button
+                    android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+                    android:text="获取自定义字段" android:id="@+id/loadFieldBtn"/>
+        </LinearLayout>
+
+        <LinearLayout
+                android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
+                android:layout_marginTop="10dp">
+            <Button
+                    android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+                    android:text="设置自定义字段" android:id="@+id/sendFieldBtn"/>
+            <Button
+                    android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+                    android:text="打印用户信息" android:id="@+id/printUserBtn"/>
+        </LinearLayout>
+
+        <TextView
+                android:id="@+id/infoTv" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:minLines="6" android:layout_marginTop="10dp"
+            />
+    </LinearLayout>
+</ScrollView>

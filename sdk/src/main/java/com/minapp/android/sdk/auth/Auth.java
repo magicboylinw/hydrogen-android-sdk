@@ -265,7 +265,7 @@ public abstract class Auth {
                     AUTH_INFO.put(TOKEN, token);
                 }
 
-                String userId = info.getString(User.USER_ID);
+                String userId = info.getId();
                 if (userId != null) {
                     AUTH_INFO.put(USER_ID, userId);
                 }
