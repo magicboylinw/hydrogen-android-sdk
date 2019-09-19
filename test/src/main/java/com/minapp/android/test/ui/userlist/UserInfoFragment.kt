@@ -1,4 +1,4 @@
-package com.minapp.android.test.ui.userinfo
+package com.minapp.android.test.ui.userlist
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,9 +14,6 @@ import com.minapp.android.test.ext.withMainIfActive
 import com.minapp.android.test.ui.base.BaseFragment
 import com.minapp.android.test.util.Auths
 import kotlinx.android.synthetic.main.fragment_userinfo.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.withContext
 
 class UserInfoFragment : BaseFragment() {
 

@@ -111,9 +111,11 @@ public class CheckedCallAdapterFactory extends CallAdapter.Factory {
          * @throws EmptyResponseException
          */
         private Response postProcess(Call call, Response response) throws IOException, HttpException, EmptyResponseException, SessionMissingException {
-            if (response.code() == 401) {
+
+            // 用户访问无权限的内容会返回 401
+            /*if (response.code() == 401) {
                 Auth.logout();
-            }
+            }*/
 
             if (checked) {
                 if (!response.isSuccessful()) {

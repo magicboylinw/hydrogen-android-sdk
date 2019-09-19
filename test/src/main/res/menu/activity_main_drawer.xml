@@ -13,26 +13,27 @@
                 android:icon="@drawable/ic_menu_gallery"
                 android:title="用户信息" />
         <item
-                android:id="@+id/nav_slideshow"
+                android:id="@+id/nav_userlist"
                 android:icon="@drawable/ic_menu_slideshow"
-                android:title="@string/menu_slideshow" />
+                android:title="用户操作" />
         <item
-                android:id="@+id/nav_tools"
+                android:id="@+id/nav_content"
                 android:icon="@drawable/ic_menu_manage"
-                android:title="@string/menu_tools" />
-    </group>
+                android:title="内容库" />
 
-    <item android:title="Communicate">
-        <menu>
-            <item
-                    android:id="@+id/nav_share"
-                    android:icon="@drawable/ic_menu_share"
-                    android:title="@string/menu_share" />
-            <item
-                    android:id="@+id/nav_send"
-                    android:icon="@drawable/ic_menu_send"
-                    android:title="@string/menu_send" />
-        </menu>
-    </item>
+        <item
+                android:id="@+id/nav_file"
+                android:icon="@drawable/ic_menu_share"
+                android:title="文件" />
+        <item
+                android:id="@+id/nav_sms"
+                android:icon="@drawable/ic_menu_send"
+                android:title="短信" />
+
+        <item
+                android:id="@+id/nav_cloudfunc"
+                android:icon="@drawable/ic_menu_camera"
+                android:title="云函数" />
+    </group>
 
 </menu>
