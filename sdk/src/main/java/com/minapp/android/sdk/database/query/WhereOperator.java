@@ -2,7 +2,7 @@ package com.minapp.android.sdk.database.query;
 
 import android.text.TextUtils;
 
-enum WhereOperator {
+public enum WhereOperator {
 
     CENTER("$center"),         // geo，以某点为圆心，指定半径（km）的圆形范围查询
     INTERSECTS("$intersects"), // geo，交集区域查询

@@ -64,6 +64,22 @@ public class Record {
                 .toString();
     }
 
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj instanceof Record) {
+            Record other = (Record) obj;
+            try {
+                return table.getTableName().equals(other.table.getTableName())
+                        && getId().equals(other.getId());
+            } catch (Exception e) {}
+        }
+        return false;
+    }
 
     /*************************** CURD ***********************************/
 

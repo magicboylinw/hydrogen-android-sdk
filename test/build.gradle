@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: "androidx.navigation.safeargs.kotlin"
+apply plugin: 'kotlin-kapt'
 android {
 
     // 需要 java 8 的支持
@@ -32,6 +33,7 @@ android {
 }
 
 def autodispose_version = '0.8.0'
+String epoxyVer = "3.8.0"
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
@@ -68,4 +70,7 @@ dependencies {
     implementation "com.uber.autodispose:autodispose-android-archcomponents:$autodispose_version"
 
     implementation 'com.zhihu.android:matisse:0.5.1'
+    implementation "com.airbnb.android:epoxy:$epoxyVer"
+    kapt "com.airbnb.android:epoxy-processor:$epoxyVer"
+    implementation "com.airbnb.android:epoxy-paging:$epoxyVer"
 }

@@ -7,23 +7,34 @@
         android:layout_height="match_parent"
         >
 
-    <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent" android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            android:fitsSystemWindows="true"
-            android:background="@color/blackDA"
-            >
-        <Spinner android:id="@+id/groupSpinner" android:layout_width="wrap_content" android:layout_height="wrap_content"></Spinner>
-    </androidx.appcompat.widget.Toolbar>
+    <LinearLayout
+            android:id="@+id/group" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:background="@color/blackDA"
+            app:layout_constraintTop_toTopOf="parent" android:gravity="center_vertical">
+        <TextView
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp" android:textSize="15sp" android:textColor="@android:color/black"
+                android:text="内容库："/>
+        <Spinner android:id="@+id/groupSpinner" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+            android:id="@+id/category" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:background="@color/blackDA"
+            app:layout_constraintTop_toBottomOf="@id/group" android:gravity="center_vertical">
+        <TextView
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp" android:textSize="15sp" android:textColor="@android:color/black"
+                android:text="分类："/>
+        <Spinner android:id="@+id/categorySpinner" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+    </LinearLayout>
+
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbar"
+            app:layout_constraintTop_toBottomOf="@id/category"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             >

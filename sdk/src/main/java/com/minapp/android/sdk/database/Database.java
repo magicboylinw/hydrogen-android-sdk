@@ -21,7 +21,14 @@ public abstract class Database {
      * @throws Exception
      */
     static BatchResult batchSave(Table table, List<Record> records, Query query) throws Exception {
-        return Global.httpApi().batchSaveRecord(table.getTableName(), records, query).execute().body();
+        BatchResult result =  Global.httpApi().batchSaveRecord(table.getTableName(), records, query).execute().body();
+        for (int i = 0; i < result.getOperationResult().size(); i++) {
+            BatchResult.OperationResult.Success success = result.getOperationResult().get(i).getSuccess();
+            if (success != null) {
+                records.get(i).put(Record.ID, success.getId());
+            }
+        }
+        return result;
     }
 
     /**

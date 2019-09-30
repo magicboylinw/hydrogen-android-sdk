@@ -5,16 +5,16 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import com.google.gson.JsonElement;
 import com.minapp.android.sdk.auth.Auth;
+import com.minapp.android.sdk.exception.EmptyResponseException;
+import com.minapp.android.sdk.exception.HttpException;
+import com.minapp.android.sdk.exception.SessionMissingException;
 import com.minapp.android.sdk.model.*;
 import com.minapp.android.sdk.util.BaseCallback;
 import com.minapp.android.sdk.util.Retrofit2CallbackAdapter;
 import com.minapp.android.sdk.util.Util;
 import com.minapp.android.sdk.wechat.WechatComponent;
-import com.minapp.android.sdk.wechat.WechatOrder;
-import com.minapp.android.sdk.wechat.WechatOrderResp;
-import com.tencent.mm.opensdk.modelpay.PayReq;
-import com.tencent.mm.opensdk.openapi.IWXAPI;
-import com.tencent.mm.opensdk.openapi.WXAPIFactory;
+
+import java.io.IOException;
 
 public class BaaS {
 
@@ -56,6 +56,14 @@ public class BaaS {
     }
 
     /**
+     * sync of [sendSmsCode]
+     */
+    public static boolean sendSmsCode(String phone)
+            throws HttpException, SessionMissingException, EmptyResponseException, IOException {
+        return Global.httpApi().sendSmsCode(new SendSmsCodeReq(phone)).execute().body().isOk();
+    }
+
+    /**
      * 验证短信验证码
      * http status code:
      * 200:	成功
@@ -66,6 +74,14 @@ public class BaaS {
      */
     public static void verifySmsCode(String phone, String code, BaseCallback<StatusResp> cb) {
         Global.httpApi().verifySmsCode(new VerifySmsCodeReq(phone, code)).enqueue(new Retrofit2CallbackAdapter<StatusResp>(cb));
+    }
+
+    /**
+     * sync of verifySmsCode
+     */
+    public static boolean verifySmsCode(String phone, String code)
+            throws HttpException, SessionMissingException, EmptyResponseException, IOException {
+        return Global.httpApi().verifySmsCode(new VerifySmsCodeReq(phone, code)).execute().body().isOk();
     }
 
     /**
@@ -81,6 +97,18 @@ public class BaaS {
             json = Global.gson().fromJson(data, JsonElement.class);
         } catch (Exception e) {}
         Global.httpApi().invokeCloudFunc(new CloudFuncReq(funcName, json, sync)).enqueue(new Retrofit2CallbackAdapter<CloudFuncResp>(cb));
+    }
+
+    /**
+     * sync of [invokeCloudFunc]
+     */
+    public static CloudFuncResp invokeCloudFunc(String funcName, String data, Boolean sync)
+            throws HttpException, SessionMissingException, EmptyResponseException, IOException {
+        JsonElement json = null;
+        try {
+            json = Global.gson().fromJson(data, JsonElement.class);
+        } catch (Exception e) {}
+        return Global.httpApi().invokeCloudFunc(new CloudFuncReq(funcName, json, sync)).execute().body();
     }
 
 }

@@ -13,6 +13,18 @@
     </fragment>
 
     <fragment
+            android:id="@+id/nav_record_query"
+            android:name="com.minapp.android.test.ui.record.query.RecordQueryFragment"
+            android:label="记录 - 查询"
+            tools:layout="@layout/fragment_record_query" />
+
+    <fragment
+        android:id="@+id/nav_record_curd"
+        android:name="com.minapp.android.test.ui.record.curd.RecordCURDFragment"
+        android:label="记录 - CURD"
+        tools:layout="@layout/fragment_record_curd" />
+
+    <fragment
             android:id="@+id/nav_userinfo"
             android:name="com.minapp.android.test.ui.userlist.UserInfoFragment"
             android:label="用户信息"

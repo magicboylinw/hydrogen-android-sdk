@@ -8,6 +8,17 @@
                 android:id="@+id/nav_signinup"
                 android:icon="@drawable/ic_menu_camera"
                 android:title="@string/menu_signinup" />
+
+        <item
+                android:id="@+id/nav_record_curd"
+                android:icon="@drawable/ic_menu_send"
+                android:title="记录 - CURD" />
+
+        <item
+                android:id="@+id/nav_record_query"
+                android:icon="@drawable/ic_menu_manage"
+                android:title="记录 - 查询" />
+
         <item
                 android:id="@+id/nav_userinfo"
                 android:icon="@drawable/ic_menu_gallery"

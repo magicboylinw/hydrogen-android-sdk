@@ -6,10 +6,9 @@ import android.widget.AdapterView
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.minapp.android.test.ui.content.edit.EditFragment
 import com.minapp.android.test.R
 import com.minapp.android.test.ui.base.BaseFragment
-import com.minapp.android.test.ui.base.StringArrayAdapter
+import com.minapp.android.test.ui.base.FixedSizeStringAdapter
 import kotlinx.android.synthetic.main.fragment_content.*
 
 class ContentFragment : BaseFragment() {
@@ -34,14 +33,27 @@ class ContentFragment : BaseFragment() {
 
         viewModel.apply {
             data.observe(this@ContentFragment, Observer { adapter.submitList(it) })
-            contentGroup.observe(this@ContentFragment, Observer {
+            groups.observe(this@ContentFragment, Observer {
                 if (it != null) {
-                    groupSpinner.adapter = StringArrayAdapter(requireContext(), it.map { it.name!! }.toMutableList())
+                    groupSpinner.adapter = FixedSizeStringAdapter(requireContext(), it.map { it.name!! }.toMutableList())
                     groupSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                         override fun onNothingSelected(parent: AdapterView<*>?) {}
 
                         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                             viewModel.onGroupSelected(position)
+                        }
+                    }
+                }
+            })
+
+            categories.observe(this@ContentFragment, Observer {
+                if (it != null) {
+                    categorySpinner.adapter = FixedSizeStringAdapter(requireContext(), it.map { it.name!! }.toMutableList())
+                    categorySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                        override fun onNothingSelected(parent: AdapterView<*>?) {}
+
+                        override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                            viewModel.onCategorySelected(position)
                         }
                     }
                 }
