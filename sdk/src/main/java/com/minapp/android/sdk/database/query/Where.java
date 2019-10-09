@@ -155,7 +155,7 @@ public class Where {
         return _and(WhereOperator.NIN, lvalue, rvalue);
     }
 
-    public Where contains(String lvalue, Object rvalue) {
+    public Where contains(String lvalue, String rvalue) {
         return _and(WhereOperator.CONTAINS, lvalue, rvalue);
     }
 

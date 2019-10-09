@@ -1,5 +1,7 @@
 package com.minapp.android.sdk.test
 
+import java.util.*
+
 object Util {
 
     private val CHARS = charArrayOf(
@@ -19,5 +21,10 @@ object Util {
 
     fun randomEmail(length: Int = 12): String =
         "${randomString(length = length)}@${randomEmailProvider()}"
+
+    fun calendar(year: Int, month: Int, date: Int, hour: Int, minute: Int, second: Int) =
+        Calendar.getInstance().apply {
+            set(year, month, date, hour, minute, second)
+        }
 
 }

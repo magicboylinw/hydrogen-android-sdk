@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 public abstract class DateUtil {
 
     private static final Pattern DB_DATETIME_REGEXP =
-            Pattern.compile("[+-]?(\\d{4})-?(\\d{2})-?(\\d{2})T(\\d{2}):?(\\d{2}):?([0-9.]{2,})[Z+](\\d{2}:?\\d{2}?)?");
+            Pattern.compile("[+-]?(\\d{4})-?(\\d{2})-?(\\d{2})T(\\d{2}):?(\\d{2}):?(\\d{2})\\.(\\d{6})[Z+](\\d{2}:?\\d{2}?)?");
 
     private static final String DB_DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSXXX";
 
@@ -57,18 +57,20 @@ public abstract class DateUtil {
             Matcher matcher = DB_DATETIME_REGEXP.matcher(str);
             if (matcher.matches()) {
                 Integer year = Integer.valueOf(matcher.group(1));
-                Integer month = Integer.valueOf(matcher.group(2));
+                Integer month = Integer.valueOf(matcher.group(2)) - 1;
                 Integer day = Integer.valueOf(matcher.group(3));
                 Integer hour = Integer.valueOf(matcher.group(4));
                 Integer minute = Integer.valueOf(matcher.group(5));
-                Integer second = Double.valueOf(matcher.group(6)).intValue();
-                Integer timeZoneOffset = Integer.valueOf(matcher.group(7).substring(0, 2));
+                Integer second = Integer.valueOf(matcher.group(6));
+                Integer millisecond = Integer.valueOf(matcher.group(7)) / 1000;
+                Integer timeZoneOffset = Integer.valueOf(matcher.group(8).substring(0, 2));
 
                 String[] timeZoneIds = TimeZone.getAvailableIDs( 1000 * 60 * 60 * timeZoneOffset);
                 TimeZone timeZone = timeZoneIds != null && timeZoneIds.length > 0 ? TimeZone.getTimeZone(timeZoneIds[0]) : TimeZone.getDefault();
 
                 Calendar calendar = Calendar.getInstance(timeZone);
                 calendar.set(year, month, day, hour, minute, second);
+                calendar.set(Calendar.MILLISECOND, millisecond);
                 return calendar;
             }
         } catch (Exception e) {

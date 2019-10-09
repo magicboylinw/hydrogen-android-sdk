@@ -14,10 +14,10 @@ public enum WhereOperator {
     LTE("$lte"),               // 小于等于
     GT("$gt"),                 // 大于
     GTE("$gte"),               // 大于等于
-    CONTAINS("$contains"),     // 包含任意一个值
-    NIN("$nin"),               // 不包含任意一个数组值
-    IN("$in"),                 // 包含任意一个数组值
-    IS_NULL("$isnull"),        // 是否为 NULL
+    CONTAINS("$contains"),     // string 字段是否包含子串 str
+    NIN("$nin"),               // value 是否不存在于 list 字段中
+    IN("$in"),                 // value 是否存在于 list 字段中
+    IS_NULL("$isnull"),        // 某个字段的值是否为 null
     EXISTS("$exists"),         // 某个字段是否存在于记录中
     HAS_KEY("$has_key"),       // key 是否存在 object 字段中
     ALL("$all"),               // 是否所有 filed 均存在于 list 字段中；list 是右值，它一个数组"[value1, value2]"；filed 必须是数组类型

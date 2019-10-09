@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import android.util.Log;
 import com.google.gson.*;
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.reflect.TypeToken;
 import com.minapp.android.sdk.Const;
 import com.minapp.android.sdk.Global;
 import com.minapp.android.sdk.storage.CloudFile;
@@ -392,6 +393,13 @@ public class Record {
         }
     }
 
+    /**
+     *
+     * @param key
+     * @param type eg: new TypeToken<List<String>>(){}.getType()
+     * @param <T>
+     * @return
+     */
     public <T> T getObject(@NonNull String key, Type type) {
         Util.assetNotNull(key);
         try {

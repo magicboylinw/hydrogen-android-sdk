@@ -1,36 +1,17 @@
-package com.minapp.android.sdk.test
+package com.minapp.android.sdk.test.table
 
 import com.minapp.android.sdk.database.Record
 import com.minapp.android.sdk.database.Table
 import com.minapp.android.sdk.database.query.Query
 import com.minapp.android.sdk.database.query.Where
 import com.minapp.android.sdk.exception.HttpException
+import com.minapp.android.sdk.test.BaseTest
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Test
 
-class DatabaseTest: BaseTest() {
-
-    companion object {
-        private lateinit var table: Table
-
-        @BeforeClass
-        @JvmStatic
-        fun prepare() {
-            table = Table(Contract.TABLE_NAME)
-        }
-    }
-
-    @Before
-    fun cleanup() {
-        val query = Query().apply {
-            offset(0)
-            limit(Long.MAX_VALUE)
-        }
-        table.batchDelete(query)
-    }
-
+class DatabaseTest: BaseTableTest() {
 
     /**
      * 简单的增删改查操作
@@ -38,8 +19,8 @@ class DatabaseTest: BaseTest() {
     @Test
     fun simpleCurdTest() {
         val record = table.createRecord()
-        record.put(Contract.NAME, "Jesse")
-        record.put(Contract.AGE, 30)
+        record.put(TableContract.NAME, "Jesse")
+        record.put(TableContract.AGE, 30)
         record.save()
         assertNotNull(record.id)
 
@@ -53,9 +34,12 @@ class DatabaseTest: BaseTest() {
             assert(it[0].id == record.id)
         }
 
-        record.put(Contract.NAME, "Harry")
+        record.put(TableContract.NAME, "Harry")
         record.save()
-        assertEquals(table.fetchRecord(record.id).getString(Contract.NAME), record.getString(Contract.NAME))
+        assertEquals(
+            table.fetchRecord(record.id).getString(
+                TableContract.NAME
+            ), record.getString(TableContract.NAME))
 
         val id = record.id!!
         record.delete()
@@ -75,15 +59,15 @@ class DatabaseTest: BaseTest() {
     fun batchTest() {
         val records = listOf(
             table.createRecord().apply {
-                put(Contract.NAME, "First")
+                put(TableContract.NAME, "First")
             },
 
             table.createRecord().apply {
-                put(Contract.NAME, "Second")
+                put(TableContract.NAME, "Second")
             },
 
             table.createRecord().apply {
-                put(Contract.NAME, "Third")
+                put(TableContract.NAME, "Third")
             }
         )
         val result = table.batchSave(records)
@@ -98,30 +82,5 @@ class DatabaseTest: BaseTest() {
         table.batchDelete(query)
         assertEquals(table.count(Query.all()), 0)
     }
-
-    /**
-     * 复杂数据类型测试
-     */
-    @Test
-    fun fieldTypeTest() {
-
-    }
-
-    @Test
-    fun geoQueryTest() {
-
-    }
 }
 
-object Contract {
-    /**
-     * 需添加一个名为 [TABLE_NAME] 的表
-     */
-    const val TABLE_NAME = "android_test_table"
-
-    // 此表需包含下述字段
-
-    const val NAME = "name"     // string
-    const val AGE = "age"       // int
-    const val LOCATION = "location"     // GeoPolygon
-}

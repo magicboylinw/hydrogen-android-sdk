@@ -318,7 +318,7 @@ public interface HttpApi {
      * @param id
      * @return
      */
-    @GET("hserve/v1.3/uploaded-file/{file_id}/")
+    @GET("hserve/v2.1/uploaded-file/{file_id}/")
     CheckedCall<CloudFile> file(
             @Path("file_id") String id
     );
