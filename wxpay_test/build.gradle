@@ -17,8 +17,8 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String", "CLIENT_ID", '""')       // 这里填入 Baas client id
-        buildConfigField("String", "APP_ID", '""')          // 这里填入微信 app id
+        buildConfigField("String", "CLIENT_ID", '"a4d2d62965ddb57fa4d6"')       // 这里填入 Baas client id
+        buildConfigField("String", "APP_ID", '"wx4b3c1aff4c5389f5"')          // 这里填入微信 app id
     }
 
     signingConfigs {
@@ -48,7 +48,7 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.aar'])
+    /*implementation fileTree(dir: 'libs', include: ['*.aar'])*/
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'androidx.core:core-ktx:1.0.2'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
@@ -60,8 +60,8 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.0"
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.0'
 
-    implementation "com.minapp.android:sdk:0.1.8"
-    /*implementation project(':sdk')*/
+    /*implementation "com.minapp.android:sdk:0.1.8"*/
+    implementation project(':sdk')
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.1'

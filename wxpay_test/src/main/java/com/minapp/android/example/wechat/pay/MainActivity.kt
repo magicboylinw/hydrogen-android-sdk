@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import com.google.gson.JsonObject
 import com.minapp.android.sdk.BaaS
 import com.minapp.android.sdk.Global
 import com.minapp.android.sdk.alipay.AlipayComponent
@@ -29,11 +30,24 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val snapshot = JsonObject().apply {
+            addProperty("id", 998)
+            addProperty("name", "Bill Gate")
+            addProperty("owner", false)
+            add("message", JsonObject().apply {
+                addProperty("line_one", "title")
+                addProperty("line_two", 879)
+            })
+        }
         sendWxOrderBtn.setOnClickListener {
-            WechatComponent.pay(WechatOrder(0.01f, "知晓云充值-微信支付"), SEND_WX_ORDER, this)
+            WechatComponent.pay(WechatOrder(0.01f, "知晓云充值-微信支付").apply {
+                merchandiseSnapshot = snapshot
+            }, SEND_WX_ORDER, this)
         }
         alipayBtn.setOnClickListener {
-            AlipayComponent.pay(AlipayOrder(0.01f, "知晓云充值-支付宝支付"), SEND_ALIPAY_ORDER, this)
+            AlipayComponent.pay(AlipayOrder(0.01f, "知晓云充值-支付宝支付").apply {
+                merchandiseSnapshot = snapshot
+            }, SEND_ALIPAY_ORDER, this)
         }
         signIn()
     }

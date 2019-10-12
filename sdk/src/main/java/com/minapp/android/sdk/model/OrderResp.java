@@ -1,6 +1,9 @@
 package com.minapp.android.sdk.model;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.SerializedName;
+import com.minapp.android.sdk.Global;
 
 public class OrderResp {
     /**
@@ -58,6 +61,14 @@ public class OrderResp {
     private String transactionNo;
     @SerializedName("updated_at")
     private String updatedAt;
+
+    public JsonObject getMerchandiseSnapshotObject() {
+        try {
+            return Global.gson().fromJson(merchandiseSnapshot, JsonObject.class);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 
     public String getCreatedAt() {
         return createdAt;
