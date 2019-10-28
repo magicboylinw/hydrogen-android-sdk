@@ -16,20 +16,31 @@ import java.util.*
  */
 class FieldTypeTest: BaseTableTest() {
 
+    companion object {
+
+        private const val FILENAME = "cloud.jpg"
+
+        fun uploadFile() =
+            Storage.uploadFile(FILENAME, ctx.resources.openRawResource(R.raw.cloud).use { it.readBytes() })
+
+        fun uploadFileWithoutFetch() =
+            Storage.uploadFileWithoutFetch(FILENAME, ctx.resources.openRawResource(R.raw.cloud).use { it.readBytes() })
+    }
+
     /**
      * 文件类型
      */
     @Test
     fun fileTypeTest() {
-        val avatar = Storage.uploadFile("cloud.jpg",
-            ctx.resources.openRawResource(R.raw.cloud).use { it.readBytes() })
+        val avatar = uploadFile()
         val record = table.createRecord().put(TableContract.AVATAR, avatar).save()
         assertEquals(table.fetchRecord(record.id).getFile(TableContract.AVATAR)!!.id, avatar.id)
 
-        val newAvatar = Storage.uploadFile("cloud.jpg",
-            ctx.resources.openRawResource(R.raw.cloud).use { it.readBytes() })
+        val newAvatar = uploadFile()
         record.put(TableContract.AVATAR, newAvatar).save()
         assertEquals(table.fetchRecord(record.id).getFile(TableContract.AVATAR)!!.id, newAvatar.id)
+
+        assert(!uploadFileWithoutFetch().isNullOrBlank())
     }
 
     /**

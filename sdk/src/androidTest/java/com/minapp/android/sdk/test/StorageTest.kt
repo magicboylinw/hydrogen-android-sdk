@@ -8,7 +8,6 @@ import com.minapp.android.sdk.storage.CloudFile
 import com.minapp.android.sdk.storage.FileCategory
 import com.minapp.android.sdk.storage.Storage
 import com.minapp.android.sdk.test.base.BaseAuthedTest
-import com.minapp.android.sdk.test.base.BaseTest
 import org.junit.Assert.*
 import org.junit.FixMethodOrder
 import org.junit.Test
