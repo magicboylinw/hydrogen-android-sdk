@@ -5,6 +5,8 @@ import com.minapp.android.sdk.content.ContentCategory
 import com.minapp.android.sdk.content.ContentGroup
 import com.minapp.android.sdk.content.Contents
 import com.minapp.android.sdk.database.query.Query
+import com.minapp.android.sdk.test.base.BaseAuthedTest
+import com.minapp.android.sdk.test.base.BaseTest
 import org.junit.Assert.*
 import org.junit.FixMethodOrder
 import org.junit.Test
@@ -14,7 +16,7 @@ import org.junit.runners.MethodSorters
  * sdk 内容库 api 只有查询功能，所以先保证内容库中包含下述内容，然后测试查询
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-class ContentTest: BaseTest() {
+class ContentTest: BaseAuthedTest() {
 
     companion object {
 

@@ -2,13 +2,9 @@ package com.minapp.android.sdk.test.table
 
 import com.minapp.android.sdk.database.GeoPoint
 import com.minapp.android.sdk.database.GeoPolygon
-import com.minapp.android.sdk.database.Table
 import com.minapp.android.sdk.database.query.Query
 import com.minapp.android.sdk.database.query.Where
-import com.minapp.android.sdk.test.BaseTest
 import org.junit.Assert.*
-import org.junit.Before
-import org.junit.BeforeClass
 import org.junit.Test
 
 class GeoTest: BaseTableTest() {

@@ -1,11 +1,10 @@
 package com.minapp.android.sdk.test
 
-import android.util.Log
 import com.minapp.android.sdk.auth.Auth
+import com.minapp.android.sdk.test.base.BaseTest
 import org.junit.*
 import org.junit.Assert.*
 import org.junit.runners.MethodSorters
-import java.util.*
 
 /**
  * 这里要对执行顺序进行排序，先执行 signUp 后执行 signin
@@ -35,11 +34,6 @@ class AuthTest: BaseTest() {
     @Before
     fun init() {
         Auth.logout()
-    }
-
-    @After
-    fun destroy() {
-        Thread.sleep(2000)
     }
 
     /**

@@ -2,10 +2,11 @@ package com.minapp.android.sdk.test
 
 import com.minapp.android.sdk.BaaS
 import com.minapp.android.sdk.exception.HttpException
-import org.junit.Assert.*
+import com.minapp.android.sdk.test.base.BaseAuthedTest
+import com.minapp.android.sdk.test.base.BaseTest
 import org.junit.Test
 
-class SmsTest: BaseTest() {
+class SmsTest: BaseAuthedTest() {
 
     companion object {
         private const val PHONE = "136602260"

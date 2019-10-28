@@ -1,10 +1,12 @@
 package com.minapp.android.sdk.test
 
 import com.minapp.android.sdk.BaaS
+import com.minapp.android.sdk.test.base.BaseAuthedTest
+import com.minapp.android.sdk.test.base.BaseTest
 import org.junit.Assert.*
 import org.junit.Test
 
-class CloudFuncTest: BaseTest() {
+class CloudFuncTest: BaseAuthedTest() {
 
     companion object {
         private const val FUNC_NAME = "android_test_helloworld"

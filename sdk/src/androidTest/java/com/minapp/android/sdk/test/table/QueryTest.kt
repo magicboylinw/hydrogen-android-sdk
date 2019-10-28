@@ -6,15 +6,15 @@ import com.minapp.android.sdk.database.Record
 import com.minapp.android.sdk.database.Table
 import com.minapp.android.sdk.database.query.Query
 import com.minapp.android.sdk.database.query.Where
-import com.minapp.android.sdk.test.BaseTest
+import com.minapp.android.sdk.test.base.BaseTest
 import com.minapp.android.sdk.test.Util
+import com.minapp.android.sdk.test.base.BaseAuthedTest
 import com.minapp.android.sdk.user.User
-import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.Assert.*
 
-class QueryTest: BaseTest() {
+class QueryTest: BaseAuthedTest() {
 
     companion object {
         lateinit var table: Table
@@ -99,7 +99,7 @@ class QueryTest: BaseTest() {
     fun orderByTest() {
         val result = table.query(Query().orderBy(TableContract.AGE, TableContract.NAME))
         assertEquals(result.objects.firstOrNull(), pear)
-        assertEquals(result.objects.lastOrNull(), avocado)
+        assertEquals(result.objects.lastOrNull(), watermelon)
     }
 
     @Test
@@ -240,5 +240,17 @@ class QueryTest: BaseTest() {
             .put(Where().matchs(TableContract.NAME, "pea.+"))
             .orderBy(TableContract.AGE))
         assertEquals(result.objects, listOf(pear, peach))
+    }
+
+    @Test
+    fun totalCountTest() {
+        // 默认情况下，不返回 totalCount
+        assertEquals(0, table.query(Query()).totalCount ?: 0)
+
+        // 开启 totalCount
+        assertEquals(7, table.query(Query().returnTotalCount(true)).totalCount)
+
+        // 关闭 totalCount
+        assertEquals(0, table.query(Query().returnTotalCount(false)).totalCount ?: 0)
     }
 }

@@ -1,14 +1,10 @@
 package com.minapp.android.sdk.test.table
 
 import com.minapp.android.sdk.database.Record
-import com.minapp.android.sdk.database.Table
 import com.minapp.android.sdk.database.query.Query
 import com.minapp.android.sdk.database.query.Where
 import com.minapp.android.sdk.exception.HttpException
-import com.minapp.android.sdk.test.BaseTest
 import org.junit.Assert.*
-import org.junit.Before
-import org.junit.BeforeClass
 import org.junit.Test
 
 class DatabaseTest: BaseTableTest() {

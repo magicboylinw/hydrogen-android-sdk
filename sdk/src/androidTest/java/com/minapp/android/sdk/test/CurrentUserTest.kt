@@ -1,14 +1,13 @@
 package com.minapp.android.sdk.test
 
-import android.util.Log
 import com.minapp.android.sdk.auth.Auth
 import com.minapp.android.sdk.auth.CurrentUser
 import com.minapp.android.sdk.auth.model.UpdateUserReq
 import com.minapp.android.sdk.exception.HttpException
+import com.minapp.android.sdk.test.base.BaseTest
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.BeforeClass
-import org.junit.Ignore
 import org.junit.Test
 
 class CurrentUserTest: BaseTest() {
