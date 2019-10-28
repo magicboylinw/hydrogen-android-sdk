@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.minapp.android.sdk.BaaS;
+import com.minapp.android.sdk.Config;
 import com.minapp.android.sdk.Const;
 import com.minapp.android.sdk.Global;
 import com.minapp.android.sdk.HttpApi;
@@ -342,7 +343,7 @@ public abstract class Auth {
                             .setLenient()
                             .create();
                     Retrofit retrofit = new Retrofit.Builder()
-                            .baseUrl(Const.HTTP_HOST)
+                            .baseUrl(Config.getEndpoint())
                             .addConverterFactory(GsonConverterFactory.create(gson))
                             .client(client)
                             .build();

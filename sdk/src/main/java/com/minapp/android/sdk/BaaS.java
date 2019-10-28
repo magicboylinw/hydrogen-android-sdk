@@ -23,11 +23,21 @@ public class BaaS {
     /**
      * 完成 sdk 的初始化
      * @param clientId      ID 为知晓云应用的 ClientID，可通过知晓云管理后台进行获取
-     *
+     * @see #init(String, String, Application)
      */
     public static void init(String clientId, @NonNull Application application) {
+        init(clientId, null, application);
+    }
+
+    /**
+     * 完成 sdk 的初始化
+     * @param clientId      ID 为知晓云应用的 ClientID，可通过知晓云管理后台进行获取
+     * @param endpoint      设置自定义域名
+     */
+    public static void init(String clientId, String endpoint, @NonNull Application application) {
         Util.assetNotNull(application);
         Config.setClientId(clientId);
+        Config.setEndpoint(endpoint);
         Global.setApplicaiton(application);
         Auth.init();
     }

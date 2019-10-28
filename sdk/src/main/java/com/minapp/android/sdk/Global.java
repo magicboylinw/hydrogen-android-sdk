@@ -77,7 +77,7 @@ public abstract class Global {
                             .client(client)
                             .addConverterFactory(GsonConverterFactory.create(GSON))
                             .addCallAdapterFactory(new CheckedCallAdapterFactory())
-                            .baseUrl(Const.HTTP_HOST)
+                            .baseUrl(Config.getEndpoint())
                             .build();
 
                     HTTP_API = retrofit.create(HttpApi.class);
