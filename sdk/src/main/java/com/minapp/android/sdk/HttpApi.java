@@ -290,6 +290,17 @@ public interface HttpApi {
     );
 
 
+    /**
+     * 查询异步的批量操作（更新，删除）的结果
+     * @param id 异步操作返回的 id
+     * @return
+     */
+    @GET("hserve/v1/bulk-operation/{id}/")
+    CheckedCall<BatchOperationResp> queryBatchOperation (
+            @Path("id") int id
+    );
+
+
     /********************************* File api ****************************************/
 
 

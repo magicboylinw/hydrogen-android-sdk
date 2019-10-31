@@ -15,10 +15,37 @@ import com.minapp.android.sdk.util.Util;
 import com.minapp.android.sdk.wechat.WechatComponent;
 
 import java.io.IOException;
+import java.util.concurrent.Callable;
 
 public class BaaS {
 
     private BaaS() {}
+
+    /**
+     * 当用户批量操作时，当操作的数据条数操作超过批量操作限制时，则会转换成异步操作，
+     * 通过此接口可以查询到批量操作的最终结果
+     * @param id
+     * @return
+     * @throws Exception
+     */
+    public static BatchOperationResp queryBatchOperation(int id) throws Exception {
+        return Global.httpApi().queryBatchOperation(id).execute().body();
+    }
+
+    /**
+     *
+     * @param id
+     * @param cb
+     * @see #queryBatchOperation(int)
+     */
+    public static void queryBatchOperationInBackground(int id, BaseCallback<BatchOperationResp> cb) {
+        Util.inBackground(cb, new Callable<BatchOperationResp>() {
+            @Override
+            public BatchOperationResp call() throws Exception {
+                return Global.httpApi().queryBatchOperation(id).execute().body();
+            }
+        });
+    }
 
     /**
      * 完成 sdk 的初始化
