@@ -12,12 +12,6 @@ import java.util.*;
  */
 public class Query extends HashMap<String, String> {
 
-    private static final Query ALL = new Query().offset(0).limit(Long.MAX_VALUE);
-
-    public static Query all() {
-        return new Query(ALL);
-    }
-
     /**
      * 查询语句的 JSON String
      */

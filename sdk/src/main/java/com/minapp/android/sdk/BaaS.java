@@ -59,12 +59,12 @@ public class BaaS {
     /**
      * 完成 sdk 的初始化
      * @param clientId      ID 为知晓云应用的 ClientID，可通过知晓云管理后台进行获取
-     * @param endpoint      设置自定义域名
+     * @param host      设置自定义域名
      */
-    public static void init(String clientId, String endpoint, @NonNull Application application) {
+    public static void init(String clientId, String host, @NonNull Application application) {
         Util.assetNotNull(application);
         Config.setClientId(clientId);
-        Config.setEndpoint(endpoint);
+        Config.setEndpoint(host);
         Global.setApplicaiton(application);
         Auth.init();
     }

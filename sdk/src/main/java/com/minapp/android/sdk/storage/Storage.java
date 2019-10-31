@@ -55,7 +55,7 @@ public abstract class Storage {
      * @param cb 拿到 {@link CloudFile#getId()}
      * @see #uploadFile(String, String, byte[])
      */
-    public static void uuploadFileWithoutFetchInBackground(
+    public static void uploadFileWithoutFetchInBackground(
             final String filename, final String categoryId, final byte[] data, @NonNull final BaseCallback<String> cb) {
         Util.inBackground(cb, new Callable<String>() {
             @Override

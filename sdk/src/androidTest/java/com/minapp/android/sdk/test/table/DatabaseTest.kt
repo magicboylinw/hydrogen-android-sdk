@@ -80,7 +80,7 @@ class DatabaseTest: BaseTableTest() {
             limit(records.size)
         }
         table.batchDelete(query)
-        assertEquals(table.count(Query.all()), 0)
+        assertEquals(table.count(Query()), 0)
     }
 
     /**

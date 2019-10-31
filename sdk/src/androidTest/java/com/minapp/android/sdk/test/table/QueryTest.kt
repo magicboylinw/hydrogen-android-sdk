@@ -30,7 +30,7 @@ class QueryTest: BaseAuthedTest() {
         @JvmStatic
         fun prepare() {
             table = Table(TableContract.TABLE_NAME)
-            table.batchDelete(Query.all())
+            table.batchDelete(Query())
 
             val email = Util.randomEmail()
             val pwd = Util.randomString()

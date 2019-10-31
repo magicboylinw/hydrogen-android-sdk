@@ -45,7 +45,7 @@ class ListViewModel: BaseViewModel() {
                 ioScope.launch {
                     val data = mutableListOf(CATEGORY_ALL).apply {
                         try {
-                            addAll(Contents.contentCategories(Query(Query.all()).apply { put(ContentCategory.QUERY_GROUP_ID, it) }).objects)
+                            addAll(Contents.contentCategories(Query(Query()).apply { put(ContentCategory.QUERY_GROUP_ID, it) }).objects)
                         } catch (e: Exception) {}
                     }
                     categories.postValue(data)
@@ -61,7 +61,7 @@ class ListViewModel: BaseViewModel() {
         // 开始数据加载
         ioScope.launch {
             try {
-                val data = Contents.contentGroups(Query.all()).objects
+                val data = Contents.contentGroups(Query()).objects
                 groups.postValue(data)
                 groupSelected.postValue(data?.firstOrNull()?.id)
             } catch (e: Exception) {}
