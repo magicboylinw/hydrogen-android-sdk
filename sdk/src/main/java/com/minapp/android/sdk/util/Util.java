@@ -196,4 +196,12 @@ public abstract class Util {
         String result = join(data);
         return TextUtils.isEmpty(result) ? null : result;
     }
+
+    public static @Nullable String trimToNull(String source) {
+        if (source == null)
+            return null;
+
+        source = source.trim();
+        return source.isEmpty() ? null : source;
+    }
 }

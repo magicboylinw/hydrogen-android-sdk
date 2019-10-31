@@ -3,6 +3,7 @@ package com.minapp.android.sdk.storage;
 import androidx.annotation.NonNull;
 import com.minapp.android.sdk.Global;
 import com.minapp.android.sdk.database.query.Query;
+import com.minapp.android.sdk.exception.HttpException;
 import com.minapp.android.sdk.storage.model.BatchDeleteReq;
 import com.minapp.android.sdk.storage.model.UploadInfoReq;
 import com.minapp.android.sdk.storage.model.UploadInfoResp;
@@ -20,24 +21,105 @@ public abstract class Storage {
     static final String PART_AUTHORIZATION = "authorization";
     static final String PART_POLICY = "policy";
     static final String PART_FILE = "file";
-    static final int FILE_CHECKING_MILLIS = 500;
-    public static final int FILE_CHECKING_MAX = 10;
+
+    /**
+     * 文件上传
+     * @param filename
+     * @param categoryId
+     * @param data
+     * @return {@link CloudFile#getId()}
+     * @throws Exception
+     * @see #uploadFile(String, String, byte[])
+     */
+    public static String uploadFileWithoutFetch(String filename, String categoryId, byte[] data) throws Exception {
+        return _uploadFile(filename, categoryId, data).getId();
+    }
+
+    /**
+     * 文件上传
+     * @param filename
+     * @param data
+     * @return {@link CloudFile#getId()}
+     * @throws Exception
+     * @see #uploadFile(String, String, byte[])
+     */
+    public static String uploadFileWithoutFetch(String filename, byte[] data) throws Exception {
+        return _uploadFile(filename, null, data).getId();
+    }
+
+    /**
+     * 文件上传
+     * @param filename
+     * @param categoryId
+     * @param data
+     * @param cb 拿到 {@link CloudFile#getId()}
+     * @see #uploadFile(String, String, byte[])
+     */
+    public static void uploadFileWithoutFetchInBackground(
+            final String filename, final String categoryId, final byte[] data, @NonNull final BaseCallback<String> cb) {
+        Util.inBackground(cb, new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                return Storage.uploadFileWithoutFetch(filename, categoryId, data);
+            }
+        });
+    }
+
 
     /**
      * 文件上传，分两步：<br />
      * 1. 获取上传文件所需授权凭证和上传地址<br />
      * 2. 使用上一步获取的授权凭证和上传地址，进行文件上传
+     * @return {@link CloudFile}
+     */
+    public static CloudFile uploadFile(String filename, String categoryId, byte[] data) throws Exception {
+        UploadInfoResp meta = _uploadFile(filename, categoryId, data);
+        while (true) {
+            try {
+                return file(meta.getId());
+            } catch (HttpException e) {
+                if (e.getCode() == 404) {
+                    Thread.sleep(500);
+                } else {
+                    throw e;
+                }
+            }
+        }
+    }
+
+    /**
+     * 文件上传
+     * @param filename
+     * @param data
+     * @return {@link CloudFile}
+     * @throws Exception
+     * @see #uploadFile(String, String, byte[])
      */
     public static CloudFile uploadFile(String filename, byte[] data) throws Exception {
         return uploadFile(filename, null, data);
     }
 
     /**
-     * 文件上传，分两步：<br />
-     * 1. 获取上传文件所需授权凭证和上传地址<br />
-     * 2. 使用上一步获取的授权凭证和上传地址，进行文件上传
+     * 文件上传
+     * @param filename
+     * @param categoryId
+     * @param data
+     * @param cb 拿到 {@link CloudFile}
+     * @see #uploadFile(String, String, byte[])
      */
-    public static CloudFile uploadFile(String filename, String categoryId, byte[] data) throws Exception {
+    public static void uploadFileAndFetchInBackground(
+            final String filename, final String categoryId, final byte[] data, @NonNull final BaseCallback<CloudFile> cb) {
+        Util.inBackground(cb, new Callable<CloudFile>() {
+            @Override
+            public CloudFile call() throws Exception {
+                return Storage.uploadFile(filename, categoryId, data);
+            }
+        });
+    }
+
+
+    private static UploadInfoResp _uploadFile(
+            String filename, String categoryId, byte[] data) throws Exception {
         UploadInfoReq body = new UploadInfoReq();
         body.setFileName(filename);
         body.setCategoryId(categoryId);
@@ -51,33 +133,7 @@ public abstract class Storage {
                 .build();
         Global.httpApi().uploadFile(meta.getUploadUrl(), multipartBody).execute();
 
-        CloudFile uploaded = null;
-        int maxLoop = FILE_CHECKING_MAX;
-        synchronized (meta) {
-            while (maxLoop > 0) {
-                try {
-                    uploaded = file(meta.getId());
-                } catch (Exception ignored) {}
-                if (uploaded != null && uploaded.isUploadSuccess()) {
-                    return uploaded;
-                } else {
-                    maxLoop--;
-                    meta.wait(FILE_CHECKING_MILLIS);
-                }
-            }
-        }
-        return uploaded;
-    }
-
-
-    public static void uploadFileInBackground(
-            final String filename, final String categoryId, final byte[] data, @NonNull final BaseCallback<CloudFile> cb) {
-        Util.inBackground(cb, new Callable<CloudFile>() {
-            @Override
-            public CloudFile call() throws Exception {
-                return Storage.uploadFile(filename, categoryId, data);
-            }
-        });
+        return meta;
     }
 
 

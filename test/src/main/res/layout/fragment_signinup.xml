@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent" android:layout_height="match_parent">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="vertical" android:layout_width="match_parent"
+            android:layout_height="match_parent" android:paddingLeft="5dp" android:paddingRight="5dp">
+
+        <LinearLayout
+                android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
+                android:layout_marginTop="10dp">
+            <TextView
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="登录/注册 方式：" android:layout_gravity="center_vertical" />
+            <com.minapp.android.test.ui.signinup.SignTypeSpinner
+                    android:id="@+id/signTypeSpinner" android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+            <EditText
+                    android:id="@+id/nameTv" android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress" android:hint="邮箱/用户名" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+            <EditText
+                    android:id="@+id/pwdTv" android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:inputType="textPassword" android:hint="密码"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:layout_marginTop="10dp">
+            <Button
+                    android:id="@+id/signInBtn" android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:text="登录" />
+            <Button
+                    android:id="@+id/signUpBtn" android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:text="注册" />
+        </LinearLayout>
+
+        <LinearLayout
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:layout_marginTop="5dp">
+            <Button
+                    android:id="@+id/emailVerifyBtn" android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:text="验证邮箱" />
+            <Button
+                    android:id="@+id/resetPwdBtn" android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:text="找回密码" />
+        </LinearLayout>
+
+        <LinearLayout
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:layout_marginTop="5dp">
+            <Button
+                    android:id="@+id/signOutBtn" android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:text="登出" />
+            <Button
+                    android:id="@+id/printUserBtn" android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:text="打印当前用户" />
+        </LinearLayout>
+
+        <TextView
+                android:id="@+id/infoTv" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:minLines="7" android:layout_marginTop="10dp"/>
+    </LinearLayout>
+</ScrollView>

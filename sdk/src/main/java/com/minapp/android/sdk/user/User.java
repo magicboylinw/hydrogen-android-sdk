@@ -4,8 +4,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 import com.minapp.android.sdk.Const;
+import com.minapp.android.sdk.Global;
 import com.minapp.android.sdk.database.Record;
 import com.minapp.android.sdk.database.Table;
+import com.minapp.android.sdk.util.Util;
 
 public class User extends Record {
 
@@ -80,11 +82,6 @@ public class User extends Record {
     public static final String COUNTRY = "country";
 
     /**
-     * 用户 id，{@link String} 类型
-     */
-    public static final String USER_ID = "user_id";
-
-    /**
      * 登录后得到的 token，{@link String} 类型
      */
     public static final String TOKEN = "token";
@@ -106,4 +103,134 @@ public class User extends Record {
     public User(Table table, JsonObject json) {
         super(new Table(Const.TABLE_USER_PROFILE), json);
     }
+
+    @Override
+    public User save() throws Exception {
+
+        // 这里要处理下 pointer 类型
+        Record clone = _deepClone();
+        JsonObject json = clone._getJson();
+        for (String field : json.keySet()) {
+            String id = Util.getPointerId(json.get(field));
+            if (id != null) {
+                json.addProperty(field, id);
+            }
+        }
+
+        // 更新
+        User resp = Global.httpApi().updateUserCustomField(this).execute().body();
+        _setJson(resp._getJson());
+        return this;
+    }
+
+
+    public void setUserId(Long id) {
+        put(ID, id);
+    }
+
+    public Long getUserId() {
+        return getLong(ID);
+    }
+
+    public void setNickname(String nickname) {
+        put(NICKNAME, nickname);
+    }
+
+    public String getNickname() {
+        return getString(NICKNAME);
+    }
+
+    public void setAvatar(String avatar) {
+        put(AVATAR, avatar);
+    }
+
+    public String getAvatar() {
+        return getString(AVATAR);
+    }
+
+    public void setEmail(String email) {
+        put(EMAIL, email);
+    }
+
+    public String getEmail() {
+        return getString(EMAIL);
+    }
+
+    public void setUsername(String username) {
+        put(USERNAME, username);
+    }
+
+    public String getUsername() {
+        return getString(USERNAME);
+    }
+
+    public boolean isEmailVerified() {
+        return Boolean.TRUE.equals(getBoolean(EMAIL_VERIFIED));
+    }
+
+    public void setGender(Integer gender) {
+        put(GENDER, gender);
+    }
+
+    public Integer getGender() {
+        return getInt(GENDER);
+    }
+
+    public void putProvince(String province) {
+        put(PROVINCE, province);
+    }
+
+    public String getProvince() {
+        return getString(PROVINCE);
+    }
+
+    public JsonObject getProvider() {
+        return getJsonObject(PROVIDER);
+    }
+
+    public boolean isAuthorized() {
+        return Boolean.TRUE.equals(getBoolean(IS_AUTHORIZED));
+    }
+
+    public String getUnionid() {
+        return getString(UNIONID);
+    }
+
+
+    public String getOpenid() {
+        return getString(OPENID);
+    }
+
+    public void setLanguage(String language) {
+        put(LANGUAGE, language);
+    }
+
+    public String getLanguage() {
+        return getString(LANGUAGE);
+    }
+
+    public void setCity(String city) {
+        put(CITY, city);
+    }
+
+    public String getCity() {
+        return getString(CITY);
+    }
+
+    public void setCountry(String country) {
+        put(COUNTRY, country);
+    }
+
+    public String getCountry() {
+        return getString(COUNTRY);
+    }
+
+    public String getToken() {
+        return getString(TOKEN);
+    }
+
+    public Integer getExpiresInSeconds() {
+        return getInt(EXPIRES_IN);
+    }
+
 }

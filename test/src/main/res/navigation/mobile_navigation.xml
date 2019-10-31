@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/mobile_navigation"
+        app:startDestination="@+id/nav_signinup">
+
+    <fragment
+            android:id="@+id/nav_signinup"
+            android:name="com.minapp.android.test.ui.signinup.SignInUpFragment"
+            android:label="@string/menu_signinup"
+            tools:layout="@layout/fragment_signinup" >
+    </fragment>
+
+    <fragment
+            android:id="@+id/nav_record_query"
+            android:name="com.minapp.android.test.ui.record.query.RecordQueryFragment"
+            android:label="记录 - 查询"
+            tools:layout="@layout/fragment_record_query" />
+
+    <fragment
+        android:id="@+id/nav_record_curd"
+        android:name="com.minapp.android.test.ui.record.curd.RecordCURDFragment"
+        android:label="记录 - CURD"
+        tools:layout="@layout/fragment_record_curd" />
+
+    <fragment
+            android:id="@+id/nav_userinfo"
+            android:name="com.minapp.android.test.ui.userlist.UserInfoFragment"
+            android:label="用户信息"
+            tools:layout="@layout/fragment_userinfo" />
+
+    <fragment
+            android:id="@+id/nav_userlist"
+            android:name="com.minapp.android.test.ui.userlist.UserListFragment"
+            android:label="用户操作"
+            tools:layout="@layout/fragment_userlist" />
+
+    <fragment
+            android:id="@+id/nav_content"
+            android:name="com.minapp.android.test.ui.content.list.ContentFragment"
+            android:label="内容库"
+            tools:layout="@layout/fragment_content" >
+        <action
+                android:id="@+id/action_nav_content_to_nav_content_detail"
+                app:destination="@id/nav_content_detail" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_content_detail"
+        android:name="com.minapp.android.test.ui.content.edit.EditFragment"
+        tools:layout="@layout/fragment_content_edit">
+        <argument
+                android:name="id"
+                app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_file"
+        android:name="com.minapp.android.test.ui.file.list.FileListFragment"
+        android:label="文件"
+        tools:layout="@layout/fragment_file_list" />
+
+    <fragment
+        android:id="@+id/nav_sms"
+        android:name="com.minapp.android.test.ui.SmsFragment"
+        android:label="短信"
+        tools:layout="@layout/fragment_sms" />
+
+    <fragment
+        android:id="@+id/nav_cloudfunc"
+        android:name="com.minapp.android.test.ui.CloudFuncFragment"
+        android:label="云函数"
+        tools:layout="@layout/fragment_cloud_func" />
+
+</navigation>

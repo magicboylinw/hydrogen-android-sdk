@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+                android:id="@+id/nav_signinup"
+                android:icon="@drawable/ic_menu_camera"
+                android:title="@string/menu_signinup" />
+
+        <item
+                android:id="@+id/nav_record_curd"
+                android:icon="@drawable/ic_menu_send"
+                android:title="记录 - CURD" />
+
+        <item
+                android:id="@+id/nav_record_query"
+                android:icon="@drawable/ic_menu_manage"
+                android:title="记录 - 查询" />
+
+        <item
+                android:id="@+id/nav_userinfo"
+                android:icon="@drawable/ic_menu_gallery"
+                android:title="用户信息" />
+        <item
+                android:id="@+id/nav_userlist"
+                android:icon="@drawable/ic_menu_slideshow"
+                android:title="用户操作" />
+        <item
+                android:id="@+id/nav_content"
+                android:icon="@drawable/ic_menu_manage"
+                android:title="内容库" />
+
+        <item
+                android:id="@+id/nav_file"
+                android:icon="@drawable/ic_menu_share"
+                android:title="文件" />
+        <item
+                android:id="@+id/nav_sms"
+                android:icon="@drawable/ic_menu_send"
+                android:title="短信" />
+
+        <item
+                android:id="@+id/nav_cloudfunc"
+                android:icon="@drawable/ic_menu_camera"
+                android:title="云函数" />
+    </group>
+
+</menu>

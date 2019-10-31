@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <LinearLayout
+            android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+        <EditText
+                android:id="@+id/tableET" android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:hint="表名" android:singleLine="true" android:maxLines="1" />
+
+        <com.minapp.android.test.ui.widget.CommaMultiAutoCompleteTextView
+                android:layout_width="0dp" android:layout_height="wrap_content"
+                android:id="@+id/expandsET" android:layout_weight="1"
+                android:hint="expands" />
+
+        <Button
+                android:id="@+id/searchBtn" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="查询" />
+    </LinearLayout>
+
+    <LinearLayout
+            android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+
+        <com.minapp.android.test.ui.widget.CommaMultiAutoCompleteTextView
+                android:layout_width="0dp" android:layout_height="wrap_content"
+                android:id="@+id/orderBysET" android:layout_weight="1"
+                android:hint="orderBys" />
+
+        <com.minapp.android.test.ui.widget.CommaMultiAutoCompleteTextView
+                android:layout_width="0dp" android:layout_height="wrap_content"
+                android:id="@+id/keysET" android:layout_weight="1"
+                android:hint="keys" />
+    </LinearLayout>
+
+    <LinearLayout
+            android:orientation="horizontal" android:gravity="center_vertical"
+            android:layout_width="match_parent" android:layout_height="wrap_content">
+
+        <com.minapp.android.test.ui.widget.ListAutoCompleteTextView
+                android:layout_width="0dp" android:layout_height="wrap_content"
+                android:id="@+id/keyET" android:layout_weight="1"
+                android:hint="field name" />
+
+        <com.minapp.android.test.ui.widget.OperatorSpinner
+                android:id="@+id/opSpinner" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+            android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+        <com.minapp.android.test.ui.widget.ComplexTypeInput
+                android:id="@+id/valueET" android:layout_weight="1"
+                android:layout_width="0dp" android:layout_height="wrap_content"  />
+    </LinearLayout>
+
+    <HorizontalScrollView
+            android:layout_width="match_parent" android:layout_height="match_parent" android:background="@android:color/black">
+        <com.airbnb.epoxy.EpoxyRecyclerView
+                android:id="@+id/list" android:layout_width="wrap_content" android:layout_height="match_parent" />
+    </HorizontalScrollView>
+</LinearLayout>

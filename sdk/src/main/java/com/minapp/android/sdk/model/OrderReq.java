@@ -2,7 +2,11 @@ package com.minapp.android.sdk.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.SerializedName;
+import com.minapp.android.sdk.Global;
 
 public class OrderReq implements Parcelable {
 
@@ -24,6 +28,9 @@ public class OrderReq implements Parcelable {
     @SerializedName("merchandise_record_id")
     private String merchandiseRecordId;
 
+    @SerializedName("merchandise_snapshot")
+    private JsonObject merchandiseSnapshot;
+
     public OrderReq() {}
 
     protected OrderReq(Parcel in) {
@@ -32,6 +39,9 @@ public class OrderReq implements Parcelable {
         merchandiseDescription = in.readString();
         merchandiseSchemaId = in.readString();
         merchandiseRecordId = in.readString();
+        try {
+            merchandiseSnapshot = Global.gson().fromJson(in.readString(), JsonObject.class);
+        } catch (Exception ignored) {}
     }
 
     @Override
@@ -41,6 +51,7 @@ public class OrderReq implements Parcelable {
         dest.writeString(merchandiseDescription);
         dest.writeString(merchandiseSchemaId);
         dest.writeString(merchandiseRecordId);
+        dest.writeString(merchandiseSnapshot != null ? merchandiseSnapshot.toString() : null);
     }
 
     @Override
@@ -98,5 +109,13 @@ public class OrderReq implements Parcelable {
 
     public void setMerchandiseRecordId(String merchandiseRecordId) {
         this.merchandiseRecordId = merchandiseRecordId;
+    }
+
+    public JsonObject getMerchandiseSnapshot() {
+        return merchandiseSnapshot;
+    }
+
+    public void setMerchandiseSnapshot(JsonObject merchandiseSnapshot) {
+        this.merchandiseSnapshot = merchandiseSnapshot;
     }
 }

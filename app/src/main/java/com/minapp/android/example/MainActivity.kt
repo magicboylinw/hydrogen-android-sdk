@@ -22,9 +22,7 @@ import com.minapp.android.example.util.Util
 import com.minapp.android.sdk.Config
 import com.minapp.android.sdk.auth.Auth
 import com.minapp.android.sdk.database.*
-import com.minapp.android.sdk.database.query.Query
 import com.minapp.android.sdk.storage.Storage
-import com.minapp.android.sdk.util.BaseCallback
 import com.zhihu.matisse.Matisse
 import com.zhihu.matisse.MimeType
 import kotlinx.android.synthetic.main.activity_main.*

@@ -71,6 +71,15 @@ public class Query extends HashMap<String, String> {
     public static final String TRIGGER_DISABLE = "0";
 
 
+    /**
+     * 从 v2.2 开始，默认不返回 totalCount
+     */
+    public static final String RETURN_TOTAL_COUNT = "return_total_count";
+    public static final int ENABLE_TOTAL_COUNT = 1;     // 返回 totalCount
+    public static final int DISABLE_TOTAL_COUNT = 0;    // 不返回 totalCount
+
+
+
 
     private Map<String, String> queryMap = new HashMap<>();
 
@@ -199,6 +208,11 @@ public class Query extends HashMap<String, String> {
         if (fields != null) {
             expand(Arrays.asList(fields));
         }
+        return this;
+    }
+
+    public Query returnTotalCount(boolean enable) {
+        put(RETURN_TOTAL_COUNT, enable ? ENABLE_TOTAL_COUNT : DISABLE_TOTAL_COUNT);
         return this;
     }
 }

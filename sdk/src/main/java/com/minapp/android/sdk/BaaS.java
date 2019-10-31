@@ -5,29 +5,66 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import com.google.gson.JsonElement;
 import com.minapp.android.sdk.auth.Auth;
+import com.minapp.android.sdk.exception.EmptyResponseException;
+import com.minapp.android.sdk.exception.HttpException;
+import com.minapp.android.sdk.exception.SessionMissingException;
 import com.minapp.android.sdk.model.*;
 import com.minapp.android.sdk.util.BaseCallback;
 import com.minapp.android.sdk.util.Retrofit2CallbackAdapter;
 import com.minapp.android.sdk.util.Util;
 import com.minapp.android.sdk.wechat.WechatComponent;
-import com.minapp.android.sdk.wechat.WechatOrder;
-import com.minapp.android.sdk.wechat.WechatOrderResp;
-import com.tencent.mm.opensdk.modelpay.PayReq;
-import com.tencent.mm.opensdk.openapi.IWXAPI;
-import com.tencent.mm.opensdk.openapi.WXAPIFactory;
+
+import java.io.IOException;
+import java.util.concurrent.Callable;
 
 public class BaaS {
 
     private BaaS() {}
 
     /**
+     * 当用户批量操作时，当操作的数据条数操作超过批量操作限制时，则会转换成异步操作，
+     * 通过此接口可以查询到批量操作的最终结果
+     * @param id
+     * @return
+     * @throws Exception
+     */
+    public static BatchOperationResp queryBatchOperation(int id) throws Exception {
+        return Global.httpApi().queryBatchOperation(id).execute().body();
+    }
+
+    /**
+     *
+     * @param id
+     * @param cb
+     * @see #queryBatchOperation(int)
+     */
+    public static void queryBatchOperationInBackground(int id, BaseCallback<BatchOperationResp> cb) {
+        Util.inBackground(cb, new Callable<BatchOperationResp>() {
+            @Override
+            public BatchOperationResp call() throws Exception {
+                return Global.httpApi().queryBatchOperation(id).execute().body();
+            }
+        });
+    }
+
+    /**
      * 完成 sdk 的初始化
      * @param clientId      ID 为知晓云应用的 ClientID，可通过知晓云管理后台进行获取
-     *
+     * @see #init(String, String, Application)
      */
     public static void init(String clientId, @NonNull Application application) {
+        init(clientId, null, application);
+    }
+
+    /**
+     * 完成 sdk 的初始化
+     * @param clientId      ID 为知晓云应用的 ClientID，可通过知晓云管理后台进行获取
+     * @param host      设置自定义域名
+     */
+    public static void init(String clientId, String host, @NonNull Application application) {
         Util.assetNotNull(application);
         Config.setClientId(clientId);
+        Config.setEndpoint(host);
         Global.setApplicaiton(application);
         Auth.init();
     }
@@ -56,6 +93,14 @@ public class BaaS {
     }
 
     /**
+     * sync of [sendSmsCode]
+     */
+    public static boolean sendSmsCode(String phone)
+            throws HttpException, SessionMissingException, EmptyResponseException, IOException {
+        return Global.httpApi().sendSmsCode(new SendSmsCodeReq(phone)).execute().body().isOk();
+    }
+
+    /**
      * 验证短信验证码
      * http status code:
      * 200:	成功
@@ -66,6 +111,14 @@ public class BaaS {
      */
     public static void verifySmsCode(String phone, String code, BaseCallback<StatusResp> cb) {
         Global.httpApi().verifySmsCode(new VerifySmsCodeReq(phone, code)).enqueue(new Retrofit2CallbackAdapter<StatusResp>(cb));
+    }
+
+    /**
+     * sync of verifySmsCode
+     */
+    public static boolean verifySmsCode(String phone, String code)
+            throws HttpException, SessionMissingException, EmptyResponseException, IOException {
+        return Global.httpApi().verifySmsCode(new VerifySmsCodeReq(phone, code)).execute().body().isOk();
     }
 
     /**
@@ -81,6 +134,18 @@ public class BaaS {
             json = Global.gson().fromJson(data, JsonElement.class);
         } catch (Exception e) {}
         Global.httpApi().invokeCloudFunc(new CloudFuncReq(funcName, json, sync)).enqueue(new Retrofit2CallbackAdapter<CloudFuncResp>(cb));
+    }
+
+    /**
+     * sync of [invokeCloudFunc]
+     */
+    public static CloudFuncResp invokeCloudFunc(String funcName, String data, Boolean sync)
+            throws HttpException, SessionMissingException, EmptyResponseException, IOException {
+        JsonElement json = null;
+        try {
+            json = Global.gson().fromJson(data, JsonElement.class);
+        } catch (Exception e) {}
+        return Global.httpApi().invokeCloudFunc(new CloudFuncReq(funcName, json, sync)).execute().body();
     }
 
 }

@@ -29,6 +29,7 @@ import java.util.List;
  */
 public interface HttpApi {
 
+
     /********************************* pay api ****************************************/
 
     /**
@@ -233,7 +234,7 @@ public interface HttpApi {
      * @param body
      * @return
      */
-    @PUT("hserve/v1.5/table/{tableName}/record/")
+    @PUT("hserve/v2.2/table/{tableName}/record/")
     CheckedCall<BatchResult> batchUpdate(
             @Path("tableName") String tableName,
             @QueryMap Query query,
@@ -271,7 +272,7 @@ public interface HttpApi {
      * @param tableName
      * @return
      */
-    @GET("hserve/v2.1/table/{table_name}/record/")
+    @GET("hserve/v2.2/table/{table_name}/record/")
     CheckedCall<PagedListResponse<Record>> queryRecord(
             @Path("table_name") String tableName,
             @QueryMap Query query
@@ -282,10 +283,21 @@ public interface HttpApi {
      * @param tableName
      * @return
      */
-    @DELETE("hserve/v2.1/table/{tableName}/record/")
+    @DELETE("hserve/v2.2/table/{tableName}/record/")
     CheckedCall<BatchResult> batchDelete(
             @Path("tableName") String tableName,
             @QueryMap Query query
+    );
+
+
+    /**
+     * 查询异步的批量操作（更新，删除）的结果
+     * @param id 异步操作返回的 id
+     * @return
+     */
+    @GET("hserve/v1/bulk-operation/{id}/")
+    CheckedCall<BatchOperationResp> queryBatchOperation (
+            @Path("id") int id
     );
 
 
@@ -318,7 +330,7 @@ public interface HttpApi {
      * @param id
      * @return
      */
-    @GET("hserve/v1.3/uploaded-file/{file_id}/")
+    @GET("hserve/v2.1/uploaded-file/{file_id}/")
     CheckedCall<CloudFile> file(
             @Path("file_id") String id
     );
@@ -328,7 +340,7 @@ public interface HttpApi {
      * 文件列表
      * @return
      */
-    @GET("hserve/v1.3/uploaded-file/")
+    @GET("hserve/v2.2/uploaded-file/")
     CheckedCall<PagedListResponse<CloudFile>> files(
             @QueryMap Query query
     );
@@ -366,7 +378,7 @@ public interface HttpApi {
     /**
      * 分类列表
      */
-    @GET("hserve/v1.3/file-category/")
+    @GET("hserve/v2.2/file-category/")
     CheckedCall<PagedListResponse<FileCategory>> fileCategories(
             @QueryMap Query query
     );
@@ -380,7 +392,7 @@ public interface HttpApi {
      * 用户列表
      * @return
      */
-    @GET("hserve/v2.1/user/info/")
+    @GET("hserve/v2.2/user/info/")
     CheckedCall<PagedListResponse<User>> users(
             @QueryMap Query query
     );
@@ -396,7 +408,14 @@ public interface HttpApi {
     );
 
 
-
+    /**
+     * 更新用户信息中的自定义字段
+     * @return
+     */
+    @PUT("/hserve/v2.1/user/info/")
+    CheckedCall<User> updateUserCustomField (
+            @Body User data
+    );
 
 
     /********************************* Content api ****************************************/
@@ -406,7 +425,7 @@ public interface HttpApi {
      * @param query
      * @return
      */
-    @GET("hserve/v2.0/content/detail/")
+    @GET("hserve/v2.2/content/detail/")
     CheckedCall<PagedListResponse<Content>> contents(
             @QueryMap Query query
     );
@@ -426,7 +445,7 @@ public interface HttpApi {
      * @param query
      * @return
      */
-    @GET("/hserve/v1/content/group/")
+    @GET("/hserve/v2.2/content/group/")
     CheckedCall<PagedListResponse<ContentGroup>> contentGroups(
             @QueryMap Query query
     );
@@ -436,7 +455,7 @@ public interface HttpApi {
      * @param query
      * @return
      */
-    @GET("hserve/v1/content/category/")
+    @GET("hserve/v2.2/content/category/")
     CheckedCall<PagedListResponse<ContentCategory>> contentCategories(
             @QueryMap Query query
     );

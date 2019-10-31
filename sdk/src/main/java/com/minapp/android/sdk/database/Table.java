@@ -48,6 +48,11 @@ public class Table {
         });
     }
 
+    public int count(Query query) throws Exception {
+        List list = query(query).getObjects();
+        return list != null ? list.size() : 0;
+    }
+
     /**
      * 通过此 api 创建一条新记录
      * @return
@@ -167,7 +172,7 @@ public class Table {
      * @throws Exception
      */
     public BatchResult batchSave(List<Record> records) throws Exception {
-        return Database.batchSave(this, records, null);
+        return Database.batchSave(this, records, new Query());
     }
 
     /**
@@ -187,7 +192,7 @@ public class Table {
      * @return
      * @throws Exception
      */
-    private BatchResult batchUpdate(Query query, Record update) throws Exception {
+    public BatchResult batchUpdate(Query query, Record update) throws Exception {
         return Database.batchUpdate(this, query, update);
     }
 

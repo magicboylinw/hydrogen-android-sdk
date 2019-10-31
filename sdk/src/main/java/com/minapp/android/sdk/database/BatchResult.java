@@ -19,6 +19,12 @@ public class BatchResult {
     @SerializedName("operation_result")
     private List<OperationResult> operationResult;      // 批量插入、批量更新操作里每一条数据的结果（按 records list 的顺序）
 
+    // 以下是异步操作返回的结果
+    @SerializedName("status")
+    private String status;                              // ok
+    @SerializedName("operation_id")
+    private int operationId;                            // 可以用来查询到最终执行的结果
+
 
     public Long getOffset() {
         return offset;
@@ -66,6 +72,22 @@ public class BatchResult {
 
     public void setOperationResult(List<OperationResult> operationResult) {
         this.operationResult = operationResult;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public int getOperationId() {
+        return operationId;
+    }
+
+    public void setOperationId(int operationId) {
+        this.operationId = operationId;
     }
 
     public static class OperationResult {
