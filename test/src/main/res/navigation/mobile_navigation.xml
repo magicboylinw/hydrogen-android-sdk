@@ -73,4 +73,10 @@
         android:label="云函数"
         tools:layout="@layout/fragment_cloud_func" />
 
+    <fragment
+        android:id="@+id/nav_query"
+        android:name="com.minapp.android.test.ui.query.QueryFragment"
+        android:label="进阶查询"
+        tools:layout="@layout/fragment_query" />
+
 </navigation>
