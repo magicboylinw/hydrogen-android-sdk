@@ -15,6 +15,7 @@ abstract class BasePageKeyedDataSource<T>: PageKeyedDataSource<Int, T>() {
             val query = Query().apply {
                 put(Query.OFFSET, offset.toString())
                 put(Query.LIMIT, limit.toString())
+                returnTotalCount(true)
             }
 
             val list = loadInitial(query)
