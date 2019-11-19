@@ -92,6 +92,7 @@ public abstract class Global {
             synchronized (Global.class) {
                 if (GSON == null) {
                     GSON = createGson()
+                            .disableHtmlEscaping()
                             .create();
                 }
             }

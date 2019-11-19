@@ -3,7 +3,6 @@ package com.minapp.android.sdk.test.table
 import com.minapp.android.sdk.database.Table
 import com.minapp.android.sdk.database.query.Query
 import com.minapp.android.sdk.test.base.BaseAuthedTest
-import com.minapp.android.sdk.test.base.BaseTest
 import org.junit.Before
 import org.junit.BeforeClass
 

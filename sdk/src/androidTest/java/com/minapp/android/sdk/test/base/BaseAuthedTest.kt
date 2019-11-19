@@ -5,7 +5,7 @@ import com.minapp.android.sdk.test.Util
 import org.junit.AfterClass
 import org.junit.BeforeClass
 
-open class BaseAuthedTest : BaseTest() {
+open class BaseAuthedTest : BaseAndroidTest() {
 
     companion object {
 

@@ -24,7 +24,7 @@ public enum WhereOperator {
     REGEX("$regex"),           // string 字段是否匹配正则表达式
     RANGE("$range");           // 包含数组值区间的值
 
-    final String value;
+    public final String value;
 
     WhereOperator(String value) {
         this.value = value;

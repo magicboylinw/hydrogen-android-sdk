@@ -4,13 +4,13 @@ import com.minapp.android.sdk.auth.Auth
 import com.minapp.android.sdk.auth.CurrentUser
 import com.minapp.android.sdk.auth.model.UpdateUserReq
 import com.minapp.android.sdk.exception.HttpException
-import com.minapp.android.sdk.test.base.BaseTest
+import com.minapp.android.sdk.test.base.BaseAndroidTest
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.BeforeClass
 import org.junit.Test
 
-class CurrentUserTest: BaseTest() {
+class CurrentUserTest: BaseAndroidTest() {
 
     companion object {
 

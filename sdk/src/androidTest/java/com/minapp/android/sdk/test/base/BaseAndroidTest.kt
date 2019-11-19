@@ -11,7 +11,7 @@ import org.junit.BeforeClass
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-abstract class BaseTest {
+abstract class BaseAndroidTest {
 
     companion object {
 

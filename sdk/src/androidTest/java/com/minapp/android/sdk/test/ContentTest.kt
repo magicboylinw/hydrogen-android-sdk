@@ -6,7 +6,6 @@ import com.minapp.android.sdk.content.ContentGroup
 import com.minapp.android.sdk.content.Contents
 import com.minapp.android.sdk.database.query.Query
 import com.minapp.android.sdk.test.base.BaseAuthedTest
-import com.minapp.android.sdk.test.base.BaseTest
 import org.junit.Assert.*
 import org.junit.FixMethodOrder
 import org.junit.Test
