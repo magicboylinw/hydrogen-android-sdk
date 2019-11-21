@@ -1,7 +1,7 @@
 package com.minapp.android.sdk.test
 
 import com.minapp.android.sdk.auth.Auth
-import com.minapp.android.sdk.test.base.BaseTest
+import com.minapp.android.sdk.test.base.BaseAndroidTest
 import org.junit.*
 import org.junit.Assert.*
 import org.junit.runners.MethodSorters
@@ -10,7 +10,7 @@ import org.junit.runners.MethodSorters
  * 这里要对执行顺序进行排序，先执行 signUp 后执行 signin
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-class AuthTest: BaseTest() {
+class AuthTest: BaseAndroidTest() {
 
 
     companion object {

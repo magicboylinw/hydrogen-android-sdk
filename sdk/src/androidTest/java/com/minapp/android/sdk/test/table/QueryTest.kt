@@ -6,7 +6,6 @@ import com.minapp.android.sdk.database.Record
 import com.minapp.android.sdk.database.Table
 import com.minapp.android.sdk.database.query.Query
 import com.minapp.android.sdk.database.query.Where
-import com.minapp.android.sdk.test.base.BaseTest
 import com.minapp.android.sdk.test.Util
 import com.minapp.android.sdk.test.base.BaseAuthedTest
 import com.minapp.android.sdk.user.User
