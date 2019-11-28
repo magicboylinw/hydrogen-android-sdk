@@ -29,6 +29,13 @@ import java.util.List;
  */
 public interface HttpApi {
 
+    /**
+     * 获取服务器时间
+     * @return
+     */
+    @GET("hserve/v2.2/server/time/")
+    CheckedCall<ServerDateResp> getServerDate();
+
 
     /********************************* pay api ****************************************/
 

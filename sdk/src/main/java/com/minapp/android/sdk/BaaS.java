@@ -3,6 +3,8 @@ package com.minapp.android.sdk;
 import android.app.Application;
 import android.content.Context;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.google.gson.JsonElement;
 import com.minapp.android.sdk.auth.Auth;
 import com.minapp.android.sdk.exception.EmptyResponseException;
@@ -15,7 +17,10 @@ import com.minapp.android.sdk.util.Util;
 import com.minapp.android.sdk.wechat.WechatComponent;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.concurrent.Callable;
+
+import okhttp3.ResponseBody;
 
 public class BaaS {
 
@@ -146,6 +151,29 @@ public class BaaS {
             json = Global.gson().fromJson(data, JsonElement.class);
         } catch (Exception e) {}
         return Global.httpApi().invokeCloudFunc(new CloudFuncReq(funcName, json, sync)).execute().body();
+    }
+
+    /**
+     * 通过该接口获取服务器时间，主要有以下应用场景：
+     * 1. 用于时间校准
+     * 2. 用于数据查
+     */
+    public static @Nullable Calendar getServerDate() throws Exception {
+        ServerDateResp body = Global.httpApi().getServerDate().execute().body();
+        return body != null ? body.getTime() : null;
+    }
+
+    /**
+     * @see #getServerDate()
+     * @param cb
+     */
+    public static void getServerDateInBackground(BaseCallback<Calendar> cb) {
+        Util.inBackground(cb, new Callable<Calendar>() {
+            @Override
+            public Calendar call() throws Exception {
+                return getServerDate();
+            }
+        });
     }
 
 }
