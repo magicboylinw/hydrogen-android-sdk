@@ -255,6 +255,7 @@ public abstract class Auth {
     /**
      * 登录成功后，保存用户信息
      * @param info
+     * @see #signIn(String, String, long)
      */
     private static void signIn(User info) {
         synchronized (AUTH_INFO) {
@@ -275,6 +276,29 @@ public abstract class Auth {
                     AUTH_INFO.put(EXPIRES_IN, Long.valueOf(info.getString(User.EXPIRES_IN)) * 1000 + System.currentTimeMillis());
                 } catch (Exception ignored) {}
             }
+            storeAuthData();
+        }
+    }
+
+    /**
+     * 登录成功后，保存用户信息
+     * @param token
+     * @param userId
+     * @param expiresIn 秒
+     * @see #signIn(User)
+     */
+    public static void signIn(String token, String userId, long expiresIn) {
+        synchronized (AUTH_INFO) {
+            AUTH_INFO.clear();
+            if (token != null) {
+                AUTH_INFO.put(TOKEN, token);
+            }
+            if (userId != null) {
+                AUTH_INFO.put(USER_ID, userId);
+            }
+            try {
+                AUTH_INFO.put(EXPIRES_IN, expiresIn * 1000 + System.currentTimeMillis());
+            } catch (Exception ignored) {}
             storeAuthData();
         }
     }

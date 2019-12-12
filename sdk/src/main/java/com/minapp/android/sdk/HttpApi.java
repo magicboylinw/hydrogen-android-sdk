@@ -29,6 +29,47 @@ import java.util.List;
  */
 public interface HttpApi {
 
+
+    /**
+     * 微信登录
+     * @param req
+     * @return
+     */
+    @POST("hserve/v2.2/idp/oauth/wechat-native/authenticate/")
+    CheckedCall<ThirdPartySignInResp> signInByWechat (
+            @Body ThirdPartySignInReq req
+    );
+
+    /**
+     * 微博登录
+     * @param req
+     * @return
+     */
+    @POST("hserve/v2.2/idp/oauth/weibo-native/authenticate/")
+    CheckedCall<ThirdPartySignInResp> signInByWeibo (
+            @Body ThirdPartySignInReq req
+    );
+
+    /**
+     * 关联微信
+     * @param req
+     * @return
+     */
+    @POST("hserve/v2.2/idp/oauth/wechat-native/user-association/")
+    CheckedCall<ThirdPartySignInResp> associationWithWechat (
+            @Body ThirdPartySignInReq req
+    );
+
+    /**
+     * 关联微博
+     * @param req
+     * @return
+     */
+    @POST("hserve/v2.2/idp/oauth/weibo-native/user-association/")
+    CheckedCall<ThirdPartySignInResp> associationWithWeibo (
+            @Body ThirdPartySignInReq req
+    );
+
     /**
      * 获取服务器时间
      * @return
