@@ -13,4 +13,12 @@
             app:layout_constraintTop_toTopOf="parent"
             android:text="微信登录"
         />
+
+    <Button
+            android:id="@+id/weiboLogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/wechatLogin"
+            android:text="微博登录"
+            />
 </androidx.constraintlayout.widget.ConstraintLayout>

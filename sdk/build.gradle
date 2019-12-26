@@ -2,8 +2,8 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
-def sdkVersionCode = 21
-def sdkVersionName = "1.0.1"
+def sdkVersionCode = 23
+def sdkVersionName = "1.1.0-beta2"
 
 android {
     compileSdkVersion 28
@@ -60,11 +60,12 @@ dependencies {
     api("com.squareup.retrofit2:converter-gson:2.5.0")
 
     api 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:5.3.1'
+    api 'com.sina.weibo.sdk:core:4.3.7:openDefaultRelease@aar'
     api fileTree(dir: 'libs', include: ['*.aar', '*.jar'])
 }
 
 // 把 sdk 发布到 bintray：./gradlew :sdk:clean :sdk:bintrayUpload
-def bintrayConfig = project.file('bintray.properties')
+def bintrayConfig = project.file('../bintray.properties')
 if (bintrayConfig != null && bintrayConfig.exists()) {
     Properties prop = new Properties()
     prop.load( bintrayConfig.newDataInputStream() )
@@ -88,4 +89,3 @@ if (bintrayConfig != null && bintrayConfig.exists()) {
         dryRun = false
     }
 }
-

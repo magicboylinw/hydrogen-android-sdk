@@ -20,6 +20,8 @@ android {
         buildConfigField("String", "CLIENT_ID", '"c981f1ec250e46e3e1e7"')   // BAAS ID
         buildConfigField("String", "APP_ID", '"wx4b3c1aff4c5389f5"')                        // WECAHT APP ID
         buildConfigField("String", "APP_SECRET", '"c140060f46713ac0dfdc1e07280d9e3b"')      // WECHAT APP SECRET
+        buildConfigField("String", "WB_APP_ID", '"542432732"')
+        buildConfigField("String", "WB_APP_SECRET", '"26f7ce0bdf668596b07f1a0fdeadcf17"')
     }
 
     signingConfigs {

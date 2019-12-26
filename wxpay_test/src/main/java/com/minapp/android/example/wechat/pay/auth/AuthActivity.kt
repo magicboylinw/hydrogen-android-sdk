@@ -11,6 +11,7 @@ import com.minapp.android.example.wechat.pay.R
 import com.minapp.android.sdk.wechat.WXEntryActivity
 import com.minapp.android.sdk.wechat.WechatComponent
 import com.minapp.android.sdk.wechat.WechatSignInCallback
+import com.minapp.android.sdk.weibo.WeiboComponent
 import com.tencent.mm.opensdk.modelmsg.SendAuth
 import com.tencent.mm.opensdk.openapi.WXAPIFactory
 import kotlinx.android.synthetic.main.activity_auth.*
@@ -32,6 +33,10 @@ class AuthActivity : AppCompatActivity() {
                     Toast.makeText(this@AuthActivity, "微信登录失败: ${ex?.message}", Toast.LENGTH_SHORT).show()
                 }
             })
+        }
+
+        weiboLogin.setOnClickListener {
+            WeiboComponent.signIn(this)
         }
     }
 }

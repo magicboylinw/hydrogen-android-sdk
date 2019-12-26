@@ -241,6 +241,19 @@ class QueryTest: BaseAuthedTest() {
         assertEquals(result.objects, listOf(pear, peach))
     }
 
+    /**
+     * 多个 where 条件
+     */
+    @Test
+    fun whereTest() {
+        val result = table.query(Query()
+            .put(Where().greaterThan(TableContract.AGE, 20)
+                .contains(TableContract.NAME, "e")
+                .isNotNull(TableContract.BIRTHDATE))
+            .orderBy(TableContract.AGE))
+        assertEquals(result.objects, listOf(peach, watermelon))
+    }
+
     @Test
     fun totalCountTest() {
         // 默认情况下，不返回 totalCount
