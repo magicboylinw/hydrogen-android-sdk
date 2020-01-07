@@ -35,7 +35,7 @@ public interface HttpApi {
      * @param req
      * @return
      */
-    @POST("hserve/v2.2/idp/oauth/wechat-native/authenticate/")
+    @POST("hserve/v2.3/idp/oauth/wechat-native/authenticate/")
     CheckedCall<ThirdPartySignInResp> signInByWechat (
             @Body ThirdPartySignInReq req
     );
