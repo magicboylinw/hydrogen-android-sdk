@@ -15,6 +15,7 @@ import com.minapp.android.sdk.util.BaseCallback;
 import com.minapp.android.sdk.util.Retrofit2CallbackAdapter;
 import com.minapp.android.sdk.util.Util;
 import com.minapp.android.sdk.wechat.WechatComponent;
+import com.minapp.android.sdk.weibo.WeiboComponent;
 
 import java.io.IOException;
 import java.util.Calendar;
@@ -81,6 +82,12 @@ public class BaaS {
         WechatComponent.initWechatComponent(appId, ctx);
     }
 
+    /**
+     * 如果要调用微博相关的 api，则需要初始化微博组件
+     */
+    public static void initWeiboComponent(Context ctx, String key, String redirectUrl, String scope) {
+        WeiboComponent.init(ctx, key, redirectUrl, scope);
+    }
 
 
     /**

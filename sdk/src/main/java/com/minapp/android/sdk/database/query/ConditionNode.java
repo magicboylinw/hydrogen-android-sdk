@@ -35,7 +35,11 @@ public class ConditionNode {
     void addCondition(Condition condition) {
         if (condition != null) {
             if (this.condition == null) {
-                this.condition = condition;
+                if (this.children.isEmpty()) {
+                    this.condition = condition;
+                } else {
+                    this.children.add(new ConditionNode(condition));
+                }
             } else {
                 this.children.add(new ConditionNode(this.condition));
                 this.condition = null;
