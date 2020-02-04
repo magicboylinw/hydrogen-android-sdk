@@ -1,6 +1,9 @@
 package com.minapp.android.sdk.test
 
+import com.minapp.android.sdk.BaaS
 import com.minapp.android.sdk.auth.Auth
+import com.minapp.android.sdk.auth.model.SignInByPhoneRequest
+import com.minapp.android.sdk.exception.HttpException
 import com.minapp.android.sdk.test.base.BaseAndroidTest
 import org.junit.*
 import org.junit.Assert.*
@@ -98,5 +101,15 @@ class AuthTest: BaseAndroidTest() {
     fun signedInTest() {
         signinByEmail()
         assertTrue(Auth.signedIn())
+    }
+
+    /**
+     * 使用手机号 + 短信验证码登录
+     * 测试无效的验证码抛出 HttpException
+     */
+    @Test(expected = HttpException::class)
+    fun signInByPhoneTest() {
+        val req = SignInByPhoneRequest("12345678912", 987678)
+        Auth.signInByPhone(req)
     }
 }

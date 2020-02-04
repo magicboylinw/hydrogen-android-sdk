@@ -140,6 +140,32 @@ public abstract class Auth {
         return Boolean.TRUE.equals(AUTH_INFO.get(SIGN_IN_ANONYMOUS));
     }
 
+    /**
+     * 使用手机号 + 短信验证码登录（注册）
+     * @param req
+     * @return
+     * @throws Exception
+     */
+    public static User signInByPhone(SignInByPhoneRequest req) throws Exception {
+        User user = Global.httpApi().signInByPhone(req).execute().body();
+        signIn(user);
+        return user;
+    }
+
+    /**
+     * 使用手机号 + 短信验证码登录（注册）
+     * @param req
+     * @param cb
+     */
+    public static void signInByPhoneInBackground(SignInByPhoneRequest req, @NonNull BaseCallback<User> cb) {
+        Util.inBackground(cb, new Callable<User>() {
+            @Override
+            public User call() throws Exception {
+                return Auth.signInByPhone(req);
+            }
+        });
+    }
+
 
     /**
      * 邮箱注册

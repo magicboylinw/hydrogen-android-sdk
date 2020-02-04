@@ -151,6 +151,14 @@ public interface HttpApi {
     /********************************* auth api ****************************************/
 
     /**
+     * 使用手机号 + 短信验证码登录（注册）
+     * @param req
+     * @return
+     */
+    @POST("hserve/v2.1/login/sms/")
+    CheckedCall<User> signInByPhone(@Body SignInByPhoneRequest req);
+
+    /**
      * 通过邮箱注册
      * @param body
      * @return
