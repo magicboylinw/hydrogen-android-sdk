@@ -109,7 +109,7 @@ class AuthTest: BaseAndroidTest() {
      */
     @Test(expected = HttpException::class)
     fun signInByPhoneTest() {
-        val req = SignInByPhoneRequest("12345678912", 987678)
+        val req = SignInByPhoneRequest("12345678912", "987678")
         Auth.signInByPhone(req)
     }
 }

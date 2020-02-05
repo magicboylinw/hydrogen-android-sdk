@@ -14,7 +14,7 @@ public class SignInByPhoneRequest {
      * 短信验证码
      */
     @SerializedName("code")
-    public Integer code;
+    public String code;
 
     /**
      * 手机号查询不到用户时，是否允许创建用户，默认允许
@@ -24,7 +24,7 @@ public class SignInByPhoneRequest {
 
     public SignInByPhoneRequest() {}
 
-    public SignInByPhoneRequest(String phone, Integer code) {
+    public SignInByPhoneRequest(String phone, String code) {
         this.phone = phone;
         this.code = code;
     }
