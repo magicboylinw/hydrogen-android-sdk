@@ -44,18 +44,21 @@ class CurrentUserTest: BaseAndroidTest() {
         val newEmail = Util.randomEmail()
         val newUsername = Util.randomString()
         val newPwd = Util.randomString()
+        val newPhone = "13690339045"
 
         user.updateUser(UpdateUserReq().apply {
             username = newUsername
             email = newEmail
             newPassword = newPwd
             password = pwd
+            phone = newPhone
         })
         Thread.sleep(2000)
 
         user = Auth.currentUser()!!
         assertEquals(user.email, newEmail)
         assertEquals(user.username, newUsername)
+        assertEquals(user.phone, newPhone)
     }
 
     /**

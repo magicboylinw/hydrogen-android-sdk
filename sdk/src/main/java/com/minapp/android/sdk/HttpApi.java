@@ -223,7 +223,7 @@ public interface HttpApi {
      * @param body
      * @return
      */
-    @PUT("hserve/v2.0/user/account/")
+    @PUT("hserve/v2.1/user/account/")
     CheckedCall<UpdateUserResp> updateUser(
             @Body UpdateUserReq body
     );

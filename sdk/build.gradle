@@ -2,8 +2,8 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
-def sdkVersionCode = 27
-def sdkVersionName = "1.1.2"
+def sdkVersionCode = 29
+def sdkVersionName = "1.1.4"
 
 android {
     compileSdkVersion 28
@@ -67,7 +67,7 @@ dependencies {
 // 把 sdk 发布到 bintray：./gradlew :sdk:clean :sdk:bintrayUpload
 def bintrayConfig = project.file('../bintray.properties')
 if (bintrayConfig != null && bintrayConfig.exists()) {
-    Properties prop = new Properties()
+    Properties prop =    new Properties()
     prop.load( bintrayConfig.newDataInputStream() )
 
     apply plugin: 'com.novoda.bintray-release'

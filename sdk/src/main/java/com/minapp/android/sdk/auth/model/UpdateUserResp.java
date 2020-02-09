@@ -17,6 +17,10 @@ public class UpdateUserResp {
     private String email;
     @SerializedName("email_verified")
     private Boolean emailVerified;
+    @SerializedName("phone")
+    private String phone;
+    @SerializedName("phone_verified")
+    private Boolean phoneVerified;
 
     public String getUsername() {
         return username;
@@ -40,6 +44,26 @@ public class UpdateUserResp {
 
     public void setEmailVerified(Boolean emailVerified) {
         this.emailVerified = emailVerified;
+    }
+
+    public Boolean getEmailVerified() {
+        return emailVerified;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public Boolean getPhoneVerified() {
+        return phoneVerified;
+    }
+
+    public void setPhoneVerified(Boolean phoneVerified) {
+        this.phoneVerified = phoneVerified;
     }
 }
 
