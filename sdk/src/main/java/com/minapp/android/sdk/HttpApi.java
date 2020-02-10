@@ -132,7 +132,7 @@ public interface HttpApi {
      * @param req
      * @return
      */
-    @POST("hserve/v1.8/sms-verification-code/")
+    @POST("hserve/v2.1/sms-verification-code/")
     CheckedCall<StatusResp> sendSmsCode (
             @Body SendSmsCodeReq req
     );
