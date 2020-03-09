@@ -7,7 +7,7 @@ import retrofit2.Response;
 
 import java.io.IOException;
 
-public class HttpException extends Exception {
+public class HttpException extends RuntimeException {
 
     private final int code;
     private final String errorMsg;
