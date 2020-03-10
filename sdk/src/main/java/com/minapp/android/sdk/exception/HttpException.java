@@ -1,11 +1,13 @@
 package com.minapp.android.sdk.exception;
 
+import com.google.gson.JsonObject;
 import com.minapp.android.sdk.Global;
 import com.minapp.android.sdk.model.ErrorResp;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 public class HttpException extends RuntimeException {
 
@@ -13,16 +15,28 @@ public class HttpException extends RuntimeException {
     private final String errorMsg;
 
     public static HttpException valueOf(Response resp) {
-        String errorMsg = "";
-        ResponseBody errorBody = resp.errorBody();
-        if (errorBody != null) {
+        String message = "";
+        JsonObject json = null;
+
+        try {
+            String error = new String(resp.errorBody().bytes(), StandardCharsets.UTF_8).trim();
+            json = Global.gson().fromJson(error, JsonObject.class);
+        } catch (Exception e) {}
+
+        if (json != null) {
             try {
-                errorMsg = new String(errorBody.bytes(), "utf-8");
-                ErrorResp json = Global.gson().fromJson(errorMsg, ErrorResp.class);
-                errorMsg = json.getErrorMsg();
+                message = json.get("error_msg").getAsString();
             } catch (Exception e) {}
+
+            if (message == null || message.isEmpty()) {
+                try {
+                    message = json.get("message").getAsString();
+                } catch (Exception e) {}
+            }
         }
-        return new HttpException(resp.code(), errorMsg);
+
+        message = message == null ? "" : message;
+        return new HttpException(resp.code(), message);
     }
 
     public HttpException(int code) {
