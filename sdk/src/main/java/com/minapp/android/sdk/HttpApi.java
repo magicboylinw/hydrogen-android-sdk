@@ -55,7 +55,7 @@ public interface HttpApi {
      * @param req
      * @return
      */
-    @POST("hserve/v2.2/idp/oauth/wechat-native/user-association/")
+    @POST("hserve/v2.3/idp/oauth/wechat-native/user-association/")
     CheckedCall<ThirdPartySignInResp> associationWithWechat (
             @Body ThirdPartySignInReq req
     );
@@ -65,7 +65,7 @@ public interface HttpApi {
      * @param req
      * @return
      */
-    @POST("hserve/v2.2/idp/oauth/weibo-native/user-association/")
+    @POST("hserve/v2.3/idp/oauth/weibo-native/user-association/")
     CheckedCall<ThirdPartySignInResp> associationWithWeibo (
             @Body ThirdPartySignInReq req
     );

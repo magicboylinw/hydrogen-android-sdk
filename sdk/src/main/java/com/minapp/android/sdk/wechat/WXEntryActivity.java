@@ -29,6 +29,9 @@ import com.tencent.mm.opensdk.openapi.IWXAPIEventHandler;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+/**
+ * 这里要区分是微信登录 or 关联微信
+ */
 public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
     private static final String TAG = "WXEntryActivity";
 
@@ -82,6 +85,39 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
         });
     }
 
+    /**
+     * 绑定微信
+     * @param token
+     */
+    private void associationWechat(String token) {
+        Global.submit(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String updateType = WechatComponent.ASSOCIATION_TYPE != null ?
+                            WechatComponent.ASSOCIATION_TYPE.value : null;
+                    ThirdPartySignInResp response = Global.httpApi().associationWithWechat(
+                            new ThirdPartySignInReq(token, updateType)).execute().body();
+
+                    if (response == null)
+                        throw new EmptyResponseException();
+                    if (!response.isOk())
+                        throw new Exception(new StringBuilder()
+                                .append("sign in error: ")
+                                .append(response.message).toString()
+                        );
+                    onResult(true, null);
+
+                } catch (Exception e) {
+                    if (!isDestroyed()) {
+                        onResult(false, e);
+                    }
+                }
+            }
+        });
+    }
+
+
     @Override
     protected void onNewIntent(Intent intent) {
         try {
@@ -105,7 +141,11 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
             if (BaseResp.ErrCode.ERR_OK != authResp.errCode) {
                 onResult(false, new WechatException(authResp));
             } else {
-                sendServerAuth(authResp.code);
+                if (WechatComponent.WECHAT_CB != null) {
+                    sendServerAuth(authResp.code);
+                } else {
+                    associationWechat(authResp.code);
+                }
             }
         } else {
             onResult(false, null);
@@ -141,8 +181,19 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
             } else {
                 cb.onFailure(ex);
             }
+            WechatComponent.WECHAT_CB = null;
         }
-        WechatComponent.WECHAT_CB = null;
+
+        AssociationCallback acb = WechatComponent.ASSOCIATION_CB;
+        if (acb != null) {
+            if (success) {
+                acb.onSuccess();
+            } else {
+                acb.onFailure(ex);
+            }
+            WechatComponent.ASSOCIATION_CB = null;
+            WechatComponent.ASSOCIATION_TYPE = null;
+        }
     }
 
 }

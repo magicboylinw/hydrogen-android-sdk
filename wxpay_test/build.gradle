@@ -17,7 +17,7 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String", "CLIENT_ID", '"c981f1ec250e46e3e1e7"')   // BAAS ID
+        buildConfigField("String", "CLIENT_ID", '"a4d2d62965ddb57fa4d6"')                   // SDK_测试应用_知晓程序
         buildConfigField("String", "APP_ID", '"wx4b3c1aff4c5389f5"')                        // WECAHT APP ID
         buildConfigField("String", "APP_SECRET", '"c140060f46713ac0dfdc1e07280d9e3b"')      // WECHAT APP SECRET
         buildConfigField("String", "WB_APP_ID", '"542432732"')

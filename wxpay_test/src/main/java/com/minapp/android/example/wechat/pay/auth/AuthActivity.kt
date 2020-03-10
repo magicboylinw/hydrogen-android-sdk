@@ -4,17 +4,22 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import com.minapp.android.example.wechat.pay.BuildConfig
 import com.minapp.android.example.wechat.pay.Const
 import com.minapp.android.example.wechat.pay.R
-import com.minapp.android.sdk.wechat.WXEntryActivity
-import com.minapp.android.sdk.wechat.WechatComponent
-import com.minapp.android.sdk.wechat.WechatSignInCallback
+import com.minapp.android.example.wechat.pay.toast
+import com.minapp.android.sdk.auth.Auth
+import com.minapp.android.sdk.wechat.*
 import com.minapp.android.sdk.weibo.WeiboComponent
 import com.tencent.mm.opensdk.modelmsg.SendAuth
 import com.tencent.mm.opensdk.openapi.WXAPIFactory
 import kotlinx.android.synthetic.main.activity_auth.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.lang.Exception
 
 class AuthActivity : AppCompatActivity() {
@@ -23,6 +28,7 @@ class AuthActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
 
+        // 微信登录
         wechatLogin.setOnClickListener {
             WechatComponent.signIn(object: WechatSignInCallback {
                 override fun onSuccess() {
@@ -35,8 +41,43 @@ class AuthActivity : AppCompatActivity() {
             })
         }
 
+        // 微博登录
         weiboLogin.setOnClickListener {
             WeiboComponent.signIn(this)
         }
+
+        // 邮箱登录
+        emailSignIn.setOnClickListener {
+            val email = emailTv.text.toString()
+            val pwd = pwdTv.text.toString()
+
+            GlobalScope.launch {
+                try {
+                    try {
+                        Auth.signUpByEmail(email, pwd)
+                    } catch (e: Exception) {}
+                    Auth.signInByEmail(email, pwd)
+                    WechatComponent.associationWithWechat(AssociationType.OVERWRITE, object: AssociationCallback {
+                        override fun onSuccess() {
+                            toast("绑定成功")
+                        }
+
+                        override fun onFailure(ex: Exception?) {
+                            toast("绑定失败(${ex?.message})")
+                            if (ex != null) {
+                                Log.e(Const.TAG, ex.message, ex)
+                            }
+                        }
+                    })
+                } catch (e: Exception) {
+                    withContext(Dispatchers.Main) {
+                        toast("绑定失败(${e.message})")
+                        Log.e(Const.TAG, e.message, e)
+                    }
+                }
+            }
+        }
+
+
     }
 }
