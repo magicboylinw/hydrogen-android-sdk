@@ -29,6 +29,21 @@ import java.util.List;
  */
 public interface HttpApi {
 
+    /**
+     *
+     * 使用短信验证码验证当前登录用户
+     *
+     * 201:	用户激活成功
+     * 400:	参数错误
+     * 401:	用户未登录
+     *
+     * @return
+     */
+    @POST("hserve/v2.1/sms-phone-verification/")
+    CheckedCall<Void> smsPhoneVerification(
+            @Body SmsPhoneVerificationRequest request
+    );
+
 
     /**
      * 微信登录

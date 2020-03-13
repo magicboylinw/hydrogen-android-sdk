@@ -8,10 +8,14 @@ import com.minapp.android.sdk.auth.model.ResetPwdReq;
 import com.minapp.android.sdk.auth.model.UpdateUserReq;
 import com.minapp.android.sdk.auth.model.UpdateUserResp;
 import com.minapp.android.sdk.database.Table;
+import com.minapp.android.sdk.exception.EmptyResponseException;
+import com.minapp.android.sdk.exception.SessionMissingException;
+import com.minapp.android.sdk.model.SmsPhoneVerificationRequest;
 import com.minapp.android.sdk.user.User;
 import com.minapp.android.sdk.util.BaseCallback;
 import com.minapp.android.sdk.util.Util;
 
+import java.io.IOException;
 import java.util.concurrent.Callable;
 
 public class CurrentUser extends User {
@@ -92,4 +96,27 @@ public class CurrentUser extends User {
         return Auth.getExpiresAt();
     }
 
+    /**
+     * 使用短信验证码验证当前登录用户
+     * @param code 短信验证码
+     * @see com.minapp.android.sdk.BaaS#sendSmsCode(String)
+     */
+    public void smsPhoneVerification(String code) throws EmptyResponseException, SessionMissingException, IOException {
+        Global.httpApi().smsPhoneVerification(new SmsPhoneVerificationRequest(code)).execute();
+    }
+
+    /**
+     * 使用短信验证码验证当前登录用户
+     * @param code 短信验证码
+     * @see com.minapp.android.sdk.BaaS#sendSmsCode(String)
+     */
+    public void smsPhoneVerificationInBackground(String code, BaseCallback<Void> cb) {
+        Util.inBackground(cb, new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                smsPhoneVerification(code);
+                return null;
+            }
+        });
+    }
 }

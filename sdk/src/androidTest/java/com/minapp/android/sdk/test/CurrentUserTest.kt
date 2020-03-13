@@ -88,4 +88,19 @@ class CurrentUserTest: BaseAndroidTest() {
     fun emailVerifyTest() {
         assert(user.emailVerify())
     }
+
+    /**
+     * 使用短信验证码校验手机号码
+     */
+    @Test(expected = HttpException::class)
+    fun smsPhoneVerificationTest() {
+        val newPhone = "13690339045"
+        user.updateUser(UpdateUserReq().apply {
+            phone = newPhone
+        })
+        Thread.sleep(2000)
+
+        // 错误的验证码，需抛出异常
+        user.smsPhoneVerification("456789")
+    }
 }
