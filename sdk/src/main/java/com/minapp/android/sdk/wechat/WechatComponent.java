@@ -20,10 +20,10 @@ import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 public final class WechatComponent {
 
-    static IWXAPI WECHAT_API = null;
-    static WechatSignInCallback WECHAT_CB = null;
-    static AssociationCallback ASSOCIATION_CB = null;
-    static AssociationType ASSOCIATION_TYPE = null;
+    public static IWXAPI WECHAT_API = null;
+    public static WechatSignInCallback WECHAT_CB = null;
+    public static AssociationCallback ASSOCIATION_CB = null;
+    public static AssociationType ASSOCIATION_TYPE = null;
 
     private WechatComponent() {}
 
@@ -137,7 +137,7 @@ public final class WechatComponent {
      * @param handler
      * @return false - 把 activity finish 掉即可
      */
-    static boolean handleIntent(Intent intent, IWXAPIEventHandler handler) throws WechatNotInitException {
+    public static boolean handleIntent(Intent intent, IWXAPIEventHandler handler) throws WechatNotInitException {
         assertInit();
         return WECHAT_API.handleIntent(intent, handler);
     }
