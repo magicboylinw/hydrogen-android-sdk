@@ -264,8 +264,7 @@ public abstract class Auth {
      */
     public static void signInAnonymous() throws Exception {
         User info = Global.httpApi().signInAnonymous(new Object()).execute().body();
-        AUTH_INFO.put(SIGN_IN_ANONYMOUS, true);
-        signIn(info);
+        signIn(info, true);
     }
 
     public static void signInAnonymousInBackground(@NonNull BaseCallback<Void> cb) {
@@ -284,6 +283,15 @@ public abstract class Auth {
      * @see #signIn(String, String, long)
      */
     private static void signIn(User info) {
+        signIn(info, false);
+    }
+
+    /**
+     * 登录成功后，保存用户信息
+     * @param info
+     * @see #signIn(String, String, long)
+     */
+    private static void signIn(User info, boolean anonymous) {
         synchronized (AUTH_INFO) {
             if (info != null) {
                 AUTH_INFO.clear();
@@ -299,8 +307,12 @@ public abstract class Auth {
                 }
 
                 try {
-                    AUTH_INFO.put(EXPIRES_IN, Long.valueOf(info.getString(User.EXPIRES_IN)) * 1000 + System.currentTimeMillis());
+                    AUTH_INFO.put(EXPIRES_IN,
+                            Long.valueOf(info.getString(User.EXPIRES_IN)) * 1000 +
+                                    System.currentTimeMillis());
                 } catch (Exception ignored) {}
+
+                AUTH_INFO.put(SIGN_IN_ANONYMOUS, anonymous)
             }
             storeAuthData();
         }
