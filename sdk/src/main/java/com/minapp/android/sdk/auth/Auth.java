@@ -264,8 +264,8 @@ public abstract class Auth {
      */
     public static void signInAnonymous() throws Exception {
         User info = Global.httpApi().signInAnonymous(new Object()).execute().body();
-        signIn(info);
         AUTH_INFO.put(SIGN_IN_ANONYMOUS, true);
+        signIn(info);
     }
 
     public static void signInAnonymousInBackground(@NonNull BaseCallback<Void> cb) {
