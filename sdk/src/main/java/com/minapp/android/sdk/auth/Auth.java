@@ -312,7 +312,7 @@ public abstract class Auth {
                                     System.currentTimeMillis());
                 } catch (Exception ignored) {}
 
-                AUTH_INFO.put(SIGN_IN_ANONYMOUS, anonymous)
+                AUTH_INFO.put(SIGN_IN_ANONYMOUS, anonymous);
             }
             storeAuthData();
         }
