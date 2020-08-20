@@ -1,1 +1,3 @@
+
+include ':weibo_test'
 include ':app', ':sdk', ':wxpay_test', ':test'

@@ -60,7 +60,7 @@ public interface HttpApi {
      * @param req
      * @return
      */
-    @POST("hserve/v2.2/idp/oauth/weibo-native/authenticate/")
+    @POST("hserve/v2.3/idp/oauth/weibo-native/authenticate/")
     CheckedCall<ThirdPartySignInResp> signInByWeibo (
             @Body ThirdPartySignInReq req
     );

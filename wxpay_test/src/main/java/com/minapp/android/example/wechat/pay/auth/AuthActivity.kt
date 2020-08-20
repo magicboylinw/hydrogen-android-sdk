@@ -41,11 +41,6 @@ class AuthActivity : AppCompatActivity() {
             })
         }
 
-        // 微博登录
-        weiboLogin.setOnClickListener {
-            WeiboComponent.signIn(this)
-        }
-
         // 邮箱登录
         emailSignIn.setOnClickListener {
             val email = emailTv.text.toString()
