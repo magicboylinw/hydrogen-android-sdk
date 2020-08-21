@@ -25,7 +25,7 @@ class CurrentUserTest: BaseAndroidTest() {
         fun signIn() {
             email = Util.randomEmail()
             pwd = Util.randomString()
-            Auth.signUpByEmail(email, pwd)
+            Auth.signUpWithEmail(email, pwd)
             user = Auth.currentUser()!!
         }
 

@@ -1,33 +1,25 @@
 package com.minapp.android.sdk.wechat;
 
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Looper;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 
-import com.minapp.android.sdk.Const;
 import com.minapp.android.sdk.Global;
 import com.minapp.android.sdk.auth.Auth;
 import com.minapp.android.sdk.auth.model.ThirdPartySignInReq;
 import com.minapp.android.sdk.auth.model.ThirdPartySignInResp;
 import com.minapp.android.sdk.exception.EmptyResponseException;
-import com.minapp.android.sdk.exception.HttpException;
-import com.minapp.android.sdk.exception.SessionMissingException;
 import com.minapp.android.sdk.util.StatusBarUtil;
 import com.tencent.mm.opensdk.modelbase.BaseReq;
 import com.tencent.mm.opensdk.modelbase.BaseResp;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
 import com.tencent.mm.opensdk.openapi.IWXAPIEventHandler;
-
-import java.io.IOException;
-import java.util.logging.Logger;
 
 /**
  * 这里要区分是微信登录 or 关联微信
@@ -64,7 +56,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
             public void run() {
                 try {
                     ThirdPartySignInResp resp = Global.httpApi()
-                            .signInByWechat(new ThirdPartySignInReq(tokenFromWechat)).execute().body();
+                            .signInWithWechat(new ThirdPartySignInReq(tokenFromWechat)).execute().body();
                     if (resp == null)
                         throw new EmptyResponseException();
                     if (!resp.isOk())

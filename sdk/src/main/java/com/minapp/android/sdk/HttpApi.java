@@ -50,8 +50,8 @@ public interface HttpApi {
      * @param req
      * @return
      */
-    @POST("hserve/v2.4/idp/oauth/wechat-native/sso-authenticate/")
-    CheckedCall<ThirdPartySignInResp> signInByWechat (
+    @POST("hserve/v2.3/idp/oauth/wechat-native/authenticate/")
+    CheckedCall<ThirdPartySignInResp> signInWithWechat(
             @Body ThirdPartySignInReq req
     );
 
@@ -61,7 +61,7 @@ public interface HttpApi {
      * @return
      */
     @POST("hserve/v2.3/idp/oauth/weibo-native/authenticate/")
-    CheckedCall<ThirdPartySignInResp> signInByWeibo (
+    CheckedCall<ThirdPartySignInResp> signInWithWeibo(
             @Body ThirdPartySignInReq req
     );
 
@@ -171,7 +171,7 @@ public interface HttpApi {
      * @return
      */
     @POST("hserve/v2.1/login/sms/")
-    CheckedCall<User> signInByPhone(@Body SignInByPhoneRequest req);
+    CheckedCall<User> signInWithPhone(@Body SignInWithPhoneRequest req);
 
     /**
      * 通过邮箱注册
@@ -179,8 +179,8 @@ public interface HttpApi {
      * @return
      */
     @POST("hserve/v2.0/register/email/")
-    CheckedCall<User> signUpByEmail(
-            @Body SignUpInByEmailReq body
+    CheckedCall<User> signUpWithEmail(
+            @Body SignUpInWithEmailReq body
     );
 
     /**
@@ -189,8 +189,8 @@ public interface HttpApi {
      * @return
      */
     @POST("hserve/v2.0/register/username/")
-    CheckedCall<User> signUpByUsername(
-            @Body SignUpInByUsernameReq body
+    CheckedCall<User> signUpWithUsername(
+            @Body SignUpInWithUsernameReq body
     );
 
     /**
@@ -199,8 +199,8 @@ public interface HttpApi {
      * @return
      */
     @POST("hserve/v2.0/login/email/")
-    CheckedCall<User> signInByEmail(
-            @Body SignUpInByEmailReq body
+    CheckedCall<User> signInWithEmail(
+            @Body SignUpInWithEmailReq body
     );
 
     /**
@@ -209,8 +209,8 @@ public interface HttpApi {
      * @return
      */
     @POST("hserve/v2.0/login/username/")
-    CheckedCall<User> signInByUsername(
-            @Body SignUpInByUsernameReq body
+    CheckedCall<User> signInWithUsername(
+            @Body SignUpInWithUsernameReq body
     );
 
     /**

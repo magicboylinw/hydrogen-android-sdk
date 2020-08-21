@@ -67,7 +67,7 @@ dependencies {
 // 把 sdk 发布到 bintray：./gradlew :sdk:clean :sdk:bintrayUpload
 def bintrayConfig = project.file('../bintray.properties')
 if (bintrayConfig != null && bintrayConfig.exists()) {
-    Properties prop =    new Properties()
+    Properties prop = new Properties()
     prop.load( bintrayConfig.newDataInputStream() )
 
     apply plugin: 'com.novoda.bintray-release'

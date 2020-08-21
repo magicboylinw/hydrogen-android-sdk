@@ -1,20 +1,14 @@
 package com.minapp.android.example.wechat.pay.auth
 
-import android.app.Activity
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import com.minapp.android.example.wechat.pay.BuildConfig
 import com.minapp.android.example.wechat.pay.Const
 import com.minapp.android.example.wechat.pay.R
 import com.minapp.android.example.wechat.pay.toast
 import com.minapp.android.sdk.auth.Auth
 import com.minapp.android.sdk.wechat.*
-import com.minapp.android.sdk.weibo.WeiboComponent
-import com.tencent.mm.opensdk.modelmsg.SendAuth
-import com.tencent.mm.opensdk.openapi.WXAPIFactory
 import kotlinx.android.synthetic.main.activity_auth.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -49,9 +43,9 @@ class AuthActivity : AppCompatActivity() {
             GlobalScope.launch {
                 try {
                     try {
-                        Auth.signUpByEmail(email, pwd)
+                        Auth.signUpWithEmail(email, pwd)
                     } catch (e: Exception) {}
-                    Auth.signInByEmail(email, pwd)
+                    Auth.signInWithEmail(email, pwd)
                     WechatComponent.associationWithWechat(AssociationType.OVERWRITE, object: AssociationCallback {
                         override fun onSuccess() {
                             toast("绑定成功")

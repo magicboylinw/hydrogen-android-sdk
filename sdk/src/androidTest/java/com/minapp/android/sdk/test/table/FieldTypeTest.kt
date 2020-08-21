@@ -66,18 +66,18 @@ class FieldTypeTest: BaseTableTest() {
         var email = Util.randomEmail()
         var pwd = Util.randomString()
         try {
-            Auth.signUpByEmail(email, pwd)
+            Auth.signUpWithEmail(email, pwd)
         } catch (e: Exception) {}
-        val neighborhood = Auth.signInByEmail(email, pwd)
+        val neighborhood = Auth.signInWithEmail(email, pwd)
         val record = table.createRecord().put(TableContract.NEIGHBORHOOD, neighborhood).save()
         assertEquals(table.fetchRecord(record.id).getObject(TableContract.NEIGHBORHOOD, User::class.java), neighborhood)
 
         email = Util.randomEmail()
         pwd = Util.randomString()
         try {
-            Auth.signUpByEmail(email, pwd)
+            Auth.signUpWithEmail(email, pwd)
         } catch (e: Exception) {}
-        val newNeighborhood = Auth.signInByEmail(email, pwd)
+        val newNeighborhood = Auth.signInWithEmail(email, pwd)
         record.put(TableContract.NEIGHBORHOOD, newNeighborhood).save()
         assertEquals(table.fetchRecord(record.id).getObject(TableContract.NEIGHBORHOOD, User::class.java), newNeighborhood)
     }

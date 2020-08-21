@@ -26,7 +26,6 @@ import com.minapp.android.example.base.BaseActivity
 import com.minapp.android.example.R
 import com.minapp.android.example.auth.edit.EditUserActivity
 import com.minapp.android.example.util.Util
-import com.minapp.android.example.util.trimToNull
 import com.minapp.android.sdk.Global
 import com.minapp.android.sdk.auth.Auth
 import com.minapp.android.sdk.user.User
@@ -148,10 +147,10 @@ class AuthActivity : BaseActivity(), LoaderCallbacks<Cursor> {
         activityScope.launch {
             try {
                 var response: String? = when (viewId) {
-                    email_sign_up_button.id -> Auth.signUpByEmail(name, pwd)
-                    email_sign_in_button.id -> Auth.signInByEmail(name, pwd)
-                    username_sign_in_button.id -> Auth.signInByUsername(name, pwd)
-                    username_sign_up_button.id -> Auth.signUpByUsername(name, pwd)
+                    email_sign_up_button.id -> Auth.signUpWithEmail(name, pwd)
+                    email_sign_in_button.id -> Auth.signInWithEmail(name, pwd)
+                    username_sign_in_button.id -> Auth.signInWithUsername(name, pwd)
+                    username_sign_up_button.id -> Auth.signUpWithUsername(name, pwd)
                     anonymous_sign_in_button.id -> Auth.signInAnonymous()
                     else -> null
                 }?.let { Global.gsonPrint().toJson(it) }

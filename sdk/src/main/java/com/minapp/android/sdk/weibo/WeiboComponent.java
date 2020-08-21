@@ -2,8 +2,6 @@ package com.minapp.android.sdk.weibo;
 
 import android.app.Activity;
 import android.content.Context;
-import android.os.HandlerThread;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -127,7 +125,7 @@ public abstract class WeiboComponent {
         ThirdPartySignInReq request = new ThirdPartySignInReq();
         request.accessToken = token != null ? token.getToken() : "";
         request.uid = token != null ? token.getUid() : "";
-        Global.httpApi().signInByWeibo(request).enqueue(new Callback<ThirdPartySignInResp>() {
+        Global.httpApi().signInWithWeibo(request).enqueue(new Callback<ThirdPartySignInResp>() {
             @Override
             public void onResponse(Call<ThirdPartySignInResp> call, Response<ThirdPartySignInResp> response) {
                 try {

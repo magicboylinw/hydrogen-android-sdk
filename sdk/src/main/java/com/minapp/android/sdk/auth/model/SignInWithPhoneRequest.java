@@ -2,7 +2,7 @@ package com.minapp.android.sdk.auth.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class SignInByPhoneRequest {
+public class SignInWithPhoneRequest {
 
     /**
      * 用户手机号
@@ -22,9 +22,9 @@ public class SignInByPhoneRequest {
     @SerializedName("create_user")
     public Boolean createUser;
 
-    public SignInByPhoneRequest() {}
+    public SignInWithPhoneRequest() {}
 
-    public SignInByPhoneRequest(String phone, String code) {
+    public SignInWithPhoneRequest(String phone, String code) {
         this.phone = phone;
         this.code = code;
     }

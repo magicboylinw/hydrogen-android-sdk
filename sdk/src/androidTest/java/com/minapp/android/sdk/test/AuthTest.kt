@@ -1,8 +1,7 @@
 package com.minapp.android.sdk.test
 
-import com.minapp.android.sdk.BaaS
 import com.minapp.android.sdk.auth.Auth
-import com.minapp.android.sdk.auth.model.SignInByPhoneRequest
+import com.minapp.android.sdk.auth.model.SignInWithPhoneRequest
 import com.minapp.android.sdk.exception.HttpException
 import com.minapp.android.sdk.test.base.BaseAndroidTest
 import org.junit.*
@@ -44,7 +43,7 @@ class AuthTest: BaseAndroidTest() {
      */
     @Test
     fun signUpByEmailTest() {
-        val user = Auth.signUpByEmail(email, pwd)
+        val user = Auth.signUpWithEmail(email, pwd)
         assertEquals(Auth.currentUserWithoutData()!!.userId, user.userId)
     }
 
@@ -53,7 +52,7 @@ class AuthTest: BaseAndroidTest() {
      */
     @Test
     fun signUpByUsername() {
-        val user = Auth.signUpByUsername(username, pwd)
+        val user = Auth.signUpWithUsername(username, pwd)
         assertEquals(Auth.currentUserWithoutData()!!.userId, user.userId)
     }
 
@@ -62,7 +61,7 @@ class AuthTest: BaseAndroidTest() {
      */
     @Test
     fun signinByEmail() {
-        val user = Auth.signInByEmail(email, pwd)
+        val user = Auth.signInWithEmail(email, pwd)
         assertEquals(Auth.currentUserWithoutData()!!.userId, user.userId)
     }
 
@@ -71,7 +70,7 @@ class AuthTest: BaseAndroidTest() {
      */
     @Test
     fun signinByUsername() {
-        val user = Auth.signInByUsername(username, pwd)
+        val user = Auth.signInWithUsername(username, pwd)
         assertEquals(Auth.currentUserWithoutData()!!.userId, user.userId)
     }
 
@@ -109,7 +108,10 @@ class AuthTest: BaseAndroidTest() {
      */
     @Test(expected = HttpException::class)
     fun signInByPhoneTest() {
-        val req = SignInByPhoneRequest("12345678912", "987678")
-        Auth.signInByPhone(req)
+        val req = SignInWithPhoneRequest(
+            "12345678912",
+            "987678"
+        )
+        Auth.signInWithPhone(req)
     }
 }
