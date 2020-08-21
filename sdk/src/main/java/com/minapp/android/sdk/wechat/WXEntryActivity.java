@@ -1,34 +1,29 @@
 package com.minapp.android.sdk.wechat;
 
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Looper;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 
-import com.minapp.android.sdk.Const;
 import com.minapp.android.sdk.Global;
 import com.minapp.android.sdk.auth.Auth;
 import com.minapp.android.sdk.auth.model.ThirdPartySignInReq;
 import com.minapp.android.sdk.auth.model.ThirdPartySignInResp;
 import com.minapp.android.sdk.exception.EmptyResponseException;
-import com.minapp.android.sdk.exception.HttpException;
-import com.minapp.android.sdk.exception.SessionMissingException;
 import com.minapp.android.sdk.util.StatusBarUtil;
 import com.tencent.mm.opensdk.modelbase.BaseReq;
 import com.tencent.mm.opensdk.modelbase.BaseResp;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
 import com.tencent.mm.opensdk.openapi.IWXAPIEventHandler;
 
-import java.io.IOException;
-import java.util.logging.Logger;
-
+/**
+ * 这里要区分是微信登录 or 关联微信
+ */
 public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
     private static final String TAG = "WXEntryActivity";
 
@@ -61,7 +56,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
             public void run() {
                 try {
                     ThirdPartySignInResp resp = Global.httpApi()
-                            .signInByWechat(new ThirdPartySignInReq(tokenFromWechat)).execute().body();
+                            .signInWithWechat(new ThirdPartySignInReq(tokenFromWechat)).execute().body();
                     if (resp == null)
                         throw new EmptyResponseException();
                     if (!resp.isOk())
@@ -81,6 +76,39 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
             }
         });
     }
+
+    /**
+     * 绑定微信
+     * @param token
+     */
+    private void associationWechat(String token) {
+        Global.submit(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String updateType = WechatComponent.ASSOCIATION_TYPE != null ?
+                            WechatComponent.ASSOCIATION_TYPE.value : null;
+                    ThirdPartySignInResp response = Global.httpApi().associationWithWechat(
+                            new ThirdPartySignInReq(token, updateType)).execute().body();
+
+                    if (response == null)
+                        throw new EmptyResponseException();
+                    if (!response.isOk())
+                        throw new Exception(new StringBuilder()
+                                .append("sign in error: ")
+                                .append(response.message).toString()
+                        );
+                    onResult(true, null);
+
+                } catch (Exception e) {
+                    if (!isDestroyed()) {
+                        onResult(false, e);
+                    }
+                }
+            }
+        });
+    }
+
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -105,7 +133,11 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
             if (BaseResp.ErrCode.ERR_OK != authResp.errCode) {
                 onResult(false, new WechatException(authResp));
             } else {
-                sendServerAuth(authResp.code);
+                if (WechatComponent.WECHAT_CB != null) {
+                    sendServerAuth(authResp.code);
+                } else {
+                    associationWechat(authResp.code);
+                }
             }
         } else {
             onResult(false, null);
@@ -141,8 +173,19 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
             } else {
                 cb.onFailure(ex);
             }
+            WechatComponent.WECHAT_CB = null;
         }
-        WechatComponent.WECHAT_CB = null;
+
+        AssociationCallback acb = WechatComponent.ASSOCIATION_CB;
+        if (acb != null) {
+            if (success) {
+                acb.onSuccess();
+            } else {
+                acb.onFailure(ex);
+            }
+            WechatComponent.ASSOCIATION_CB = null;
+            WechatComponent.ASSOCIATION_TYPE = null;
+        }
     }
 
 }

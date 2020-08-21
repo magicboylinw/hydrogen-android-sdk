@@ -140,6 +140,32 @@ public abstract class Auth {
         return Boolean.TRUE.equals(AUTH_INFO.get(SIGN_IN_ANONYMOUS));
     }
 
+    /**
+     * 使用手机号 + 短信验证码登录（注册）
+     * @param req
+     * @return
+     * @throws Exception
+     */
+    public static User signInWithPhone(SignInWithPhoneRequest req) throws Exception {
+        User user = Global.httpApi().signInWithPhone(req).execute().body();
+        signIn(user);
+        return user;
+    }
+
+    /**
+     * 使用手机号 + 短信验证码登录（注册）
+     * @param req
+     * @param cb
+     */
+    public static void signInWithPhoneInBackground(SignInWithPhoneRequest req, @NonNull BaseCallback<User> cb) {
+        Util.inBackground(cb, new Callable<User>() {
+            @Override
+            public User call() throws Exception {
+                return Auth.signInWithPhone(req);
+            }
+        });
+    }
+
 
     /**
      * 邮箱注册
@@ -148,17 +174,17 @@ public abstract class Auth {
      * @return
      * @throws Exception
      */
-    public static User signUpByEmail(String email, String pwd) throws Exception {
-        User user = Global.httpApi().signUpByEmail(new SignUpInByEmailReq(email, pwd)).execute().body();
+    public static User signUpWithEmail(String email, String pwd) throws Exception {
+        User user = Global.httpApi().signUpWithEmail(new SignUpInWithEmailReq(email, pwd)).execute().body();
         signIn(user);
         return user;
     }
 
-    public static void signUpByEmailInBackground(final String email, final String pwd, @NonNull BaseCallback<User> cb) {
+    public static void signUpWithEmailInBackground(final String email, final String pwd, @NonNull BaseCallback<User> cb) {
         Util.inBackground(cb, new Callable<User>() {
             @Override
             public User call() throws Exception {
-                return Auth.signUpByEmail(email, pwd);
+                return Auth.signUpWithEmail(email, pwd);
             }
         });
     }
@@ -170,17 +196,17 @@ public abstract class Auth {
      * @return
      * @throws Exception
      */
-    public static User signUpByUsername(String username, String pwd) throws Exception {
-        User user = Global.httpApi().signUpByUsername(new SignUpInByUsernameReq(username, pwd)).execute().body();
+    public static User signUpWithUsername(String username, String pwd) throws Exception {
+        User user = Global.httpApi().signUpWithUsername(new SignUpInWithUsernameReq(username, pwd)).execute().body();
         signIn(user);
         return user;
     }
 
-    public static void signUpByUsernameInBackground(final String username, final String pwd, @NonNull BaseCallback<User> cb) {
+    public static void signUpWithUsernameInBackground(final String username, final String pwd, @NonNull BaseCallback<User> cb) {
         Util.inBackground(cb, new Callable<User>() {
             @Override
             public User call() throws Exception {
-                return Auth.signUpByUsername(username, pwd);
+                return Auth.signUpWithUsername(username, pwd);
             }
         });
     }
@@ -192,18 +218,18 @@ public abstract class Auth {
      * @return
      * @throws Exception
      */
-    public static User signInByEmail(String email, String pwd) throws Exception {
-        User info = Global.httpApi().signInByEmail(new SignUpInByEmailReq(email, pwd)).execute().body();
+    public static User signInWithEmail(String email, String pwd) throws Exception {
+        User info = Global.httpApi().signInWithEmail(new SignUpInWithEmailReq(email, pwd)).execute().body();
         signIn(info);
         return info;
     }
 
 
-    public static void signInByEmailInBackground(final String email, final String pwd, @NonNull BaseCallback<User> cb) {
+    public static void signInWithEmailInBackground(final String email, final String pwd, @NonNull BaseCallback<User> cb) {
         Util.inBackground(cb, new Callable<User>() {
             @Override
             public User call() throws Exception {
-                return Auth.signInByEmail(email, pwd);
+                return Auth.signInWithEmail(email, pwd);
             }
         });
     }
@@ -216,17 +242,17 @@ public abstract class Auth {
      * @return
      * @throws Exception
      */
-    public static User signInByUsername(String username, String pwd) throws Exception {
-        User info = Global.httpApi().signInByUsername(new SignUpInByUsernameReq(username, pwd)).execute().body();
+    public static User signInWithUsername(String username, String pwd) throws Exception {
+        User info = Global.httpApi().signInWithUsername(new SignUpInWithUsernameReq(username, pwd)).execute().body();
         signIn(info);
         return info;
     }
 
-    public static void signInByUsernameInBackground(final String username, final String pwd, @NonNull BaseCallback<User> cb) {
+    public static void signInWithUsernameInBackground(final String username, final String pwd, @NonNull BaseCallback<User> cb) {
         Util.inBackground(cb, new Callable<User>() {
             @Override
             public User call() throws Exception {
-                return Auth.signInByUsername(username, pwd);
+                return Auth.signInWithUsername(username, pwd);
             }
         });
     }
@@ -238,8 +264,7 @@ public abstract class Auth {
      */
     public static void signInAnonymous() throws Exception {
         User info = Global.httpApi().signInAnonymous(new Object()).execute().body();
-        signIn(info);
-        AUTH_INFO.put(SIGN_IN_ANONYMOUS, true);
+        signIn(info, true);
     }
 
     public static void signInAnonymousInBackground(@NonNull BaseCallback<Void> cb) {
@@ -258,6 +283,15 @@ public abstract class Auth {
      * @see #signIn(String, String, long)
      */
     private static void signIn(User info) {
+        signIn(info, false);
+    }
+
+    /**
+     * 登录成功后，保存用户信息
+     * @param info
+     * @see #signIn(String, String, long)
+     */
+    private static void signIn(User info, boolean anonymous) {
         synchronized (AUTH_INFO) {
             if (info != null) {
                 AUTH_INFO.clear();
@@ -273,8 +307,12 @@ public abstract class Auth {
                 }
 
                 try {
-                    AUTH_INFO.put(EXPIRES_IN, Long.valueOf(info.getString(User.EXPIRES_IN)) * 1000 + System.currentTimeMillis());
+                    AUTH_INFO.put(EXPIRES_IN,
+                            Long.valueOf(info.getString(User.EXPIRES_IN)) * 1000 +
+                                    System.currentTimeMillis());
                 } catch (Exception ignored) {}
+
+                AUTH_INFO.put(SIGN_IN_ANONYMOUS, anonymous);
             }
             storeAuthData();
         }

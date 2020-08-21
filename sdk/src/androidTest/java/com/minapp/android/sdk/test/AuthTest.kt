@@ -1,6 +1,8 @@
 package com.minapp.android.sdk.test
 
 import com.minapp.android.sdk.auth.Auth
+import com.minapp.android.sdk.auth.model.SignInWithPhoneRequest
+import com.minapp.android.sdk.exception.HttpException
 import com.minapp.android.sdk.test.base.BaseAndroidTest
 import org.junit.*
 import org.junit.Assert.*
@@ -41,7 +43,7 @@ class AuthTest: BaseAndroidTest() {
      */
     @Test
     fun signUpByEmailTest() {
-        val user = Auth.signUpByEmail(email, pwd)
+        val user = Auth.signUpWithEmail(email, pwd)
         assertEquals(Auth.currentUserWithoutData()!!.userId, user.userId)
     }
 
@@ -50,7 +52,7 @@ class AuthTest: BaseAndroidTest() {
      */
     @Test
     fun signUpByUsername() {
-        val user = Auth.signUpByUsername(username, pwd)
+        val user = Auth.signUpWithUsername(username, pwd)
         assertEquals(Auth.currentUserWithoutData()!!.userId, user.userId)
     }
 
@@ -59,7 +61,7 @@ class AuthTest: BaseAndroidTest() {
      */
     @Test
     fun signinByEmail() {
-        val user = Auth.signInByEmail(email, pwd)
+        val user = Auth.signInWithEmail(email, pwd)
         assertEquals(Auth.currentUserWithoutData()!!.userId, user.userId)
     }
 
@@ -68,7 +70,7 @@ class AuthTest: BaseAndroidTest() {
      */
     @Test
     fun signinByUsername() {
-        val user = Auth.signInByUsername(username, pwd)
+        val user = Auth.signInWithUsername(username, pwd)
         assertEquals(Auth.currentUserWithoutData()!!.userId, user.userId)
     }
 
@@ -98,5 +100,18 @@ class AuthTest: BaseAndroidTest() {
     fun signedInTest() {
         signinByEmail()
         assertTrue(Auth.signedIn())
+    }
+
+    /**
+     * 使用手机号 + 短信验证码登录
+     * 测试无效的验证码抛出 HttpException
+     */
+    @Test(expected = HttpException::class)
+    fun signInByPhoneTest() {
+        val req = SignInWithPhoneRequest(
+            "12345678912",
+            "987678"
+        )
+        Auth.signInWithPhone(req)
     }
 }

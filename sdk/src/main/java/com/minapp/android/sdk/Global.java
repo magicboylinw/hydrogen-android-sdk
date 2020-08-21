@@ -38,6 +38,7 @@ public abstract class Global {
     private static ExecutorService EXECUTOR_SERVICE;
     private static Handler MAIN_HANDLER = new Handler(Looper.getMainLooper());
     private static Application APP = null;
+    private static OkHttpClient CLIENT = null;
 
 
     public static @Nullable Application getApplication() {
@@ -57,30 +58,13 @@ public abstract class Global {
         if (HTTP_API == null) {
             synchronized (Global.class) {
                 if (HTTP_API == null) {
-                    OkHttpClient client = new OkHttpClient.Builder()
-                            .followRedirects(true)
-                            .followSslRedirects(true)
-                            .connectTimeout(Const.HTTP_TIMEOUT, TimeUnit.MILLISECONDS)
-                            .readTimeout(Const.HTTP_TIMEOUT, TimeUnit.MILLISECONDS)
-                            .writeTimeout(Const.HTTP_TIMEOUT, TimeUnit.MILLISECONDS)
-                            .cookieJar(new MemoryCookieJar())
-                            .retryOnConnectionFailure(true)
-                            .addNetworkInterceptor(new AuthInterceptor())
-                            .addNetworkInterceptor(new ContentTypeInterceptor())
-                            .build();
-
-                    if (GSON == null) {
-                        gson();
-                    }
-
-                    Retrofit retrofit = new Retrofit.Builder()
-                            .client(client)
-                            .addConverterFactory(GsonConverterFactory.create(GSON))
+                    HTTP_API = new Retrofit.Builder()
+                            .client(httpClient())
+                            .addConverterFactory(GsonConverterFactory.create(gson()))
                             .addCallAdapterFactory(new CheckedCallAdapterFactory())
                             .baseUrl(Config.getEndpoint())
-                            .build();
-
-                    HTTP_API = retrofit.create(HttpApi.class);
+                            .build()
+                            .create(HttpApi.class);
                 }
             }
         }
@@ -145,6 +129,27 @@ public abstract class Global {
                 .registerTypeAdapter(WithinCircle.class, new WithinCircleSerializer())
                 .registerTypeAdapter(WithinRegion.class, new WithinRegionSerializer())
                 ;
+    }
+
+    public static OkHttpClient httpClient() {
+        if (CLIENT == null) {
+            synchronized (Global.class) {
+                if (CLIENT == null) {
+                    CLIENT = new OkHttpClient.Builder()
+                            .followRedirects(true)
+                            .followSslRedirects(true)
+                            .connectTimeout(Const.HTTP_TIMEOUT, TimeUnit.MILLISECONDS)
+                            .readTimeout(Const.HTTP_TIMEOUT, TimeUnit.MILLISECONDS)
+                            .writeTimeout(Const.HTTP_TIMEOUT, TimeUnit.MILLISECONDS)
+                            .cookieJar(new MemoryCookieJar())
+                            .retryOnConnectionFailure(true)
+                            .addNetworkInterceptor(new AuthInterceptor())
+                            .addNetworkInterceptor(new ContentTypeInterceptor())
+                            .build();
+                }
+            }
+        }
+        return CLIENT;
     }
 
 }

@@ -5,8 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+
 import com.minapp.android.sdk.Const;
 import com.minapp.android.sdk.Global;
+import com.minapp.android.sdk.auth.Auth;
+import com.minapp.android.sdk.exception.SessionMissingException;
 import com.minapp.android.sdk.model.OrderResp;
 import com.minapp.android.sdk.util.BaseCallback;
 import com.minapp.android.sdk.util.Retrofit2CallbackAdapter;
@@ -17,10 +20,39 @@ import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 public final class WechatComponent {
 
-    static IWXAPI WECHAT_API = null;
-    static WechatSignInCallback WECHAT_CB = null;
+    public static IWXAPI WECHAT_API = null;
+    public static WechatSignInCallback WECHAT_CB = null;
+    public static AssociationCallback ASSOCIATION_CB = null;
+    public static AssociationType ASSOCIATION_TYPE = null;
 
     private WechatComponent() {}
+
+
+    /**
+     * 当前登录用户关联微信
+     * @param type 更新用户信息的方式，选填
+     * @param cb
+     * @see AssociationType
+     */
+    public static void associationWithWechat(AssociationType type, AssociationCallback cb) {
+        try {
+            assertInit();
+            if (!Auth.signedIn()) {
+                throw new SessionMissingException();
+            }
+            sendWechatAuthReq();
+            ASSOCIATION_CB = cb;
+            ASSOCIATION_TYPE = type;
+            WECHAT_CB = null;
+        } catch (Exception e) {
+            if (cb != null) {
+                cb.onFailure(e);
+            }
+            ASSOCIATION_CB = null;
+            ASSOCIATION_TYPE = null;
+        }
+    }
+
 
     /**
      * 微信登录
@@ -30,10 +62,13 @@ public final class WechatComponent {
         try {
             sendWechatAuthReq();
             WECHAT_CB = cb;
+            ASSOCIATION_CB = null;
+            ASSOCIATION_TYPE = null;
         } catch (Exception e) {
             if (cb != null) {
                 cb.onFailure(e);
             }
+            WECHAT_CB = null;
         }
     }
 
@@ -102,7 +137,7 @@ public final class WechatComponent {
      * @param handler
      * @return false - 把 activity finish 掉即可
      */
-    static boolean handleIntent(Intent intent, IWXAPIEventHandler handler) throws WechatNotInitException {
+    public static boolean handleIntent(Intent intent, IWXAPIEventHandler handler) throws WechatNotInitException {
         assertInit();
         return WECHAT_API.handleIntent(intent, handler);
     }

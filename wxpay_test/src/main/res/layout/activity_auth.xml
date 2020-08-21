@@ -1,16 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".auth.AuthActivity">
 
+    <EditText
+            android:id="@+id/emailTv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            android:inputType="textEmailAddress"
+        />
+
+    <EditText
+            android:id="@+id/pwdTv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            app:layout_constraintTop_toBottomOf="@id/emailTv"
+        />
+
     <Button
             android:id="@+id/wechatLogin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/pwdTv"
             android:text="微信登录"
         />
 
@@ -21,4 +38,20 @@
             app:layout_constraintTop_toBottomOf="@id/wechatLogin"
             android:text="微博登录"
             />
+
+    <Button
+            android:id="@+id/emailSignIn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/weiboLogin"
+            android:text="邮箱登录（注册）"
+        />
+
+    <Button
+            android:id="@+id/associationWechat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/emailSignIn"
+            android:text="绑定微信"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>

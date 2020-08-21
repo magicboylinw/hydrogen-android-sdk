@@ -2,32 +2,32 @@ package com.minapp.android.sdk.auth.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class SignUpInByEmailReq {
+public class SignUpInWithUsernameReq {
 
     /**
-     * email : aaa@bbb
+     * username : wefw
      * password : isdkf asdf
      */
 
-    @SerializedName("email")
-    private String email;
+    @SerializedName("username")
+    private String username;
     @SerializedName("password")
     private String password;
 
-    public SignUpInByEmailReq(String email, String password) {
-        this.email = email;
+    public SignUpInWithUsernameReq(String username, String password) {
+        this.username = username;
         this.password = password;
     }
 
-    public SignUpInByEmailReq() {
+    public SignUpInWithUsernameReq() {
     }
 
-    public String getEmail() {
-        return email;
+    public String getUsername() {
+        return username;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {

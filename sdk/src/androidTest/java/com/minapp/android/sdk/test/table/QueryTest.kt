@@ -34,9 +34,9 @@ class QueryTest: BaseAuthedTest() {
             val email = Util.randomEmail()
             val pwd = Util.randomString()
             try {
-                Auth.signUpByEmail(email, pwd)
+                Auth.signUpWithEmail(email, pwd)
             } catch (e: Exception) {}
-            val neighborhood = Auth.signInByEmail(email, pwd)
+            val neighborhood = Auth.signInWithEmail(email, pwd)
 
             pear = table.createRecord().apply {
                 put(TableContract.NAME, "pear")

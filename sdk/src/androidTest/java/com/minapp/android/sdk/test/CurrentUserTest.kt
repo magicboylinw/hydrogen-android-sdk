@@ -25,7 +25,7 @@ class CurrentUserTest: BaseAndroidTest() {
         fun signIn() {
             email = Util.randomEmail()
             pwd = Util.randomString()
-            Auth.signUpByEmail(email, pwd)
+            Auth.signUpWithEmail(email, pwd)
             user = Auth.currentUser()!!
         }
 
@@ -44,18 +44,21 @@ class CurrentUserTest: BaseAndroidTest() {
         val newEmail = Util.randomEmail()
         val newUsername = Util.randomString()
         val newPwd = Util.randomString()
+        val newPhone = "13690339045"
 
         user.updateUser(UpdateUserReq().apply {
             username = newUsername
             email = newEmail
             newPassword = newPwd
             password = pwd
+            phone = newPhone
         })
         Thread.sleep(2000)
 
         user = Auth.currentUser()!!
         assertEquals(user.email, newEmail)
         assertEquals(user.username, newUsername)
+        assertEquals(user.phone, newPhone)
     }
 
     /**
@@ -84,5 +87,20 @@ class CurrentUserTest: BaseAndroidTest() {
     @Test
     fun emailVerifyTest() {
         assert(user.emailVerify())
+    }
+
+    /**
+     * 使用短信验证码校验手机号码
+     */
+    @Test(expected = HttpException::class)
+    fun smsPhoneVerificationTest() {
+        val newPhone = "13690339045"
+        user.updateUser(UpdateUserReq().apply {
+            phone = newPhone
+        })
+        Thread.sleep(2000)
+
+        // 错误的验证码，需抛出异常
+        user.smsPhoneVerification("456789")
     }
 }

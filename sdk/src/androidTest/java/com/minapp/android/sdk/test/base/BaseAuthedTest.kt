@@ -16,9 +16,9 @@ open class BaseAuthedTest : BaseAndroidTest() {
         @JvmStatic
         fun signIn() {
             try {
-                Auth.signUpByEmail(email, pwd)
+                Auth.signUpWithEmail(email, pwd)
             } catch (e: Exception) {}
-            Auth.signInByEmail(email, pwd)
+            Auth.signInWithEmail(email, pwd)
         }
 
         @AfterClass

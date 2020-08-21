@@ -10,7 +10,35 @@ public class ThirdPartySignInReq {
     @SerializedName("auth_token")
     public String authToken;
 
+    /**
+     * 微博 sdk 登录拿到的 accessToken
+     */
+    @SerializedName("access_token")
+    public String accessToken;
+
+    /**
+     * 微博 sdk 登录拿到的 uid
+     */
+    @SerializedName("uid")
+    public String uid;
+
+    /**
+     * 更新用户信息的方式，选填
+     * overwrite（覆盖）
+     * setnx（值不存在时设置）
+     * false（不更新）
+     */
+    @SerializedName("update_userprofile")
+    public String updateUserprofile;
+
     public ThirdPartySignInReq(String authToken) {
         this.authToken = authToken;
     }
+
+    public ThirdPartySignInReq(String authToken, String updateUserprofile) {
+        this.authToken = authToken;
+        this.updateUserprofile = updateUserprofile;
+    }
+
+    public ThirdPartySignInReq() {}
 }

@@ -91,6 +91,16 @@ public class User extends Record {
      */
     public static final String EXPIRES_IN = "expires_in";
 
+    /**
+     * 手机号码，{@link String}
+     */
+    public static final String PHONE = "_phone";
+
+    /**
+     * 手机号码是否校验过，{@link Boolean}
+     */
+    public static final String PHONE_VERIFIED = "_phone_verified";
+
 
     public User(Table table) {
         this(table, null);
@@ -231,6 +241,22 @@ public class User extends Record {
 
     public Integer getExpiresInSeconds() {
         return getInt(EXPIRES_IN);
+    }
+
+    public String getPhone() {
+        return getString(PHONE);
+    }
+
+    public void setPhone(String phone) {
+        put(PHONE, phone);
+    }
+
+    public Boolean isPhoneVerified() {
+        return getBoolean(PHONE_VERIFIED);
+    }
+
+    public void setPhoneVerified(Boolean verified) {
+        put(PHONE_VERIFIED, verified);
     }
 
 }

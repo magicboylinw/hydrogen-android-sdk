@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import com.google.gson.JsonObject
-import com.minapp.android.sdk.BaaS
 import com.minapp.android.sdk.Global
 import com.minapp.android.sdk.alipay.AlipayComponent
 import com.minapp.android.sdk.alipay.AlipayOrder
@@ -16,13 +15,11 @@ import com.minapp.android.sdk.model.OrderResp
 import com.minapp.android.sdk.util.BaseCallback
 import com.minapp.android.sdk.wechat.WechatComponent
 import com.minapp.android.sdk.wechat.WechatOrder
-import com.minapp.android.sdk.wechat.WechatOrderResult
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.logging.Logger
 
 class MainActivity : AppCompatActivity() {
 
@@ -60,10 +57,10 @@ class MainActivity : AppCompatActivity() {
             val user = "wxpay_test"
             val pwd = "123455"
             try {
-                Auth.signUpByUsername(user, pwd)
+                Auth.signUpWithUsername(user, pwd)
             } catch (e: Exception) { Log.e(Const.TAG, e.message, e) }
             try {
-                Auth.signInByUsername(user, pwd)
+                Auth.signInWithUsername(user, pwd)
             } catch (e: Exception) { Log.e(Const.TAG, e.message, e) }
             withContext(Dispatchers.Main) {
                 printSignIn()

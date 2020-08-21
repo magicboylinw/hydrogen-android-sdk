@@ -29,6 +29,21 @@ import java.util.List;
  */
 public interface HttpApi {
 
+    /**
+     *
+     * 使用短信验证码验证当前登录用户
+     *
+     * 201:	用户激活成功
+     * 400:	参数错误
+     * 401:	用户未登录
+     *
+     * @return
+     */
+    @POST("hserve/v2.1/sms-phone-verification/")
+    CheckedCall<Void> smsPhoneVerification(
+            @Body SmsPhoneVerificationRequest request
+    );
+
 
     /**
      * 微信登录
@@ -36,7 +51,7 @@ public interface HttpApi {
      * @return
      */
     @POST("hserve/v2.3/idp/oauth/wechat-native/authenticate/")
-    CheckedCall<ThirdPartySignInResp> signInByWechat (
+    CheckedCall<ThirdPartySignInResp> signInWithWechat(
             @Body ThirdPartySignInReq req
     );
 
@@ -45,8 +60,8 @@ public interface HttpApi {
      * @param req
      * @return
      */
-    @POST("hserve/v2.2/idp/oauth/weibo-native/authenticate/")
-    CheckedCall<ThirdPartySignInResp> signInByWeibo (
+    @POST("hserve/v2.3/idp/oauth/weibo-native/authenticate/")
+    CheckedCall<ThirdPartySignInResp> signInWithWeibo(
             @Body ThirdPartySignInReq req
     );
 
@@ -55,7 +70,7 @@ public interface HttpApi {
      * @param req
      * @return
      */
-    @POST("hserve/v2.2/idp/oauth/wechat-native/user-association/")
+    @POST("hserve/v2.3/idp/oauth/wechat-native/user-association/")
     CheckedCall<ThirdPartySignInResp> associationWithWechat (
             @Body ThirdPartySignInReq req
     );
@@ -65,7 +80,7 @@ public interface HttpApi {
      * @param req
      * @return
      */
-    @POST("hserve/v2.2/idp/oauth/weibo-native/user-association/")
+    @POST("hserve/v2.3/idp/oauth/weibo-native/user-association/")
     CheckedCall<ThirdPartySignInResp> associationWithWeibo (
             @Body ThirdPartySignInReq req
     );
@@ -132,7 +147,7 @@ public interface HttpApi {
      * @param req
      * @return
      */
-    @POST("hserve/v1.8/sms-verification-code/")
+    @POST("hserve/v2.1/sms-verification-code/")
     CheckedCall<StatusResp> sendSmsCode (
             @Body SendSmsCodeReq req
     );
@@ -151,13 +166,21 @@ public interface HttpApi {
     /********************************* auth api ****************************************/
 
     /**
+     * 使用手机号 + 短信验证码登录（注册）
+     * @param req
+     * @return
+     */
+    @POST("hserve/v2.1/login/sms/")
+    CheckedCall<User> signInWithPhone(@Body SignInWithPhoneRequest req);
+
+    /**
      * 通过邮箱注册
      * @param body
      * @return
      */
     @POST("hserve/v2.0/register/email/")
-    CheckedCall<User> signUpByEmail(
-            @Body SignUpInByEmailReq body
+    CheckedCall<User> signUpWithEmail(
+            @Body SignUpInWithEmailReq body
     );
 
     /**
@@ -166,8 +189,8 @@ public interface HttpApi {
      * @return
      */
     @POST("hserve/v2.0/register/username/")
-    CheckedCall<User> signUpByUsername(
-            @Body SignUpInByUsernameReq body
+    CheckedCall<User> signUpWithUsername(
+            @Body SignUpInWithUsernameReq body
     );
 
     /**
@@ -176,8 +199,8 @@ public interface HttpApi {
      * @return
      */
     @POST("hserve/v2.0/login/email/")
-    CheckedCall<User> signInByEmail(
-            @Body SignUpInByEmailReq body
+    CheckedCall<User> signInWithEmail(
+            @Body SignUpInWithEmailReq body
     );
 
     /**
@@ -186,8 +209,8 @@ public interface HttpApi {
      * @return
      */
     @POST("hserve/v2.0/login/username/")
-    CheckedCall<User> signInByUsername(
-            @Body SignUpInByUsernameReq body
+    CheckedCall<User> signInWithUsername(
+            @Body SignUpInWithUsernameReq body
     );
 
     /**
@@ -215,7 +238,7 @@ public interface HttpApi {
      * @param body
      * @return
      */
-    @PUT("hserve/v2.0/user/account/")
+    @PUT("hserve/v2.1/user/account/")
     CheckedCall<UpdateUserResp> updateUser(
             @Body UpdateUserReq body
     );

@@ -19,6 +19,8 @@ public class UpdateUserReq {
     private String password;        // 用户密码 （若有提交 new_password 则为必填）
     @SerializedName("new_password")
     private String newPassword;     // 新用户密码
+    @SerializedName("phone")
+    private String phone;           // 手机号
 
     public String getUsername() {
         return username;
@@ -50,5 +52,13 @@ public class UpdateUserReq {
 
     public void setNewPassword(String newPassword) {
         this.newPassword = newPassword;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }
