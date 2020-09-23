@@ -99,3 +99,12 @@
 
 # alipat sdk
 -dontwarn com.alipay.**
+
+# mi push
+
+# https://dev.mi.com/console/doc/detail?pId=41#_1_1
+# 如果你的应用使用了混淆，你需要keep自定义的BroadcastReceiver
+# 自定义的BroadcastReceiver继承PushMessageReceiver，使用下面的代码是不行的
+# -keep public class * extends android.content.BroadcastReceiver
+# 你需要使用下面的代码keep自定义的BroadcastReceiver
+-keep class com.minapp.android.sdk.push.BsMiPushMessageReceiver {*;}

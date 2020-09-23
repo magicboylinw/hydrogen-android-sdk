@@ -1,0 +1,4 @@
+/build
+keystore.properties
+src/main/assets/keystore.json
+/ifanrkey

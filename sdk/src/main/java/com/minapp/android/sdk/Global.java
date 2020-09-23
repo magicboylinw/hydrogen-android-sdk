@@ -51,7 +51,10 @@ public abstract class Global {
 
 
     public static void postOnMain(@NonNull Runnable runnable) {
-        MAIN_HANDLER.post(runnable);
+        if (Util.isOnMain())
+            runnable.run();
+        else
+            MAIN_HANDLER.post(runnable);
     }
 
     public static HttpApi httpApi() {

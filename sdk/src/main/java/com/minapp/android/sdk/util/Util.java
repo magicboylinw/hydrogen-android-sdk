@@ -1,5 +1,6 @@
 package com.minapp.android.sdk.util;
 
+import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 import androidx.annotation.NonNull;
@@ -20,6 +21,10 @@ public abstract class Util {
     private static final String[] POINTER_FEATURE = new String[]{
             Record.ID, Record.TABLE
     };
+
+    public static boolean isOnMain() {
+        return Looper.myLooper() == Looper.getMainLooper();
+    }
 
 
     public static <T> void inBackground(@NonNull final BaseCallback<T> cb, @NonNull final Callable<T> callable) {
