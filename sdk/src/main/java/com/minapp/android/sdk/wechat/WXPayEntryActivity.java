@@ -50,7 +50,7 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
             return;
         }
 
-        Global.submit(new Runnable() {
+        Global.post(new Runnable() {
             @Override
             public void run() {
                 try {

@@ -15,7 +15,8 @@ public class AppPushReceiver extends BaseBsPushReceiver {
     private static BsLog LOG = Log.get();
 
     @Override
-    protected void onReceiveMessage(@NonNull Message message) {
+    protected void onReceiveMessage(@NonNull Message message, @NonNull Context ctx) {
         LOG.d("receive push:%s", message.body.content);
+        MessageActivity.start(message.body.content, ctx);
     }
 }

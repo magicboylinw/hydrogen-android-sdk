@@ -1,17 +1,15 @@
 package com.minapp.android.sdk.util;
 
 import android.os.Looper;
-import android.text.TextUtils;
 import android.util.Log;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.minapp.android.sdk.Const;
 import com.minapp.android.sdk.Global;
 import com.minapp.android.sdk.database.Record;
 
-import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.regex.Pattern;
@@ -28,7 +26,7 @@ public abstract class Util {
 
 
     public static <T> void inBackground(@NonNull final BaseCallback<T> cb, @NonNull final Callable<T> callable) {
-        Global.submit(new Runnable() {
+        Global.post(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -103,29 +101,6 @@ public abstract class Util {
         return data;
     }
 
-    public static @Nullable String readString(InputStream input) {
-        return readString(input, "utf-8");
-    }
-
-    public static @Nullable String readString(InputStream input, String charset) {
-        try {
-            byte[] bytes = new byte[input.available()];
-            input.read(bytes);
-            return new String(bytes, charset);
-        } catch (Exception e) {
-            try {
-                input.close();
-            } catch (Exception ignored) {}
-            return null;
-        }
-    }
-
-    public static void assetNotNull(Object obj) {
-        if (obj == null) {
-            throw new NullPointerException();
-        }
-    }
-
     /**
      * copy from okhttp3.internal.Util
      * Quick and dirty pattern to differentiate IP addresses from hostnames. This is an approximation
@@ -167,46 +142,4 @@ public abstract class Util {
     }
 
 
-
-    public static @NonNull String join(Collection data, String separator) {
-        if (data != null && !data.isEmpty()) {
-            if (separator == null) {
-                separator = ",";
-            }
-            StringBuilder sb = new StringBuilder();
-            Iterator iterator = data.iterator();
-            Object item = null;
-            while (iterator.hasNext()) {
-                item = iterator.next();
-                if (item != null) {
-                    sb.append(item.toString()).append(separator);
-                }
-            }
-            sb.deleteCharAt(sb.length() - 1);
-            return sb.toString();
-        }
-        return "";
-    }
-
-    public static @NonNull String join(Collection data) {
-        return join(data, Const.COMMA);
-    }
-
-    /**
-     * 如果集合为 null or empty，返回 null
-     * @param data
-     * @return
-     */
-    public static @Nullable String joinToNull(Collection data) {
-        String result = join(data);
-        return TextUtils.isEmpty(result) ? null : result;
-    }
-
-    public static @Nullable String trimToNull(String source) {
-        if (source == null)
-            return null;
-
-        source = source.trim();
-        return source.isEmpty() ? null : source;
-    }
 }

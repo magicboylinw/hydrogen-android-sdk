@@ -108,3 +108,14 @@
 # -keep public class * extends android.content.BroadcastReceiver
 # 你需要使用下面的代码keep自定义的BroadcastReceiver
 -keep class com.minapp.android.sdk.push.BsMiPushMessageReceiver {*;}
+
+# hms push
+-ignorewarnings
+-keepattributes *Annotation*
+-keepattributes Exceptions
+-keepattributes InnerClasses
+-keepattributes Signature
+-keepattributes SourceFile,LineNumberTable
+-keep class com.hianalytics.android.**{*;}
+-keep class com.huawei.updatesdk.**{*;}
+-keep class com.huawei.hms.**{*;}

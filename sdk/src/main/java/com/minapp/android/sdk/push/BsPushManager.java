@@ -1,20 +1,55 @@
 package com.minapp.android.sdk.push;
 
 import android.content.Context;
-import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
 
 import androidx.annotation.NonNull;
 
+import com.google.common.base.Strings;
+import com.huawei.hms.push.HmsMessaging;
 import com.minapp.android.sdk.Assert;
+import com.minapp.android.sdk.Global;
 import com.minapp.android.sdk.util.BsLog;
 import com.xiaomi.mipush.sdk.MiPushClient;
-import com.xiaomi.mipush.sdk.MiPushMessage;
+
+import java.lang.ref.WeakReference;
 
 public class BsPushManager {
 
     private static final BsLog LOG = Log.get();
     static Class appReceiverClz = null;
+
+
+    public static void registerPush(@NonNull PushConfiguration config, @NonNull Context ctx) {
+        Assert.notNull(config, "PushConfiguration");
+        Assert.notNull(ctx, "Context");
+
+        DeviceVendor vendor = DeviceVendor.get(ctx);
+        if (vendor == null) {
+            throw new IllegalStateException("unknown device vendor");
+        }
+
+        switch (vendor) {
+            case MI:
+                registerMiPush(ctx, config.miAppId, config.miAppKey);
+                break;
+
+            case HUAWEI:
+                registerHmsPush(ctx);
+                break;
+        }
+    }
+
+    /**
+     * 注册华为推送
+     * @param ctx
+     */
+    public static final void registerHmsPush(@NonNull Context ctx) {
+        Assert.notNull(ctx, "Context");
+        HmsMessaging.getInstance(ctx).setAutoInitEnabled(true);
+        parseAppReceiverClz(ctx);
+        LOG.d("register hms push success");
+    }
+
 
     /**
      * 注册小米推送
@@ -30,32 +65,49 @@ public class BsPushManager {
         parseAppReceiverClz(context);
 
         MiPushClient.registerPush(context, miAppId, miAppKey);
+        Global.postDelayed(new LogMiRegId(context), 1000 * 3);
         LOG.d("register mi push success");
     }
 
-
     private static void parseAppReceiverClz(Context ctx) {
-        ActivityInfo[] receivers = null;
-        try {
-            receivers = ctx.getPackageManager().getPackageInfo(ctx.getPackageName(),
-                    PackageManager.GET_RECEIVERS).receivers;
-        } catch (PackageManager.NameNotFoundException e) {
-            throw new IllegalStateException("app push receiver not found", e);
-        }
-
-        for (ActivityInfo receiver : receivers) {
-            try {
-                Class clz = Class.forName(receiver.name);
-                if (BaseBsPushReceiver.class.isAssignableFrom(clz)) {
-                    appReceiverClz = clz;
-                    break;
-                }
-            } catch (Throwable tr) {
-                LOG.e(tr, "exception in parse app push receiver");
-            }
-        }
+        appReceiverClz = PushUtil.parseAppReceiverClz(ctx);
         Assert.notNullState(appReceiverClz, "app push receiver");
-        LOG.d("find app receiver:%s", appReceiverClz.getCanonicalName());
     }
 
+
+    /**
+     * 打印 mi push regId
+     */
+    private static class LogMiRegId implements Runnable {
+
+        private WeakReference<Context> ctxRef;
+
+        LogMiRegId(Context ctx) {
+            ctxRef = new WeakReference(ctx);
+        }
+
+        @Override
+        public void run() {
+            if (ctxRef == null)
+                return;
+            Context ctx = ctxRef.get();
+            if (ctx == null)
+                return;
+
+            String regId = MiPushClient.getRegId(ctx);
+            if (!Strings.isNullOrEmpty(regId)) {
+                LOG.d("mi push regId: %s", regId);
+                ctxRef.clear();
+                ctxRef = null;
+
+            } else {
+                Global.postDelayed(this, 1000 * 3);
+            }
+        }
+    }
+
+    public static final class PushConfiguration{
+        public String miAppId;
+        public String miAppKey;
+    }
 }

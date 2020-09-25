@@ -21,8 +21,6 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.concurrent.Callable;
 
-import okhttp3.ResponseBody;
-
 public class BaaS {
 
     private BaaS() {}
@@ -68,7 +66,7 @@ public class BaaS {
      * @param host      设置自定义域名
      */
     public static void init(String clientId, String host, @NonNull Application application) {
-        Util.assetNotNull(application);
+        Assert.notNull(application);
         Config.setClientId(clientId);
         Config.setEndpoint(host);
         Global.setApplicaiton(application);

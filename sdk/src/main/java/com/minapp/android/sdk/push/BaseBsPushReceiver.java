@@ -16,9 +16,9 @@ public abstract class BaseBsPushReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Message message = intent.getParcelableExtra(PushUtil.EXTRA_MESSAGE);
         if (message != null) {
-            onReceiveMessage(message);
+            onReceiveMessage(message, context);
         }
     }
 
-    protected abstract void onReceiveMessage(@NonNull Message message);
+    protected abstract void onReceiveMessage(@NonNull Message message, @NonNull Context ctx);
 }

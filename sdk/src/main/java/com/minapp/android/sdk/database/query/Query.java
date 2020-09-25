@@ -3,7 +3,8 @@ package com.minapp.android.sdk.database.query;
 import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import com.minapp.android.sdk.util.Util;
+
+import com.minapp.android.sdk.util.StringUtil;
 
 import java.util.*;
 
@@ -176,7 +177,7 @@ public class Query extends HashMap<String, String> {
     }
 
     public Query orderBy(@NonNull Collection<String> orderBy) {
-        put(ORDER_BY, Util.joinToNull(orderBy));
+        put(ORDER_BY, StringUtil.joinToNull(orderBy));
         return this;
     }
 
@@ -188,7 +189,7 @@ public class Query extends HashMap<String, String> {
     }
 
     public Query keys(@NonNull Collection<String> keys) {
-        put(KEYS, Util.joinToNull(keys));
+        put(KEYS, StringUtil.joinToNull(keys));
         return this;
     }
 
@@ -200,7 +201,7 @@ public class Query extends HashMap<String, String> {
     }
 
     public Query expand(Collection<String> fields) {
-        put(EXPAND, Util.joinToNull(fields));
+        put(EXPAND, StringUtil.joinToNull(fields));
         return this;
     }
 

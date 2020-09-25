@@ -81,15 +81,9 @@ public class BsMiPushMessageReceiver extends PushMessageReceiver {
         if (content == null)
             return;
 
-        Class receiverClz = BsPushManager.appReceiverClz;
-        if (receiverClz == null) {
-            LOG.e(new NullPointerException("app push receiver is null"));
-            return;
-        }
-
         try {
             Message message = Message.parse(content);
-            PushUtil.broadcastMessage(message, receiverClz, context);
+            message.broadcast(context);
         } catch (Throwable tr) {
             LOG.e(tr, "parse mi push message fail\n%s", content);
         }

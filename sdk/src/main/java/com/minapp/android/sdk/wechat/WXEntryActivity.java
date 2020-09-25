@@ -51,7 +51,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
      * @param tokenFromWechat
      */
     private void sendServerAuth(String tokenFromWechat) {
-        Global.submit(new Runnable() {
+        Global.post(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -82,7 +82,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
      * @param token
      */
     private void associationWechat(String token) {
-        Global.submit(new Runnable() {
+        Global.post(new Runnable() {
             @Override
             public void run() {
                 try {

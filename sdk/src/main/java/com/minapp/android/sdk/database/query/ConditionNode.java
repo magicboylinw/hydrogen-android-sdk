@@ -2,11 +2,10 @@ package com.minapp.android.sdk.database.query;
 
 import androidx.annotation.NonNull;
 import com.google.gson.*;
+import com.minapp.android.sdk.Assert;
 import com.minapp.android.sdk.Global;
-import com.minapp.android.sdk.util.Util;
 
 import java.lang.reflect.Type;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -22,7 +21,7 @@ public class ConditionNode {
     ConditionNode() {}
 
     ConditionNode(ConditionNode orign) {
-        Util.assetNotNull(orign);
+        Assert.notNull(orign);
         this.relation = orign.relation;
         this.condition = orign.condition;
         this.children.addAll(orign.children);

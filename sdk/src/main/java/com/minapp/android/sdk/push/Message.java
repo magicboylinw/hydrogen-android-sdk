@@ -1,5 +1,6 @@
 package com.minapp.android.sdk.push;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -26,6 +27,11 @@ public class Message implements Parcelable {
     @Override
     public int describeContents() {
         return 0;
+    }
+
+    public void broadcast(@NonNull Context ctx) {
+        Assert.notNull(ctx, "Context");
+        PushUtil.broadcastMessage(this, ctx);
     }
 
     public static final Creator<Message> CREATOR = new Creator<Message>() {

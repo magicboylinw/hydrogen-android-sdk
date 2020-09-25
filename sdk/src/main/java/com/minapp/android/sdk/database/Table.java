@@ -6,6 +6,7 @@ import androidx.annotation.Nullable;
 import com.minapp.android.sdk.database.query.Query;
 import com.minapp.android.sdk.util.PagedList;
 import com.minapp.android.sdk.util.BaseCallback;
+import com.minapp.android.sdk.util.StringUtil;
 import com.minapp.android.sdk.util.Util;
 
 import java.util.Collection;
@@ -75,8 +76,8 @@ public class Table {
             @Nullable Collection<String> keys) throws Exception {
 
         Query query = new Query();
-        query.put(Query.EXPAND, Util.joinToNull(expands));
-        query.put(Query.KEYS, Util.joinToNull(keys));
+        query.put(Query.EXPAND, StringUtil.joinToNull(expands));
+        query.put(Query.KEYS, StringUtil.joinToNull(keys));
         return fetchRecord(recordId, query);
     }
 

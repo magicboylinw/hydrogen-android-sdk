@@ -2,11 +2,10 @@ package com.minapp.android.sdk.database;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import android.util.Log;
+
 import com.google.gson.*;
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.reflect.TypeToken;
-import com.minapp.android.sdk.Const;
+import com.minapp.android.sdk.Assert;
 import com.minapp.android.sdk.Global;
 import com.minapp.android.sdk.storage.CloudFile;
 import com.minapp.android.sdk.util.Function;
@@ -147,7 +146,7 @@ public class Record {
     }
 
     private @Nullable <T> List<T> getArray(@NonNull String key, Function<JsonElement, T> transform) {
-        Util.assetNotNull(key);
+        Assert.notNull(key);
         try {
             JsonArray array = json.get(key).getAsJsonArray();
             List<T> list = new ArrayList<>(array.size());
@@ -337,7 +336,7 @@ public class Record {
      * @return
      */
     public @Nullable JsonObject getJsonObject(@NonNull String key) {
-        Util.assetNotNull(key);
+        Assert.notNull(key);
         try {
             return json.getAsJsonObject(key);
         } catch (Exception e) {
@@ -385,7 +384,7 @@ public class Record {
     }
 
     public <T> T getObject(@NonNull String key, Class<T> clz) {
-        Util.assetNotNull(key);
+        Assert.notNull(key);
         try {
             return Global.gson().fromJson(json.get(key), clz);
         } catch (Exception e) {
@@ -401,7 +400,7 @@ public class Record {
      * @return
      */
     public <T> T getObject(@NonNull String key, Type type) {
-        Util.assetNotNull(key);
+        Assert.notNull(key);
         try {
             return Global.gson().fromJson(json.get(key), type);
         } catch (JsonSyntaxException e) {
@@ -410,7 +409,7 @@ public class Record {
     }
 
     public @Nullable Boolean getBoolean(@NonNull String key) {
-        Util.assetNotNull(key);
+        Assert.notNull(key);
         try {
             return json.get(key).getAsBoolean();
         } catch (Exception e) {
@@ -419,7 +418,7 @@ public class Record {
     }
 
     public @Nullable Number getNumber(@NonNull String key) {
-        Util.assetNotNull(key);
+        Assert.notNull(key);
         try {
             return json.get(key).getAsNumber();
         } catch (Exception e) {
@@ -460,7 +459,7 @@ public class Record {
     }
 
     public @Nullable String getString(@NonNull String key) {
-        Util.assetNotNull(key);
+        Assert.notNull(key);
         try {
             return json.get(key).getAsString();
         } catch (Exception e) {

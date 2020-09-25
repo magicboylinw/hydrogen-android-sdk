@@ -2,12 +2,11 @@ package com.minapp.android.sdk.util;
 
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.TextureView;
+
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 import okio.Buffer;
-import okio.BufferedSink;
 
 import java.io.IOException;
 
@@ -51,7 +50,7 @@ public class PrintInterceptor implements Interceptor {
         }
         if (resp.body() != null) {
             try {
-                String str = Util.readString(resp.body().byteStream());
+                String str = StringUtil.readString(resp.body().byteStream());
                 if (!TextUtils.isEmpty(str)) {
                     sb.append("\nbody\n").append(str).append("\n");
                 }

@@ -1,6 +1,6 @@
 package com.minapp.android.sdk;
 
-import com.minapp.android.sdk.util.Util;
+import com.minapp.android.sdk.util.StringUtil;
 
 public abstract class Assert {
 
@@ -20,7 +20,13 @@ public abstract class Assert {
     }
 
     public static void notBlank(String value, String name) throws IllegalArgumentException {
-        if (Util.trimToNull(value) == null)
+        if (StringUtil.trimToNull(value) == null)
             throw new IllegalArgumentException(String.format("%s can not be blank", name));
+    }
+
+    public static void notNull(Object obj) {
+        if (obj == null) {
+            throw new NullPointerException();
+        }
     }
 }

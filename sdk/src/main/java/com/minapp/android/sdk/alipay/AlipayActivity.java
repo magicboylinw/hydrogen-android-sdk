@@ -36,7 +36,7 @@ public class AlipayActivity extends Activity {
 
     private void sendPay() {
         final AlipayOrder order = getIntent().getParcelableExtra(ORDER);
-        Global.submit(new Runnable() {
+        Global.post(new Runnable() {
             @Override
             public void run() {
                 AlipayOrderResp orderInfo = null;

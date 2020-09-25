@@ -2,6 +2,7 @@ package com.minapp.android.sdk.database;
 
 import androidx.annotation.NonNull;
 import com.google.gson.JsonObject;
+import com.minapp.android.sdk.Assert;
 import com.minapp.android.sdk.Global;
 import com.minapp.android.sdk.util.Action;
 import com.minapp.android.sdk.util.PagedList;
@@ -80,7 +81,7 @@ public abstract class Database {
      * @throws Exception
      */
     static @NonNull Record fetch(@NonNull Table table, String recordId, Query query) throws Exception {
-        Util.assetNotNull(table);
+        Assert.notNull(table);
         Record response = Global.httpApi().fetchRecord(
                 table.getTableName(),
                 recordId, query != null ? query : new Query()

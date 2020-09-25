@@ -2,7 +2,7 @@ package com.minapp.android.sdk;
 
 import androidx.annotation.Nullable;
 
-import com.minapp.android.sdk.util.Util;
+import com.minapp.android.sdk.util.StringUtil;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -41,7 +41,7 @@ public class Config {
         Object value = CONFIG.get(ENDPOINT_KEY);
         if (value instanceof String) {
             String endpoint = (String) value;
-            endpoint = Util.trimToNull(endpoint);
+            endpoint = StringUtil.trimToNull(endpoint);
             if (endpoint != null)
                 return endpoint;
         }

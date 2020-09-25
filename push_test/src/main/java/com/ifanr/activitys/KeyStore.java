@@ -7,6 +7,7 @@ import com.google.common.io.CharStreams;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 import com.minapp.android.sdk.Global;
+import com.minapp.android.sdk.push.BsPushManager;
 import com.minapp.android.sdk.util.BsLog;
 
 import javax.annotation.Nullable;
@@ -39,6 +40,13 @@ public class KeyStore {
 
     public @Nullable String getMiAppKey() {
         return store != null ? store.miAppKey : null;
+    }
+
+    public BsPushManager.PushConfiguration toPushConfiguration() {
+        BsPushManager.PushConfiguration config = new BsPushManager.PushConfiguration();
+        config.miAppId = getMiAppId();
+        config.miAppKey = getMiAppKey();
+        return config;
     }
 
     public static class JsonStore {
