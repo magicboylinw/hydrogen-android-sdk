@@ -382,7 +382,7 @@ public abstract class Auth {
     }
 
 
-    static @Nullable String token() {
+    public static @Nullable String token() {
         return (String) AUTH_INFO.get(TOKEN);
     }
 

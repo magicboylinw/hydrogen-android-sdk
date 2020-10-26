@@ -4,6 +4,7 @@ import com.minapp.android.sdk.auth.Auth
 import com.minapp.android.sdk.test.Util
 import org.junit.AfterClass
 import org.junit.BeforeClass
+import java.security.Security
 
 open class BaseAuthedTest : BaseAndroidTest() {
 
