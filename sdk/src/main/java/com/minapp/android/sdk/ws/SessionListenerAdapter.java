@@ -7,9 +7,7 @@ import io.crossbar.autobahn.wamp.interfaces.ISession;
 import io.crossbar.autobahn.wamp.types.CloseDetails;
 import io.crossbar.autobahn.wamp.types.SessionDetails;
 
-public class SessionListenerAdapter
-        implements ISession.OnJoinListener, ISession.OnReadyListener, ISession.OnLeaveListener,
-        ISession.OnConnectListener, ISession.OnDisconnectListener, ISession.OnUserErrorListener {
+public class SessionListenerAdapter implements ISessionListener {
 
     private static final String TAG = "SessionListenerAdapter";
 

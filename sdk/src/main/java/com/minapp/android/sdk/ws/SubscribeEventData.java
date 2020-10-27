@@ -8,7 +8,7 @@ import com.minapp.android.sdk.util.Util;
 
 import java.util.Map;
 
-public class SchemeEvent {
+public class SubscribeEventData {
 
     public static final String KEY_SCHEME_NAME = "schema_name";
 
@@ -22,37 +22,26 @@ public class SchemeEvent {
 
     public static final String KEY_EVENT = "event";
 
-    public static final String EVENT_ON_CREATE = "on_create";
-
-    public static final String EVENT_ON_UPDATE = "on_update";
-
-    public static final String EVENT_ON_DELETE = "on_delete";
-
     public final String schemaName;
 
     public final Integer schemaId;
 
     public final String id;
 
-    /**
-     * @see #EVENT_ON_CREATE
-     * @see #EVENT_ON_UPDATE
-     * @see #EVENT_ON_DELETE
-     */
-    public final String event;
+    public final SubscribeEvent event;
 
     public final Record after;
 
     public final Record before;
 
-    public SchemeEvent(Map argumentKw) {
+    public SubscribeEventData(Map argumentKw) {
         if (argumentKw != null) {
             schemaName = Util.parseString(argumentKw.get(KEY_SCHEME_NAME));
             schemaId = Util.parseInteger(argumentKw.get(KEY_SCHEME_ID));
             id = Util.parseString(argumentKw.get(KEY_ID));
             after = valueOf(argumentKw.get(KEY_AFTER));
             before = valueOf(argumentKw.get(KEY_BEFORE));
-            event = Util.parseString(argumentKw.get(KEY_EVENT));
+            event = SubscribeEvent.from(Util.parseString(argumentKw.get(KEY_EVENT)));
         } else {
             schemaName = null;
             schemaId = null;

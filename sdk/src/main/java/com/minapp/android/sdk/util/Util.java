@@ -22,6 +22,12 @@ public abstract class Util {
             Record.ID, Record.TABLE
     };
 
+    public static boolean isNullOrEmpty(String str) {
+        if (str == null)
+            return true;
+        return str.isEmpty();
+    }
+
     public static @Nullable String parseString(Object obj) {
         return obj != null ? obj.toString() : null;
     }

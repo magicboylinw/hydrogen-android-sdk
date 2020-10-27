@@ -26,4 +26,7 @@ public abstract class Const {
     public static final String WX_OAUTH_STATE = "wechat_sdk_demo_test";
 
     public static final String WAMP_DEFAULT_PATH = "ws://api.ws.myminapp.com/ws/hydrogen/";
+
+    public static final String WAMP_REALM = "com.ifanrcloud";
+    public static final String WAMP_TOPIC_PREFIX = "com.ifanrcloud.schema_event";
 }

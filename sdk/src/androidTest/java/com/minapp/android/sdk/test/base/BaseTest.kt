@@ -17,8 +17,8 @@ abstract class BaseTest {
     }
 
     @After
-    fun delay() {
-        Thread.sleep(TestConst.NETWORK_DELAY)
+    fun delay(millis: Long = TestConst.NETWORK_DELAY) {
+        Thread.sleep(millis)
     }
 
 }
