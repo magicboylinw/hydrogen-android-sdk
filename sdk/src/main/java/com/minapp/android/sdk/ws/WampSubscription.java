@@ -1,5 +1,7 @@
 package com.minapp.android.sdk.ws;
 
+import com.google.common.collect.Lists;
+
 public class WampSubscription {
 
     private final SubscribeRequest request;
@@ -11,6 +13,6 @@ public class WampSubscription {
     }
 
     public void unsubscribe() {
-        manager.removeRequest(request);
+        manager.removeRequest(new SubscribeRequest[]{request});
     }
 }

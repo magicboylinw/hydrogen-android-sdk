@@ -2,17 +2,22 @@ package com.minapp.android.sdk.ws;
 
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.util.Log;
 
 import androidx.annotation.AnyThread;
 import androidx.annotation.NonNull;
 
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
 import com.minapp.android.sdk.database.Table;
 import com.minapp.android.sdk.database.query.Query;
 import com.minapp.android.sdk.util.HandlerExecutor;
 import com.minapp.android.sdk.util.LazyProperty;
 import com.minapp.android.sdk.ws.exceptions.BeforeConnectException;
+import com.minapp.android.sdk.ws.exceptions.LostTransportException;
 import com.minapp.android.sdk.ws.exceptions.UserErrorException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -105,71 +110,98 @@ public class SessionManager implements IWampSessionListener {
         });
     }
 
-    @Override
-    public void onConnect(Session session) {
 
-    }
-
+    /**
+     * 正常关闭连接，取消订阅
+     * @param session
+     * @param wasClean
+     */
     @Override
     public void onDisconnect(Session session, boolean wasClean) {
+        SubscribeRequest[] requests = copyRequests();
+        for (SubscribeRequest request : requests) {
+            request.cb.onDisconnect();
+        }
+        removeRequest(requests);
 
+        long sessionId = session != null ? session.getID() : -1;
+        Log.d(WsConst.TAG, String.format("session(%s) onDisconnect", sessionId));
     }
 
-    @Override
-    public void onJoin(Session session, SessionDetails details) {
-
-    }
 
     @Override
     public void onLeave(Session session, CloseDetails details) {
 
+        // 丢失连接，抛出异常
+        if (CloseDetails.REASON_TRANSPORT_LOST.equalsIgnoreCase(details.reason)) {
+            dispatchException(new LostTransportException());
+        }
+
+        long sessionId = session != null ? session.getID() : -1;
+        Log.d(WsConst.TAG, String.format("session(%s) onLeave, reason: %s, message: %s",
+                sessionId, details.reason, details.message));
     }
 
     @Override
     public void onReady(Session session) {
-        // invoke init
-        SubscribeRequest[] requests = new SubscribeRequest[this.requests.size()];
-        requests = this.requests.toArray(requests);
-        for (SubscribeRequest request : requests) {
-            if (!request.initInvoked) {
-                try {
-                    request.cb.onInit();
-                } catch (Throwable tr) {}
-                request.initInvoked = true;
-            }
-        }
+        // wamp 建立连接后，逐个订阅
+        this.session.get().subscribe(copyRequests());
 
-        this.session.get().subscribe(requests);
+        long sessionId = session != null ? session.getID() : -1;
+        Log.d(WsConst.TAG, String.format("session(%s) onReady", sessionId));
     }
 
-    @Override
-    public void onUserError(Session session, String msg) {
-        dispatchException(new UserErrorException(msg));
-    }
-
+    /**
+     * 执行网络请求前就发生了异常
+     * @param tr
+     */
     @Override
     public void onExceptionBeforeConnection(Throwable tr) {
-        dispatchException(new BeforeConnectException(tr));
+        dispatchException(tr);
     }
 
-    private void dispatchException(Exception ex) {
-        SubscribeRequest[] requests = new SubscribeRequest[this.requests.size()];
-        requests = this.requests.toArray(requests);
+    private void dispatchException(Throwable tr) {
+        SubscribeRequest[] requests = copyRequests();
         for (SubscribeRequest request : requests) {
-            try {
-                request.cb.onError(ex);
-            } catch (Throwable tr) {}
+            request.cb.onError(tr);
         }
+        removeRequest(requests);
     }
 
-    void removeRequest(SubscribeRequest request) {
+    void removeRequest(SubscribeRequest[] requests) {
         worker.get().post(new Runnable() {
             @Override
             public void run() {
-                requests.remove(request);
-                session.get().unsubscribe(request);
+                SessionManager.this.requests.removeAll(Lists.newArrayList(requests));
+                for (SubscribeRequest request : requests) {
+                    session.get().unsubscribe(request);
+                }
             }
         });
     }
 
+    private SubscribeRequest[] copyRequests() {
+        SubscribeRequest[] requests = new SubscribeRequest[this.requests.size()];
+        requests = this.requests.toArray(requests);
+        return requests;
+    }
+
+    @Override
+    public void onUserError(Session session, String msg) {
+        long sessionId = session != null ? session.getID() : -1;
+        Log.d(WsConst.TAG, String.format("session(%s) onUserError, %s", sessionId, msg));
+    }
+
+    @Override
+    public void onJoin(Session session, SessionDetails details) {
+        long sessionId = session != null ? session.getID() : -1;
+        Log.d(WsConst.TAG, String.format("session(%s) onJoin", sessionId));
+    }
+
+
+    @Override
+    public void onConnect(Session session) {
+        long sessionId = session != null ? session.getID() : -1;
+        Log.d(WsConst.TAG, String.format("session(%s) onConnect", sessionId));
+    }
 }

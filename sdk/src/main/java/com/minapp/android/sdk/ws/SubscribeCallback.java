@@ -20,9 +20,17 @@ public interface SubscribeCallback {
 
     /**
      * 回调函数将在订阅动作出错是调用，参数是错误信息
+     * 订阅被取消
      * @param tr
      */
     @WorkerThread
     void onError(@NonNull Throwable tr);
+
+    /**
+     * 连接正常关闭
+     * 订阅被取消
+     */
+    @WorkerThread
+    void onDisconnect();
 
 }

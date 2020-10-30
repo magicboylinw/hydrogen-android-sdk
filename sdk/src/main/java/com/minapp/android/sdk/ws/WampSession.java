@@ -78,6 +78,12 @@ class WampSession {
                     // 无论哪种情况，都应该取消当前订阅
                     if (request.subscription == SubscribeRequest.DOING_SUBSCRIBE) {
                         request.subscription = subscription;
+
+                        // init once
+                        if (!request.initInvoked) {
+                            request.cb.onInit();
+                            request.initInvoked = true;
+                        }
                     } else {
                         subscription.unsubscribe();
                     }

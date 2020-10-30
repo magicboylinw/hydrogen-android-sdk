@@ -34,7 +34,7 @@ class SubscribeRequest implements TriConsumer<List<Object>, Map<String, Object>,
         this.tableName = tableName;
         this.query = query;
         this.event = event;
-        this.cb = cb;
+        this.cb = new SafeSubscribeCallbackAdapter(cb);
     }
 
     @Override
@@ -43,9 +43,7 @@ class SubscribeRequest implements TriConsumer<List<Object>, Map<String, Object>,
         if (subscription != null && subscription != DOING_SUBSCRIBE && subscription == sub) {
             SubscribeEventData data = new SubscribeEventData(map);
             if (data.event == event) {
-                try {
-                    cb.onEvent(data);
-                } catch (Throwable tr) {}
+                cb.onEvent(data);
             }
         }
     }
