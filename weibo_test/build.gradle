@@ -20,12 +20,10 @@ android {
 
     signingConfigs {
         release {
-            def prop = new Properties();
-            prop.load(new FileInputStream(file("keystore.properties")))
-            keyAlias prop['KEY_ALIAS']
-            keyPassword prop['KEY_PASSWORD']
-            storeFile file(prop['KEYSTORE_FILE'])
-            storePassword prop['KEYSTORE_PASSWORD']
+            keyAlias System.getenv("IFANR_KEY_ALIAS")
+            keyPassword System.getenv("IFANR_KEY_PWD")
+            storeFile file(System.getenv("IFANR_KEYSTORE_FILE"))
+            storePassword System.getenv("IFANR_KEYSTORE_PWD")
             v2SigningEnabled true
             v1SigningEnabled true
         }
