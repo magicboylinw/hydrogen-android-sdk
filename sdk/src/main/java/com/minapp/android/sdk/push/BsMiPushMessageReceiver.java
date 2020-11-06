@@ -80,13 +80,7 @@ public class BsMiPushMessageReceiver extends PushMessageReceiver {
         String content = miPushMessage != null ? miPushMessage.getContent() : null;
         if (content == null)
             return;
-
-        try {
-            Message message = Message.parse(content);
-            message.broadcast(context);
-        } catch (Throwable tr) {
-            LOG.e(tr, "parse mi push message fail\n%s", content);
-        }
+        PushUtil.broadcastMessage(content, context);
     }
 
     /**

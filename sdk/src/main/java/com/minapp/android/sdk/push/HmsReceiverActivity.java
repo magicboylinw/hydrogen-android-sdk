@@ -38,9 +38,7 @@ public class HmsReceiverActivity extends BaseActivity {
         if (intent != null) {
             String data = intent.getStringExtra(EXTRA_PUSH_HMS_DATA);
             if (data != null) {
-                Message message = Message.parse(data);
-                message.broadcast(this);
-                LOG.d("hms receiver activity, broadcast message success");
+                PushUtil.broadcastMessage(data, this);
             }
         }
         finishDelayed(1000 * 2);

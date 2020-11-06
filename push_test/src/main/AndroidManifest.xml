@@ -104,6 +104,30 @@
         </activity>
         <!-- hms push end -->
 
+        <!-- vivo push start -->
+
+        <service
+            android:name="com.vivo.push.sdk.service.CommandClientService"
+            android:exported="true"/>
+
+        <meta-data
+            android:name="com.vivo.push.api_key"
+            android:value="${vivoPushKey}"/>
+
+        <meta-data
+            android:name="com.vivo.push.app_id"
+            android:value="${vivoPushId}"/>
+
+        <!-- push应用定义消息receiver声明 -->
+
+        <receiver android:name="com.minapp.android.sdk.push.BsVivoPushMessageReceiver" >
+            <intent-filter>
+                <action android:name="com.vivo.pushclient.action.RECEIVE" />
+            </intent-filter>
+        </receiver>
+
+        <!-- vivo push end -->
+
         <receiver
                 android:name=".AppPushReceiver"
                 android:exported="true">

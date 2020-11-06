@@ -8,7 +8,11 @@ import com.google.common.base.Strings;
 import com.huawei.hms.push.HmsMessaging;
 import com.minapp.android.sdk.Assert;
 import com.minapp.android.sdk.Global;
+import com.minapp.android.sdk.exception.TurnOnVivoPushException;
 import com.minapp.android.sdk.util.BsLog;
+import com.vivo.push.IPushActionListener;
+import com.vivo.push.PushClient;
+import com.vivo.push.util.VivoPushException;
 import com.xiaomi.mipush.sdk.MiPushClient;
 
 import java.lang.ref.WeakReference;
@@ -36,7 +40,40 @@ public class BsPushManager {
             case HUAWEI:
                 registerHmsPush(ctx);
                 break;
+
+            case VIVO:
+                registerVivoPush(ctx);
+                break;
         }
+    }
+
+    /**
+     * 注册 VIVO 推送
+     * @param ctx
+     */
+    public static final void registerVivoPush(@NonNull Context ctx) {
+        Assert.notNull(ctx, "Context");
+        PushClient client = PushClient.getInstance(ctx);
+        Assert.notNull(client, "PushClient");
+        try {
+            client.checkManifest();
+        } catch (VivoPushException e) {
+            throw new RuntimeException(e);
+        }
+        client.initialize();
+        client.turnOnPush(new IPushActionListener() {
+            @Override
+            public void onStateChanged(int i) {
+                if (i == 0) {
+                    LOG.d("turn on vivo push success");
+                    new RegIdLogger(ctx).start();
+                } else {
+                    LOG.e(new TurnOnVivoPushException(i));
+                }
+            }
+        });
+        parseAppReceiverClz(ctx);
+        LOG.d("register vivo push success");
     }
 
     /**
@@ -65,45 +102,13 @@ public class BsPushManager {
         parseAppReceiverClz(context);
 
         MiPushClient.registerPush(context, miAppId, miAppKey);
-        Global.postDelayed(new LogMiRegId(context), 1000 * 3);
+        new RegIdLogger(context).start();
         LOG.d("register mi push success");
     }
 
     private static void parseAppReceiverClz(Context ctx) {
         appReceiverClz = PushUtil.parseAppReceiverClz(ctx);
         Assert.notNullState(appReceiverClz, "app push receiver");
-    }
-
-
-    /**
-     * 打印 mi push regId
-     */
-    private static class LogMiRegId implements Runnable {
-
-        private WeakReference<Context> ctxRef;
-
-        LogMiRegId(Context ctx) {
-            ctxRef = new WeakReference(ctx);
-        }
-
-        @Override
-        public void run() {
-            if (ctxRef == null)
-                return;
-            Context ctx = ctxRef.get();
-            if (ctx == null)
-                return;
-
-            String regId = MiPushClient.getRegId(ctx);
-            if (!Strings.isNullOrEmpty(regId)) {
-                LOG.d("mi push regId: %s", regId);
-                ctxRef.clear();
-                ctxRef = null;
-
-            } else {
-                Global.postDelayed(this, 1000 * 3);
-            }
-        }
     }
 
     public static final class PushConfiguration{

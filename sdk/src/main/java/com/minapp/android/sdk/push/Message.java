@@ -29,11 +29,6 @@ public class Message implements Parcelable {
         return 0;
     }
 
-    public void broadcast(@NonNull Context ctx) {
-        Assert.notNull(ctx, "Context");
-        PushUtil.broadcastMessage(this, ctx);
-    }
-
     public static final Creator<Message> CREATOR = new Creator<Message>() {
         @Override
         public Message createFromParcel(Parcel in) {

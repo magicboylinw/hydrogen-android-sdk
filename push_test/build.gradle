@@ -20,6 +20,9 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        manifestPlaceholders = ['vivoPushKey' : (System.getenv("VIVO_PUSH_KEY") ?: ""),
+                                'vivoPushId' : (System.getenv("VIVO_PUSH_ID") ?: "")]
     }
 
     signingConfigs {
@@ -51,6 +54,8 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation rootProject.fileTree(dir: '3rd', include: [
+            'alipaySdk-15.6.2-20190416165100.aar', 'vivo_push_sdk-2.9.0.0.aar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.core:core-ktx:1.3.1'

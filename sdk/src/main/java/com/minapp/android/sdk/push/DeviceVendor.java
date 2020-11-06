@@ -12,6 +12,7 @@ import com.google.common.base.Strings;
 import com.meizu.cloud.pushsdk.util.MzSystemUtils;
 import com.minapp.android.sdk.Assert;
 import com.minapp.android.sdk.util.StringUtil;
+import com.vivo.push.PushClient;
 
 public enum DeviceVendor{
 
@@ -49,6 +50,8 @@ public enum DeviceVendor{
                         VENDOR = HUAWEI;
                     } else if (isFlyme(ctx)) {
                         VENDOR = FLYME;
+                    } else if (isVivo(ctx)) {
+                        VENDOR = VIVO;
                     }
                 }
             }
@@ -98,5 +101,18 @@ public enum DeviceVendor{
         }
     }*/
 
-
+    /**
+     * 判断是否 VIVO 手机
+     * 参考 cn.leancloud.vivo.AVMixPushManager#isSupportVIVOPush
+     * @return
+     */
+    private static boolean isVivo(Context ctx) {
+        try {
+            PushClient client = PushClient.getInstance(ctx);
+            if (client != null) {
+                return client.isSupport();
+            }
+        } catch (Exception ignored) {}
+        return false;
+    }
 }

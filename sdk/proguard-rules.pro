@@ -119,3 +119,9 @@
 -keep class com.hianalytics.android.**{*;}
 -keep class com.huawei.updatesdk.**{*;}
 -keep class com.huawei.hms.**{*;}
+
+# vivo push
+-dontwarn com.vivo.push.**
+-keep class com.vivo.push.**{*;}
+-keep class com.vivo.vms.**{*;}
+-keep class com.minapp.android.sdk.push.BsVivoPushMessageReceiver {*;}

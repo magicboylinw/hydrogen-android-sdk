@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.minapp.android.sdk.Assert;
@@ -19,6 +20,26 @@ abstract class PushUtil {
 
     private static BsLog LOG = Log.get();
 
+    /**
+     * 将各个推送渠道收到的文本内容发送给 {@link BaseBsPushReceiver}
+     * @param message
+     * @param ctx
+     */
+    static void broadcastMessage(@NonNull String message, @NonNull Context ctx) {
+        Assert.notNull(message, "message");
+        Assert.notNull(ctx, "Context");
+        try {
+            broadcastMessage(Message.parse(message), ctx);
+        } catch (Exception e) {
+            LOG.e(e);
+        }
+    }
+
+    /**
+     * 将各个推送渠道收到的文本内容发送给 {@link BaseBsPushReceiver}
+     * @param message
+     * @param ctx
+     */
     static void broadcastMessage(Message message, Context ctx) {
 
         // 华为推送用了中间层 activity 打开 push receiver，此时 appReceiverClz 有可能为空
