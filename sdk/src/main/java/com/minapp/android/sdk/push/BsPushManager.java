@@ -4,18 +4,16 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
-import com.google.common.base.Strings;
 import com.huawei.hms.push.HmsMessaging;
+import com.meizu.cloud.pushsdk.PushManager;
 import com.minapp.android.sdk.Assert;
-import com.minapp.android.sdk.Global;
+import com.minapp.android.sdk.exception.PushDeviceUnsupportedException;
 import com.minapp.android.sdk.exception.TurnOnVivoPushException;
 import com.minapp.android.sdk.util.BsLog;
 import com.vivo.push.IPushActionListener;
 import com.vivo.push.PushClient;
 import com.vivo.push.util.VivoPushException;
 import com.xiaomi.mipush.sdk.MiPushClient;
-
-import java.lang.ref.WeakReference;
 
 public class BsPushManager {
 
@@ -44,7 +42,29 @@ public class BsPushManager {
             case VIVO:
                 registerVivoPush(ctx);
                 break;
+
+            case FLYME:
+                registerFlymePush(config.flymeAppId, config.flymeAppKey, ctx);
+                break;
         }
+    }
+
+    /**
+     * 注册 FLYME 推送
+     * @param ctx
+     */
+    public static final void registerFlymePush(
+            @NonNull String appId, @NonNull String appKey, @NonNull Context ctx) {
+        Assert.notNull(appId, "appId");
+        Assert.notNull(appKey, "appKey");
+        Assert.notNull(ctx, "ctx");
+
+        DeviceVendor vendor = DeviceVendor.get(ctx);
+        if (vendor != DeviceVendor.FLYME)
+            throw new PushDeviceUnsupportedException(vendor);
+
+        PushManager.register(ctx, appId, appKey);
+        LOG.d("register flyme push success");
     }
 
     /**
@@ -111,8 +131,4 @@ public class BsPushManager {
         Assert.notNullState(appReceiverClz, "app push receiver");
     }
 
-    public static final class PushConfiguration{
-        public String miAppId;
-        public String miAppKey;
-    }
 }

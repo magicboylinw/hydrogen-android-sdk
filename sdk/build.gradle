@@ -67,6 +67,7 @@ dependencies {
     api 'com.meizu.flyme.internet:push-internal:3.9.7'
     api 'com.huawei.hms:push:5.0.2.300'
     api("com.google.guava:guava:29.0-android")
+    implementation 'com.meizu.flyme.internet:push-internal:3.9.7'
 }
 
 // 把 sdk 发布到 bintray：./gradlew :sdk:clean :sdk:bintrayUpload

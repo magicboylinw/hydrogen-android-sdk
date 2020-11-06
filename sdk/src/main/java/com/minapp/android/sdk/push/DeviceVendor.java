@@ -60,9 +60,9 @@ public enum DeviceVendor{
     }
 
     /**
-     * 判断是否为小米手机
+     * 判断是否为小米手机（官方建议）
      * copy from AVMixPushManager.isXiaomiPhone in leancloud sdk
-     * @return
+     * https://dev.mi.com/docs/appsmarket/technical_docs/system&device_identification/
      */
     private static boolean isMi() {
         return StringUtil.containsIgnoreCase(Build.MANUFACTURER, "xiaomi");

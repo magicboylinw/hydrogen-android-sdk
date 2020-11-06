@@ -2,13 +2,8 @@ package com.ifanr.activitys;
 
 import android.content.Context;
 
-import com.google.common.io.ByteStreams;
-import com.google.common.io.CharStreams;
-import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
-import com.minapp.android.sdk.Global;
-import com.minapp.android.sdk.push.BsPushManager;
-import com.minapp.android.sdk.util.BsLog;
+import com.minapp.android.sdk.push.PushConfiguration;
 
 import javax.annotation.Nullable;
 
@@ -42,8 +37,8 @@ public class KeyStore {
         return store != null ? store.miAppKey : null;
     }
 
-    public BsPushManager.PushConfiguration toPushConfiguration() {
-        BsPushManager.PushConfiguration config = new BsPushManager.PushConfiguration();
+    public PushConfiguration toPushConfiguration() {
+        PushConfiguration config = new PushConfiguration();
         config.miAppId = getMiAppId();
         config.miAppKey = getMiAppKey();
         return config;
