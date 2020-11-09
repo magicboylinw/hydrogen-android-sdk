@@ -64,6 +64,7 @@ public class BsPushManager {
             throw new PushDeviceUnsupportedException(vendor);
 
         PushManager.register(ctx, appId, appKey);
+        parseAppReceiverClz(ctx);
         LOG.d("register flyme push success");
     }
 

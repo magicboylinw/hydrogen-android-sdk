@@ -27,12 +27,10 @@ public class BsFlymeMessageReceiver extends MzPushMessageReceiver {
      */
     @Override
     public void onNotificationClicked(Context context, MzPushMessage msg) {
-        Global.post(new Runnable() {
-            @Override
-            public void run() {
-                msg.getContent();
-            }
-        });
+        String customContent = msg != null ? msg.getSelfDefineContentString() : null;
+        if (customContent != null && context != null) {
+            PushUtil.broadcastMessage(customContent, context);
+        }
     }
 
     @Override

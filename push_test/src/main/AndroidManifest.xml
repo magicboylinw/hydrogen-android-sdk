@@ -162,6 +162,16 @@
             </intent-filter>
         </receiver>
 
+        <meta-data
+            android:name="flymeAppId"
+            android:value="${flymeAppId}"
+            />
+
+        <meta-data
+            android:name="flymeAppKey"
+            android:value="${flymeAppKey}"
+            />
+
         <!-- flyme end -->
 
         <receiver

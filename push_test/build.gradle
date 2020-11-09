@@ -22,7 +22,9 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         manifestPlaceholders = ['vivoPushKey' : (System.getenv("VIVO_PUSH_KEY") ?: ""),
-                                'vivoPushId' : (System.getenv("VIVO_PUSH_ID") ?: "")]
+                                'vivoPushId' : (System.getenv("VIVO_PUSH_ID") ?: ""),
+                                'flymeAppId' : (System.getenv("FLYME_APP_ID") ?: ""),
+                                'flymeAppKey' : (System.getenv("FLYME_APP_KEY") ?: "")]
     }
 
     signingConfigs {
