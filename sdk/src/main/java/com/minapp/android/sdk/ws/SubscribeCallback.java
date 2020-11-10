@@ -26,11 +26,4 @@ public interface SubscribeCallback {
     @WorkerThread
     void onError(@NonNull Throwable tr);
 
-    /**
-     * 连接正常关闭
-     * 订阅被取消
-     */
-    @WorkerThread
-    void onDisconnect();
-
 }

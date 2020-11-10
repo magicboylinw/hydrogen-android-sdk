@@ -44,16 +44,4 @@ public class SafeSubscribeCallbackAdapter implements SubscribeCallback {
             }
         }
     }
-
-    @Override
-    public void onDisconnect() {
-        if (impl != null) {
-            try {
-                impl.onDisconnect();
-            } catch (Exception e) {
-                Log.e(WsConst.TAG, "exception in SubscribeCallback.onDisconnect", e);
-            }
-            impl = null;
-        }
-    }
 }

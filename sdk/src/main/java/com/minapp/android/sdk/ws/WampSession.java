@@ -23,6 +23,7 @@ import io.crossbar.autobahn.wamp.interfaces.TriConsumer;
 import io.crossbar.autobahn.wamp.types.EventDetails;
 import io.crossbar.autobahn.wamp.types.ExitInfo;
 import io.crossbar.autobahn.wamp.types.Subscription;
+import io.crossbar.autobahn.wamp.types.TransportOptions;
 
 /**
  * 对 {@link Session} 和 {@link Client} 的封装
@@ -141,6 +142,9 @@ class WampSession {
         // 立刻起另一个 thread 执行网络连接，在网络连接前会执行参数的检查，如果参数检查失败会在
         // CompletableFuture 抛出异常；如果抛出异常，Session 和 Client 都要重新构建
         Client client = new Client(session, path, Const.WAMP_REALM, executor);
+        TransportOptions options = new TransportOptions();
+        options.setAutoPingInterval(20);
+        options.setAutoPingTimeout(30);
         client.connect().whenComplete(new BiConsumer<ExitInfo, Throwable>() {
             @Override
             public void accept(ExitInfo exitInfo, Throwable tr) {

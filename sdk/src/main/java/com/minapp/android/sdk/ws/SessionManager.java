@@ -11,6 +11,7 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.minapp.android.sdk.database.Table;
 import com.minapp.android.sdk.database.query.Query;
+import com.minapp.android.sdk.database.query.Where;
 import com.minapp.android.sdk.util.HandlerExecutor;
 import com.minapp.android.sdk.util.LazyProperty;
 import com.minapp.android.sdk.ws.exceptions.BeforeConnectException;
@@ -24,6 +25,7 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import io.crossbar.autobahn.wamp.Session;
+import io.crossbar.autobahn.wamp.interfaces.ISession;
 import io.crossbar.autobahn.wamp.interfaces.TriConsumer;
 import io.crossbar.autobahn.wamp.messages.Hello;
 import io.crossbar.autobahn.wamp.messages.Subscribe;
@@ -46,6 +48,15 @@ import io.crossbar.autobahn.wamp.types.SubscribeOptions;
  * Subscriber 和 Broker 之间通过 Message 沟通，WAMP 定义了很多 Message 类型：{@link Hello},
  * {@link Welcome}, {@link Subscribe}, {@link Subscribed} 等等，都在包
  * io.crossbar.autobahn.wamp.messages 下面，对应 WAMP 的各种类型的消息
+ *
+ * 1）WebSocketReader 是 wamp io 读线程，当发生网络被断开的情况时（WLAN 开关被关闭、app 进入后台后被断开网络等），
+ * 抛出 ConnectionLost(null)；ping/pong 心跳超时，抛出 ConnectionLost("WebSocket ping timed out.")
+ * 2）进入 WebSocketConnection#failConnection(CLOSE_CONNECTION_LOST, reason)
+ * 3）关闭 socket、读线程、写线程，进入 WebSocketConnection.onClose(int, reason)
+ * 4）开启 reconnect 任务，进入 IWebSocketConnectionHandler.onClose(CLOSE_RECONNECT, reason)
+ * 5）进入 WebSocket.connect(...) 里的匿名实现 onClose(CLOSE_RECONNECT, reason)
+ * 6）回调 {@link ISession.OnLeaveListener#onLeave(Session, CloseDetails)} 和
+ * {@link ISession.OnDisconnectListener#onDisconnect(Session, boolean)}，但这两个回调都无法知晓是 reconnect
  *
  *
  *
@@ -118,12 +129,6 @@ public class SessionManager implements IWampSessionListener {
      */
     @Override
     public void onDisconnect(Session session, boolean wasClean) {
-        SubscribeRequest[] requests = copyRequests();
-        for (SubscribeRequest request : requests) {
-            request.cb.onDisconnect();
-        }
-        removeRequest(requests);
-
         long sessionId = session != null ? session.getID() : -1;
         Log.d(WsConst.TAG, String.format("session(%s) onDisconnect", sessionId));
     }
@@ -131,12 +136,6 @@ public class SessionManager implements IWampSessionListener {
 
     @Override
     public void onLeave(Session session, CloseDetails details) {
-
-        // 丢失连接，抛出异常
-        if (CloseDetails.REASON_TRANSPORT_LOST.equalsIgnoreCase(details.reason)) {
-            dispatchException(new LostTransportException());
-        }
-
         long sessionId = session != null ? session.getID() : -1;
         Log.d(WsConst.TAG, String.format("session(%s) onLeave, reason: %s, message: %s",
                 sessionId, details.reason, details.message));

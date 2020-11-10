@@ -20,12 +20,12 @@ android {
 
     signingConfigs {
         release {
-            def prop = new Properties();
+            /*def prop = new Properties();
             prop.load(new FileInputStream(file("keystore.properties")))
             keyAlias prop['KEY_ALIAS']
             keyPassword prop['KEY_PASSWORD']
             storeFile file(prop['KEYSTORE_FILE'])
-            storePassword prop['KEYSTORE_PASSWORD']
+            storePassword prop['KEYSTORE_PASSWORD']*/
             v2SigningEnabled true
             v1SigningEnabled true
         }
