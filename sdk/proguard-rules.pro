@@ -125,3 +125,7 @@
 -keep class com.vivo.push.**{*;}
 -keep class com.vivo.vms.**{*;}
 -keep class com.minapp.android.sdk.push.BsVivoPushMessageReceiver {*;}
+
+# oppo push
+-keep public class * extends android.app.Service
+-keep class com.heytap.msp.** { *;}

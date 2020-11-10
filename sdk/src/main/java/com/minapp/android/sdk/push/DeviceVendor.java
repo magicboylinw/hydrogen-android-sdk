@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Strings;
+import com.heytap.msp.push.HeytapPushManager;
 import com.meizu.cloud.pushsdk.util.MzSystemUtils;
 import com.minapp.android.sdk.Assert;
 import com.minapp.android.sdk.util.StringUtil;
@@ -52,6 +53,8 @@ public enum DeviceVendor{
                         VENDOR = FLYME;
                     } else if (isVivo(ctx)) {
                         VENDOR = VIVO;
+                    } else if (isOppo()) {
+                        VENDOR = OPPO;
                     }
                 }
             }
@@ -93,13 +96,13 @@ public enum DeviceVendor{
      * 判断是否 Oppo 手机
      * @return
      */
-    /*private static boolean isOppo() {
+    private static boolean isOppo() {
         try {
-            return com.heytap.msp.push.HeytapPushManager.isSupportPush();
+            return HeytapPushManager.isSupportPush();
         } catch (Throwable ignored) {
             return false;
         }
-    }*/
+    }
 
     /**
      * 判断是否 VIVO 手机

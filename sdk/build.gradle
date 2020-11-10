@@ -61,7 +61,9 @@ dependencies {
 
     api fileTree(dir: 'libs', include: ['*.jar'])
     compileOnly rootProject.fileTree(dir: '3rd', include: [
-            'alipaySdk-15.6.2-20190416165100.aar', 'vivo_push_sdk-2.9.0.0.aar'])
+            'alipaySdk-15.6.2-20190416165100.aar',
+            'vivo_push_sdk-2.9.0.0.aar',
+            "com.heytap.msp-2.1.0.aar"])
     api 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:5.3.1'
     api 'com.sina.weibo.sdk:core:4.3.7:openDefaultRelease@aar'
     api 'com.meizu.flyme.internet:push-internal:3.9.7'

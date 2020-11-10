@@ -4,6 +4,9 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
+import com.heytap.msp.push.HeytapPushManager;
+import com.heytap.msp.push.callback.ICallBackResultService;
+import com.heytap.msp.push.mode.ErrorCode;
 import com.huawei.hms.push.HmsMessaging;
 import com.meizu.cloud.pushsdk.PushManager;
 import com.minapp.android.sdk.Assert;
@@ -46,7 +49,45 @@ public class BsPushManager {
             case FLYME:
                 registerFlymePush(config.flymeAppId, config.flymeAppKey, ctx);
                 break;
+
+            case OPPO:
+                registerOppoPush(config.oppoAppKey, config.oppoAppSecret, ctx);
+                break;
         }
+    }
+
+    /**
+     * 注册 oppo push
+     * @param appKey
+     * @param appSecret
+     * @param ctx
+     */
+    public static final void registerOppoPush(
+            @NonNull String appKey, @NonNull String appSecret, @NonNull Context ctx) {
+        Assert.notNull(appKey, "appKey");
+        Assert.notNull(appSecret, "appSecret");
+        Assert.notNull(ctx, "Context");
+
+        HeytapPushManager.init(ctx, true);
+        HeytapPushManager.register(ctx, appKey, appSecret, new VivoPushRegisterCallbackAdapter() {
+            @Override
+            public void onRegister(int code, String regId) {
+                switch (code) {
+                    case ErrorCode.SUCCESS:
+                        LOG.d("oppo push regId:%s", regId);
+                        break;
+
+                    default:
+                        HeytapPushManager.getRegister();
+                }
+            }
+        });
+        parseAppReceiverClz(ctx);
+        LOG.d("register oppo push success");
+    }
+
+    public static final void requestNotificationPermissionForOppo() {
+        HeytapPushManager.requestNotificationPermission();
     }
 
     /**
@@ -131,5 +172,4 @@ public class BsPushManager {
         appReceiverClz = PushUtil.parseAppReceiverClz(ctx);
         Assert.notNullState(appReceiverClz, "app push receiver");
     }
-
 }

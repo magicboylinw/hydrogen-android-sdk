@@ -6,5 +6,7 @@ public final class PushConfiguration {
     public String miAppKey;
     public String flymeAppId;
     public String flymeAppKey;
+    public String oppoAppKey;
+    public String oppoAppSecret;
 
 }

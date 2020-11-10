@@ -47,6 +47,8 @@ public class App extends Application {
         PushConfiguration config = new PushConfiguration();
         config.flymeAppId = String.valueOf(meta.getInt("flymeAppId"));
         config.flymeAppKey = meta.getString("flymeAppKey");
+        config.oppoAppKey = meta.getString("oppoAppKey");
+        config.oppoAppSecret = meta.getString("oppoAppSecret");
         return config;
     }
 }
