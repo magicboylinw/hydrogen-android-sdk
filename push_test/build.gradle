@@ -3,6 +3,11 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.huawei.agconnect'
 
+File googleServicesConfig = project.file("google-services.json")
+if (googleServicesConfig.exists()) {
+    apply plugin: 'com.google.gms.google-services'
+}
+
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"

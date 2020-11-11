@@ -2,7 +2,12 @@ package com.minapp.android.sdk.push;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.common.base.Strings;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.minapp.android.sdk.Global;
 import com.minapp.android.sdk.util.BsLog;
 import com.vivo.push.PushClient;
@@ -40,6 +45,19 @@ class RegIdLogger extends Thread {
 
                 case VIVO:
                     regId = PushClient.getInstance(ctx).getRegId();
+                    break;
+
+                case FCM:
+                    FirebaseMessaging.getInstance().getToken()
+                            .addOnCompleteListener(new OnCompleteListener<String>() {
+                                @Override
+                                public void onComplete(@NonNull Task<String> task) {
+                                    if (task.isComplete() && task.isSuccessful()) {
+                                        log.d("fcm token: %s", task.getResult());
+                                    }
+                                }
+                            });
+                    exit = true;
                     break;
 
                 default:

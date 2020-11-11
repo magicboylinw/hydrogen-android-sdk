@@ -4,6 +4,12 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.tasks.OnCanceledListener;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.heytap.msp.push.HeytapPushManager;
 import com.heytap.msp.push.callback.ICallBackResultService;
 import com.heytap.msp.push.mode.ErrorCode;
@@ -53,7 +59,24 @@ public class BsPushManager {
             case OPPO:
                 registerOppoPush(config.oppoAppKey, config.oppoAppSecret, ctx);
                 break;
+
+            case FCM:
+                registerFCM(ctx);
+                break;
         }
+    }
+
+    /**
+     * 注册 FCM
+     * 实际上 FCM 不需要主动注册，配置好 google-services.json 和 google services plugin 后，FCM 会主动注册
+     * 这里做一些其他工作
+     *
+     * TODO 目前 FCM 只能在前台才能接收到消息，而且不是通知栏消息（不能把 app 拉到前台）待后端接入 fcm admin sdk 后看看
+     */
+    public static final void registerFCM(@NonNull Context ctx) {
+        parseAppReceiverClz(ctx);
+        new RegIdLogger(ctx).start();
+        LOG.d("register fcm push success");
     }
 
     /**

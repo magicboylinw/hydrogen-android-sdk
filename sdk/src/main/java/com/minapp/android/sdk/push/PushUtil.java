@@ -25,13 +25,14 @@ abstract class PushUtil {
      * @param message
      * @param ctx
      */
-    static void broadcastMessage(@NonNull String message, @NonNull Context ctx) {
+    static boolean broadcastMessage(@NonNull String message, @NonNull Context ctx) {
         Assert.notNull(message, "message");
         Assert.notNull(ctx, "Context");
         try {
-            broadcastMessage(Message.parse(message), ctx);
+            return broadcastMessage(Message.parse(message), ctx);
         } catch (Exception e) {
             LOG.e(e);
+            return false;
         }
     }
 
@@ -40,7 +41,7 @@ abstract class PushUtil {
      * @param message
      * @param ctx
      */
-    static void broadcastMessage(Message message, Context ctx) {
+    static boolean broadcastMessage(Message message, Context ctx) {
 
         // 华为推送用了中间层 activity 打开 push receiver，此时 appReceiverClz 有可能为空
         // 比如 register 被放在 main activity，或者被放在 worker thread
@@ -51,7 +52,9 @@ abstract class PushUtil {
             Intent intent = new Intent(ctx, receiverClz);
             intent.putExtra(EXTRA_MESSAGE, message);
             ctx.sendBroadcast(intent);
+            return true;
         }
+        return false;
     }
 
     @Nullable

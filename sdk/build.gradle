@@ -70,6 +70,11 @@ dependencies {
     api 'com.huawei.hms:push:5.0.2.300'
     api("com.google.guava:guava:29.0-android")
     implementation 'com.meizu.flyme.internet:push-internal:3.9.7'
+
+
+    implementation platform('com.google.firebase:firebase-bom:25.12.0')
+    implementation 'com.google.firebase:firebase-messaging'
+    implementation 'com.google.firebase:firebase-analytics'
 }
 
 // 把 sdk 发布到 bintray：./gradlew :sdk:clean :sdk:bintrayUpload

@@ -186,7 +186,30 @@
             android:value="${oppoAppSecret}"
             />
 
+        <activity
+            android:name="com.minapp.android.sdk.push.BsOppoMessageActivity"
+            android:theme="@style/HyDrogenTranslucent"
+            >
+            <intent-filter>
+                <action android:name="com.minapp.android.sdk.push.oppo" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+        </activity>
+
         <!-- oppo end -->
+
+        <!-- fcm start -->
+
+        <service
+            android:name="com.minapp.android.sdk.push.BsFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <!-- fcm end -->
 
         <receiver
                 android:name=".AppPushReceiver"

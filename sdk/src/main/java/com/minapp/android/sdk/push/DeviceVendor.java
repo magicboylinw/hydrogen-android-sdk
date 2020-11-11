@@ -7,13 +7,19 @@ import android.os.Build;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import com.heytap.msp.push.HeytapPushManager;
 import com.meizu.cloud.pushsdk.util.MzSystemUtils;
 import com.minapp.android.sdk.Assert;
 import com.minapp.android.sdk.util.StringUtil;
 import com.vivo.push.PushClient;
+
+import java.util.Arrays;
+import java.util.List;
 
 public enum DeviceVendor{
 
@@ -53,8 +59,10 @@ public enum DeviceVendor{
                         VENDOR = FLYME;
                     } else if (isVivo(ctx)) {
                         VENDOR = VIVO;
-                    } else if (isOppo()) {
+                    } else if (isOppo(ctx)) {
                         VENDOR = OPPO;
+                    } else if(isFCMSupported(ctx)) {
+                        VENDOR = FCM;
                     }
                 }
             }
@@ -96,8 +104,9 @@ public enum DeviceVendor{
      * 判断是否 Oppo 手机
      * @return
      */
-    private static boolean isOppo() {
+    private static boolean isOppo(Context ctx) {
         try {
+            HeytapPushManager.init(ctx, true);
             return HeytapPushManager.isSupportPush();
         } catch (Throwable ignored) {
             return false;
@@ -117,5 +126,15 @@ public enum DeviceVendor{
             }
         } catch (Exception ignored) {}
         return false;
+    }
+
+    /**
+     * 判断是否支持 FCM
+     * @param ctx
+     * @return
+     */
+    private static boolean isFCMSupported(Context ctx) {
+        return GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(ctx)
+                != ConnectionResult.SERVICE_MISSING;
     }
 }
