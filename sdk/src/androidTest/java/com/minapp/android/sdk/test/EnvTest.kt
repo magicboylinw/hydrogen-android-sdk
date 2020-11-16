@@ -1,13 +1,13 @@
 package com.minapp.android.sdk.test
 
 import com.minapp.android.sdk.BaaS
-import com.minapp.android.sdk.Const
 import com.minapp.android.sdk.auth.Auth
 import com.minapp.android.sdk.database.Table
 import com.minapp.android.sdk.database.query.Query
 import com.minapp.android.sdk.exception.HttpException
-import com.minapp.android.sdk.test.base.BaseAuthedTest
 import com.minapp.android.sdk.test.base.BaseTest
+import com.minapp.android.sdk.test.util.TestConst
+import com.minapp.android.sdk.test.util.Util
 import org.junit.AfterClass
 import org.junit.Test
 

@@ -145,7 +145,7 @@ class WampSession {
         TransportOptions options = new TransportOptions();
         options.setAutoPingInterval(20);
         options.setAutoPingTimeout(30);
-        client.connect().whenComplete(new BiConsumer<ExitInfo, Throwable>() {
+        client.connect(options).whenComplete(new BiConsumer<ExitInfo, Throwable>() {
             @Override
             public void accept(ExitInfo exitInfo, Throwable tr) {
                 if (tr != null) {

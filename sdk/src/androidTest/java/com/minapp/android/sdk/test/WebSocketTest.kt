@@ -7,6 +7,7 @@ import com.minapp.android.sdk.database.query.Query
 import com.minapp.android.sdk.database.query.Where
 import com.minapp.android.sdk.exception.SessionMissingException
 import com.minapp.android.sdk.test.base.BaseAuthedTest
+import com.minapp.android.sdk.test.util.SimpleCondition
 import com.minapp.android.sdk.ws.SubscribeEventData
 import com.minapp.android.sdk.ws.SubscribeCallback
 import com.minapp.android.sdk.ws.SubscribeEvent
@@ -23,32 +24,47 @@ class WebSocketTest: BaseAuthedTest() {
         private const val TAG = "WebSocketTest"
     }
 
+    private val cond by lazy { SimpleCondition() }
+
     /**
      * 一个简单的测试
-     * 订阅 ON_CREATE/ON_UPDATE/ON_DELETE
-     * 执行 create/update/delete 操作
+     * 订阅 ON_CREATE/ON_UPDATE/ON_DELETE 三个事件
+     * 然后执行 create/update/delete 操作
+     * 最后判断是否收到这三个事件
      */
     @Test
-    fun simple() {
+    fun curd() {
         val table = Table("danmu");
-
         var initCount = 0
         val updateList = CopyOnWriteArrayList<String>()
         var exception: Throwable? = null
-        val lock = ReentrantLock()
-        val condition = lock.newCondition()
         val cb = object: SubscribeCallback {
 
             override fun onInit() {
                 initCount++;
                 Log.d(TAG, "init: $initCount")
+
+                // create/update/delete 三个订阅者都订阅成功后，开个线程执行 CURD 操作
                 if (initCount == 3) {
-                    lock.lock()
-                    condition.signal()
-                    lock.unlock()
+                    thread(start = true) {
+                        try {
+                            val record = table.createRecord()
+                            record.put("name", SubscribeEvent.CREATE.event)
+                            record.save()
+                            record.put("name", SubscribeEvent.UPDATE.event)
+                            record.save()
+                            record.delete()
+                        } catch (e: Exception) {
+                            exception = e
+                            cond.signalAll()
+                        }
+                    }
                 }
             }
 
+            /**
+             * 另一个线程会执行 CURD 操作，这里应该会按顺序收到 create/update/delete 三个事件
+             */
             override fun onEvent(event: SubscribeEventData) {
                 Log.d(TAG, "onEvent: ${event.event}")
                 when (event.event) {
@@ -62,74 +78,31 @@ class WebSocketTest: BaseAuthedTest() {
 
                     SubscribeEvent.DELETE -> {
                         updateList.add(SubscribeEvent.DELETE.event)
-                        lock.lock()
-                        condition.signal()
-                        lock.unlock()
+                        cond.signalAll()
                     }
                 }
             }
 
+            // 把异常记录起来，恢复测试线程
             override fun onError(tr: Throwable) {
                 Log.d(TAG, "onError: ${tr.message}")
                 exception = tr
-                lock.lock()
-                condition.signal()
-                lock.unlock()
-            }
-
-            override fun onDisconnect() {
-                Log.d(TAG, "onDisconnect")
-                exception = Exception("onDisconnect")
-                lock.lock()
-                condition.signal()
-                lock.unlock()
+                cond.signalAll()
             }
         }
 
+        // 订阅后，阻塞测试线程
         table.subscribe(SubscribeEvent.CREATE, cb);
         table.subscribe(SubscribeEvent.UPDATE, cb);
         table.subscribe(SubscribeEvent.DELETE, cb);
+        cond.await()
 
-        // 等待三个订阅都成功后，开始 curd
-        lock.lock()
-        try {
-            Log.d(TAG, "wait until subscribe complete")
-            condition.await()
-        } finally {
-            lock.unlock()
-        }
-
-        thread(start = true) {
-            try {
-                val record = table.createRecord()
-                record.put("name", SubscribeEvent.CREATE.event)
-                record.save()
-                record.put("name", SubscribeEvent.UPDATE.event)
-                record.save()
-                record.delete()
-            } catch (e: Exception) {
-                exception = e
-                lock.lock()
-                condition.signal()
-                lock.unlock()
-            }
-        }
-
-        // 等待 curd 完成 or 异常
-        lock.lock()
-        try {
-            Log.d(TAG, "wait until curd complete")
-            condition.await()
-        } finally {
-            lock.unlock()
-        }
-
-        Log.d(TAG, "test finish")
+        // 测试线程恢复
         exception?.also { throw it }
-        val expectedUpdateList = arrayOf(SubscribeEvent.CREATE.event, SubscribeEvent.UPDATE.event,
-            SubscribeEvent.DELETE.event)
-        Assert.assertArrayEquals("update list not the same", expectedUpdateList,
-            updateList.toTypedArray())
+        val expectedUpdateList = arrayOf(
+            SubscribeEvent.CREATE.event, SubscribeEvent.UPDATE.event, SubscribeEvent.DELETE.event)
+        Assert.assertArrayEquals(
+            "update list not the same", expectedUpdateList, updateList.toTypedArray())
     }
 
     /**
@@ -138,44 +111,23 @@ class WebSocketTest: BaseAuthedTest() {
     @Test(expected = SessionMissingException::class)
     fun unSignIn() {
         Auth.logout()
-
-        val lock = ReentrantLock()
-        lock.lock()
-        val condition = lock.newCondition()
         var exception: Throwable? = null
         Table("danmu").subscribe(SubscribeEvent.CREATE, object : SubscribeCallback {
             override fun onInit() {
-                lock.lock()
-                condition.signal()
-                lock.unlock()
+                cond.signalAll()
             }
 
             override fun onEvent(event: SubscribeEventData) {
-                lock.lock()
-                condition.signal()
-                lock.unlock()
+                cond.signalAll()
             }
 
             override fun onError(tr: Throwable) {
                 exception = tr
-                lock.lock()
-                condition.signal()
-                lock.unlock()
-            }
-
-            override fun onDisconnect() {
-                lock.lock()
-                condition.signal()
-                lock.unlock()
+                cond.signalAll()
             }
         })
 
-        try {
-            condition.await()
-        } finally {
-            lock.unlock()
-        }
-
+        cond.await()
         throw exception ?: Exception("it should be SessionMissingException")
     }
 }
