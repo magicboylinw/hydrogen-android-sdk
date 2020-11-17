@@ -1,4 +1,4 @@
-name: Publish To Jcenter
+name: Publish to jcenter
 
 on:
   push:
@@ -18,4 +18,4 @@ jobs:
       with:
         java-version: 1.8
     - name: publish
-      run: ./gradlew -DBAAS_SDK_BINTRAY_USER=${{ secrets.BAAS_SDK_BINTRAY_USER }} -BAAS_SDK_BINTRAY_KEY=${{ secrets.BAAS_SDK_BINTRAY_KEY }} :sdk:clean :sdk:bintrayUpload
+      run: ./gradlew -DBAAS_SDK_BINTRAY_USER=${{ secrets.BAAS_SDK_BINTRAY_USER }} -DBAAS_SDK_BINTRAY_KEY=${{ secrets.BAAS_SDK_BINTRAY_KEY }} :sdk:clean :sdk:bintrayUpload
