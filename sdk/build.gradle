@@ -2,8 +2,8 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
-def sdkVersionCode = 42
-def sdkVersionName = "1.2.1"
+def sdkVersionCode = 43
+def sdkVersionName = "1.2.2"
 
 android {
     compileSdkVersion 28
@@ -65,27 +65,29 @@ dependencies {
 }
 
 // 把 sdk 发布到 bintray：./gradlew :sdk:clean :sdk:bintrayUpload
-def bintrayConfig = project.file('../bintray.properties')
-if (bintrayConfig != null && bintrayConfig.exists()) {
-    Properties prop = new Properties()
-    prop.load( bintrayConfig.newDataInputStream() )
 
-    apply plugin: 'com.novoda.bintray-release'
-
-    publish {
-        bintrayUser = prop.getProperty("bintrayUser")
-        bintrayKey = prop.getProperty("bintrayKey")
-        userOrg = ""
-        repoName = "minapp-android-sdk"
-
-        // 项目的坐标
-        groupId = "com.minapp.android"
-        artifactId = "sdk"
-        publishVersion = sdkVersionName
-
-        desc = "minapp-android-sdk"
-        uploadName = "minapp-android-sdk"
-        website = "https://github.com/ifanrx/hydrogen-android-sdk"
-        dryRun = false
+String getPropOrEnv(String key) {
+    String value = System.getProperty(key, null);
+    if (value == null) {
+        value = System.getenv(key);
     }
+    return value;
+}
+
+apply plugin: 'com.novoda.bintray-release'
+publish {
+    bintrayUser = getPropOrEnv("BAAS_SDK_BINTRAY_USER")
+    bintrayKey = getPropOrEnv("BAAS_SDK_BINTRAY_KEY")
+    userOrg = ""
+    repoName = "minapp-android-sdk"
+
+    // 项目的坐标
+    groupId = "com.minapp.android"
+    artifactId = "sdk"
+    publishVersion = sdkVersionName
+
+    desc = "minapp-android-sdk"
+    uploadName = "minapp-android-sdk"
+    website = "https://github.com/ifanrx/hydrogen-android-sdk"
+    dryRun = false
 }

@@ -21,7 +21,7 @@ public class Config {
      * 自定义域名
      */
     public static final String ENDPOINT_KEY = "ENDPOINT_KEY";
-    public static final String DEFAULT_ENDPOINT = "https://cloud.minapp.com/";
+    public static final String DEFAULT_ENDPOINT = "https://api.myminapp.com/";
 
     private static final Map<String, Object> CONFIG = new HashMap<>();
 
