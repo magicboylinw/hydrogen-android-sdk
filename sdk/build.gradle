@@ -2,8 +2,8 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
-def sdkVersionCode = 43
-def sdkVersionName = "1.2.2"
+def sdkVersionCode = 50
+def sdkVersionName = "1.3.0"
 
 android {
     compileSdkVersion 28
