@@ -65,7 +65,6 @@ dependencies {
 }
 
 // 把 sdk 发布到 bintray：./gradlew :sdk:clean :sdk:bintrayUpload
-
 String getPropOrEnv(String key) {
     String value = System.getProperty(key, null);
     if (value == null) {
