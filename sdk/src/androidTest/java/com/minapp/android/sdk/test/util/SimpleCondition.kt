@@ -1,5 +1,6 @@
 package com.minapp.android.sdk.test.util
 
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.locks.ReentrantLock
 
 class SimpleCondition {
@@ -7,10 +8,13 @@ class SimpleCondition {
     private val lock by lazy { ReentrantLock() }
     private val cond by lazy { lock.newCondition() }
 
-    fun await() {
+    fun await(millisecond: Long = 0) {
         try {
             lock.lock()
-            cond.awaitUninterruptibly()
+            if (millisecond <= 0)
+                cond.awaitUninterruptibly()
+            else
+                cond.await(millisecond, TimeUnit.MILLISECONDS)
         } finally {
             lock.unlock()
         }

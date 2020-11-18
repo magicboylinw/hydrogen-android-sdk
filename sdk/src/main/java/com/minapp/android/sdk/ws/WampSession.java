@@ -1,6 +1,7 @@
 package com.minapp.android.sdk.ws;
 
 import android.net.Uri;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -9,18 +10,18 @@ import com.minapp.android.sdk.Const;
 import com.minapp.android.sdk.auth.Auth;
 import com.minapp.android.sdk.exception.SessionMissingException;
 import com.minapp.android.sdk.exception.UninitializedException;
+import com.minapp.android.sdk.util.LazyProperty;
 import com.minapp.android.sdk.util.Util;
+import com.minapp.android.sdk.ws.exceptions.SubscribeErrorException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.function.BiConsumer;
 
 import io.crossbar.autobahn.wamp.Client;
 import io.crossbar.autobahn.wamp.Session;
-import io.crossbar.autobahn.wamp.interfaces.TriConsumer;
-import io.crossbar.autobahn.wamp.types.EventDetails;
+import io.crossbar.autobahn.wamp.interfaces.ISession;
 import io.crossbar.autobahn.wamp.types.ExitInfo;
 import io.crossbar.autobahn.wamp.types.Subscription;
 import io.crossbar.autobahn.wamp.types.TransportOptions;
@@ -32,13 +33,22 @@ class WampSession {
 
     private final Executor executor;
     private final List<ISessionListener> listeners = new ArrayList<>();
-    private Session session = null;
+    private volatile Session session = null;
 
-    public WampSession(@NonNull Executor executor) {
+    private final LazyProperty<SessionManager> sessionManager =
+            new LazyProperty<SessionManager>() {
+                @NonNull
+                @Override
+                protected SessionManager newInstance() {
+                    return SessionManager.get();
+                }
+            };
+
+    WampSession(@NonNull Executor executor) {
         this.executor = executor;
     }
 
-    public void unsubscribe(SubscribeRequest request) {
+    void unsubscribe(SubscribeRequest request) {
         if (request.subscription != null) {
 
             // 订阅中，取消订阅
@@ -53,7 +63,7 @@ class WampSession {
         }
     }
 
-    public void subscribe(SubscribeRequest[] requests) {
+    void subscribe(SubscribeRequest[] requests) {
         for (SubscribeRequest request : requests) {
             if (request.subscription == null) {
                 subscribe(request);
@@ -61,7 +71,7 @@ class WampSession {
         }
     }
 
-    public void subscribe(SubscribeRequest request) {
+    private void subscribe(SubscribeRequest request) {
         Session session = this.session;
         if (session == null || request.subscription != null)
             return;
@@ -88,12 +98,17 @@ class WampSession {
                     } else {
                         subscription.unsubscribe();
                     }
+
+                    // 订阅失败
+                } else if (throwable != null) {
+                    request.cb.onError(new SubscribeErrorException(throwable));
+                    sessionManager.get().removeRequest(new SubscribeRequest[]{request});
                 }
             }
         });
     }
 
-    public void addListener(ISessionListener listener) {
+    void addListener(ISessionListener listener) {
         if (listener == null)
             return;
         listeners.add(listener);
@@ -105,9 +120,30 @@ class WampSession {
         listeners.remove(listener);
     }
 
-    public void connect() {
+    void connect() {
         if (session == null)
             _connect();
+    }
+
+    void disconnect() {
+        if (session != null) {
+            if (session.isConnected()) {
+                session.leave(WsConst.DISCONNECT_WHEN_NO_SUBSCRIBER);
+            } else {
+                session.addOnConnectListener(new ISession.OnConnectListener() {
+                    @Override
+                    public void onConnect(Session session) {
+                        session.leave(WsConst.DISCONNECT_WHEN_NO_SUBSCRIBER);
+                    }
+                });
+                session = null;
+            }
+            session = null;
+        }
+    }
+
+    boolean isConnected() {
+        return session != null;
     }
 
     private void _connect() {

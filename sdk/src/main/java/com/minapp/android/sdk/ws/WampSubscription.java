@@ -15,4 +15,8 @@ public class WampSubscription {
     public void unsubscribe() {
         manager.removeRequest(new SubscribeRequest[]{request});
     }
+
+    public boolean alive() {
+        return manager.containRequest(request);
+    }
 }

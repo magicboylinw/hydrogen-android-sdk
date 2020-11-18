@@ -18,8 +18,4 @@ abstract class DanmakuConsumerThread: Thread("DanmakuConsumer"), SubscribeCallba
     override fun onError(tr: Throwable) {
         Log.e(Const.TAG, "consume danmuka fail", tr)
     }
-
-    override fun onDisconnect() {
-        Log.d(Const.TAG, "consume session disconnect")
-    }
 }

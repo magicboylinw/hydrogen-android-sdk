@@ -7,16 +7,20 @@ import android.util.Log;
 import androidx.annotation.AnyThread;
 import androidx.annotation.NonNull;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.minapp.android.sdk.database.Table;
 import com.minapp.android.sdk.database.query.Query;
 import com.minapp.android.sdk.database.query.Where;
+import com.minapp.android.sdk.exception.UnauthorizedException;
 import com.minapp.android.sdk.util.HandlerExecutor;
 import com.minapp.android.sdk.util.LazyProperty;
+import com.minapp.android.sdk.util.Util;
 import com.minapp.android.sdk.ws.exceptions.BeforeConnectException;
 import com.minapp.android.sdk.ws.exceptions.LostTransportException;
 import com.minapp.android.sdk.ws.exceptions.UserErrorException;
+import com.minapp.android.sdk.ws.exceptions.WampCloseException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -112,6 +116,16 @@ public class SessionManager implements IWampSessionListener {
         return new WampSubscription(request, this);
     }
 
+
+    public boolean isConnected() {
+        return session.get().isConnected();
+    }
+
+
+    public void clearSubscribers() {
+        removeRequest(copyRequests());
+    }
+
     private void requestInitSession() {
         worker.get().post(new Runnable() {
             @Override
@@ -139,6 +153,14 @@ public class SessionManager implements IWampSessionListener {
         long sessionId = session != null ? session.getID() : -1;
         Log.d(WsConst.TAG, String.format("session(%s) onLeave, reason: %s, message: %s",
                 sessionId, details.reason, details.message));
+
+        Throwable tr;
+        if (WsConst.WAMP_ERROR_NOT_AUTHORIZED.equalsIgnoreCase(details.reason)) {
+            tr = new UnauthorizedException(details.message);
+        } else {
+            tr = new WampCloseException(details.reason, details.message);
+        }
+        dispatchException(tr);
     }
 
     @Override
@@ -151,7 +173,7 @@ public class SessionManager implements IWampSessionListener {
     }
 
     /**
-     * 执行网络请求前就发生了异常
+     * 执行网络请求前（建立 session 前）就发生了异常
      * @param tr
      */
     @Override
@@ -175,8 +197,15 @@ public class SessionManager implements IWampSessionListener {
                 for (SubscribeRequest request : requests) {
                     session.get().unsubscribe(request);
                 }
+
+                if (SessionManager.this.requests.isEmpty())
+                    session.get().disconnect();
             }
         });
+    }
+
+    boolean containRequest(@NonNull SubscribeRequest request) {
+        return requests.contains(request);
     }
 
     private SubscribeRequest[] copyRequests() {

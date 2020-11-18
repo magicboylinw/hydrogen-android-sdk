@@ -8,13 +8,15 @@ import com.minapp.android.sdk.database.query.Where
 import com.minapp.android.sdk.exception.SessionMissingException
 import com.minapp.android.sdk.test.base.BaseAuthedTest
 import com.minapp.android.sdk.test.util.SimpleCondition
-import com.minapp.android.sdk.ws.SubscribeEventData
-import com.minapp.android.sdk.ws.SubscribeCallback
-import com.minapp.android.sdk.ws.SubscribeEvent
+import com.minapp.android.sdk.test.util.Util
+import com.minapp.android.sdk.ws.*
+import com.minapp.android.sdk.ws.exceptions.SubscribeErrorException
 import okhttp3.internal.wait
 import org.junit.Assert
 import org.junit.Test
 import java.util.concurrent.CopyOnWriteArrayList
+import java.util.concurrent.Semaphore
+import java.util.concurrent.atomic.AtomicReference
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.thread
 
@@ -25,6 +27,8 @@ class WebSocketTest: BaseAuthedTest() {
     }
 
     private val cond by lazy { SimpleCondition() }
+    private val table by lazy { Table("danmu") }
+    private val sm by lazy { SessionManager.get() }
 
     /**
      * 一个简单的测试
@@ -34,7 +38,6 @@ class WebSocketTest: BaseAuthedTest() {
      */
     @Test
     fun curd() {
-        val table = Table("danmu");
         var initCount = 0
         val updateList = CopyOnWriteArrayList<String>()
         var exception: Throwable? = null
@@ -112,7 +115,7 @@ class WebSocketTest: BaseAuthedTest() {
     fun unSignIn() {
         Auth.logout()
         var exception: Throwable? = null
-        Table("danmu").subscribe(SubscribeEvent.CREATE, object : SubscribeCallback {
+        table.subscribe(SubscribeEvent.CREATE, object : SubscribeCallback {
             override fun onInit() {
                 cond.signalAll()
             }
@@ -129,5 +132,98 @@ class WebSocketTest: BaseAuthedTest() {
 
         cond.await()
         throw exception ?: Exception("it should be SessionMissingException")
+    }
+
+    /**
+     * 当发生异常时（[SubscribeCallback.onError]），request 应该被 unsubscribe
+     * 1）写入错误的 token，导致 onError
+     * 2）断言有 exception 发生
+     * 3）等待一会（unsubscribe 发生在 wamp thread），断言 request 已被 unsubscribe
+     */
+    @Test
+    fun unsubscribeWhenOnError() {
+        Auth.logout()
+        Auth.signIn("000", "000", Long.MAX_VALUE)
+
+        val throwable = AtomicReference<Throwable>(null)
+        val subscription = table.subscribe(SubscribeEvent.CREATE, object : SubscribeCallback {
+            override fun onInit() {
+                cond.signalAll()
+            }
+
+            override fun onEvent(event: SubscribeEventData) {
+                cond.signalAll()
+            }
+
+            override fun onError(tr: Throwable) {
+                throwable.set(tr)
+                cond.signalAll()
+            }
+        })
+
+        Log.d(TAG, "test thread await")
+        cond.await()
+        Assert.assertNotNull(throwable.get())
+
+        Log.d(TAG, "test thread wait 3s, enable request to be unsubscribed")
+        cond.await(millisecond = 3 * 1000)
+        Assert.assertFalse(subscription.alive())
+    }
+
+    /**
+     * 当所有的订阅请求都被取消后，自动关闭 session
+     */
+    @Test
+    fun autoDisconnect() {
+        sm.clearSubscribers()
+        cond.await(millisecond = 3000)
+
+        var initCount = 0
+        val cb = object : SubscribeCallback {
+            override fun onInit() {
+                initCount++
+                if (initCount == 3)
+                    cond.signalAll()
+            }
+
+            override fun onEvent(event: SubscribeEventData) {}
+            override fun onError(tr: Throwable) {}
+        }
+
+        val subscriptions = mutableListOf<WampSubscription>()
+        subscriptions.add(table.subscribe(SubscribeEvent.CREATE, cb))
+        subscriptions.add(table.subscribe(SubscribeEvent.DELETE, cb))
+        subscriptions.add(table.subscribe(SubscribeEvent.UPDATE, cb))
+        cond.await()
+
+        Assert.assertTrue(sm.isConnected)
+        subscriptions.forEach { it.unsubscribe() }
+        cond.await(millisecond = 3000)
+        Assert.assertFalse(sm.isConnected)
+    }
+
+    /**
+     * 测试订阅异常：表不存在
+     */
+    @Test
+    fun invalidTable() {
+        val exception = AtomicReference<Throwable>(null)
+        Table(Util.randomString()).subscribe(SubscribeEvent.CREATE, object : SubscribeCallback {
+            override fun onInit() {
+                cond.signalAll()
+            }
+
+            override fun onEvent(event: SubscribeEventData) {
+                cond.signalAll()
+            }
+
+            override fun onError(tr: Throwable) {
+                exception.set(tr)
+                cond.signalAll()
+            }
+        })
+        cond.await()
+
+        Assert.assertTrue(exception.get() is SubscribeErrorException)
     }
 }
