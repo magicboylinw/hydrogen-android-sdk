@@ -1,7 +1,9 @@
 package com.minapp.android.sdk.test
 
 import android.util.Log
+import com.minapp.android.sdk.Global
 import com.minapp.android.sdk.auth.Auth
+import com.minapp.android.sdk.database.Record
 import com.minapp.android.sdk.database.Table
 import com.minapp.android.sdk.database.query.Query
 import com.minapp.android.sdk.database.query.Where
@@ -9,11 +11,16 @@ import com.minapp.android.sdk.exception.SessionMissingException
 import com.minapp.android.sdk.test.base.BaseAuthedTest
 import com.minapp.android.sdk.test.util.SimpleCondition
 import com.minapp.android.sdk.test.util.Util
+import com.minapp.android.sdk.util.BaseCallback
+import com.minapp.android.sdk.util.LazyProperty
 import com.minapp.android.sdk.ws.*
 import com.minapp.android.sdk.ws.exceptions.SubscribeErrorException
+import io.crossbar.autobahn.websocket.WebSocketConnection
+import io.crossbar.autobahn.websocket.interfaces.IWebSocketConnectionHandler
 import okhttp3.internal.wait
 import org.junit.Assert
 import org.junit.Test
+import java.lang.reflect.Field
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.Semaphore
 import java.util.concurrent.atomic.AtomicReference
@@ -225,5 +232,101 @@ class WebSocketTest: BaseAuthedTest() {
         cond.await()
 
         Assert.assertTrue(exception.get() is SubscribeErrorException)
+    }
+
+    /**
+     * reconnect 机制的测试
+     * 1）正常订阅，然后发送 CLOSE 消息触发 reconnect
+     * 2）等待个 2s，执行 CREATE，应该会收到事件
+     * 3）作为对比，增加一个 disable reconnect 的对比项
+     */
+    @Test
+    fun reconnect() {
+        var exception: Throwable? = null
+        SessionManager.ENABLE_RECONNECT = false
+        table.subscribe(SubscribeEvent.CREATE, object : SubscribeCallback {
+            override fun onInit() {
+                cond.signalAll()
+            }
+
+            override fun onEvent(event: SubscribeEventData) {}
+
+            override fun onError(tr: Throwable) {
+                exception = tr
+                cond.signalAll()
+            }
+        })
+
+        // 订阅成功
+        cond.await()
+        exception?.also { throw it }
+
+        // 发送伪装的 CLOSE_CONNECTION_LOST，在 reconnect disable 的情况下会执行 onError
+        Global.postDelayed({ closeConnection() }, 1000)
+        cond.await()
+        Assert.assertNotNull(exception)
+
+        // 开启 reconnect 后重新订阅
+        SessionManager.ENABLE_RECONNECT = true
+        exception = null
+        var record: Record? = null
+        table.subscribe(SubscribeEvent.CREATE, object : SubscribeCallback {
+            override fun onInit() {
+                cond.signalAll()
+            }
+
+            override fun onEvent(event: SubscribeEventData) {
+                record = event.after
+                cond.signalAll()
+            }
+
+            override fun onError(tr: Throwable) {
+                exception = tr
+                cond.signalAll()
+            }
+        })
+        cond.await()
+        exception?.also { throw it }
+
+        // 断开网络，等待一会待它恢复，这时不会收到异常
+        closeConnection()
+        cond.await(millisecond = 3000)
+        Assert.assertNull(exception)
+        Assert.assertNull(record)
+
+        // 执行 CURD，依然会收到订阅消息
+        val content = Util.randomString()
+        table.createRecord()
+            .put("name", content)
+            .saveInBackground(object : BaseCallback<Record> {
+                override fun onSuccess(t: Record?) {}
+                override fun onFailure(e: Throwable?) {
+                    cond.signalAll()
+                }
+            })
+        cond.await()
+
+        Assert.assertNull(exception)
+        Assert.assertNotNull(record)
+        Assert.assertEquals(content, record?.getString("name"))
+    }
+
+    private fun closeConnection() {
+        val session = SessionManager::class.java.getDeclaredField("session")
+            .apply { isAccessible = true }
+            .let { (it.get(SessionManager.get()) as LazyProperty<*>).get() }
+
+        val transport = session::class.java.getDeclaredField("transport")
+            .apply { isAccessible = true }
+            .get(session)
+
+        val connection = transport::class.java.getDeclaredField("mConnection")
+            .apply { isAccessible = true }
+            .get(transport) as WebSocketConnection
+
+        val onClose = WebSocketConnection::class.java.getDeclaredMethod(
+            "onClose", Int::class.java, String::class.java)
+            .apply { isAccessible = true }
+        onClose.invoke(connection, IWebSocketConnectionHandler.CLOSE_CONNECTION_LOST, "")
     }
 }

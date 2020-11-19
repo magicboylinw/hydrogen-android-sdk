@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.concurrent.Callable;
 
+import io.crossbar.autobahn.Autobahn;
 import okhttp3.ResponseBody;
 
 public class BaaS {

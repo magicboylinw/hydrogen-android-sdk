@@ -68,7 +68,7 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxjava:2.2.12'
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
 
-    api('com.minapp.android.autobahn:autobahn-android:20.7.5') {
+    api('com.minapp.android.autobahn:autobahn-android:20.7.8') {
         // 跟依赖的 rxjava 版本冲突了
         exclude group: "io.reactivex.rxjava2", module:"rxjava"
     }

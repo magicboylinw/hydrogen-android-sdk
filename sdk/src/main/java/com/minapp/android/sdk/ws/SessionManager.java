@@ -63,9 +63,17 @@ import io.crossbar.autobahn.wamp.types.SubscribeOptions;
  * {@link ISession.OnDisconnectListener#onDisconnect(Session, boolean)}，但这两个回调都无法知晓是 reconnect
  *
  *
+ * Reconnect（重连接）
+ * reconnect 的逻辑在 WebSocketConnection.scheduleReconnect 和 WebSocketConnection.reconnect
+ * 触发路径是：WebSocketConnection.onClose -> CannotConnect/ConnectionLost/Close(invalid close)/
+ * Error（CLOSE_INTERNAL_ERROR，当网络断开时抛出 SSLException）
+ *
+ *
  *
  */
 public class SessionManager implements IWampSessionListener {
+
+    public static volatile boolean ENABLE_RECONNECT = true;
 
     private static final LazyProperty<SessionManager> SINGLETON =
             new LazyProperty<SessionManager>() {
@@ -97,7 +105,7 @@ public class SessionManager implements IWampSessionListener {
         @NonNull
         @Override
         protected WampSession newInstance() {
-            WampSession session = new WampSession(new HandlerExecutor(worker.get()));
+            WampSession session = new WampSession(worker.get());
             session.addListener(SessionManager.this);
             return session;
         }
@@ -208,7 +216,7 @@ public class SessionManager implements IWampSessionListener {
         return requests.contains(request);
     }
 
-    private SubscribeRequest[] copyRequests() {
+    SubscribeRequest[] copyRequests() {
         SubscribeRequest[] requests = new SubscribeRequest[this.requests.size()];
         requests = this.requests.toArray(requests);
         return requests;

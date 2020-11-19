@@ -1,6 +1,7 @@
 package com.minapp.android.sdk.ws;
 
 import android.net.Uri;
+import android.os.Handler;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -10,6 +11,7 @@ import com.minapp.android.sdk.Const;
 import com.minapp.android.sdk.auth.Auth;
 import com.minapp.android.sdk.exception.SessionMissingException;
 import com.minapp.android.sdk.exception.UninitializedException;
+import com.minapp.android.sdk.util.HandlerExecutor;
 import com.minapp.android.sdk.util.LazyProperty;
 import com.minapp.android.sdk.util.Util;
 import com.minapp.android.sdk.ws.exceptions.SubscribeErrorException;
@@ -29,9 +31,9 @@ import io.crossbar.autobahn.wamp.types.TransportOptions;
 /**
  * 对 {@link Session} 和 {@link Client} 的封装
  */
-class WampSession {
+class WampSession implements ReConnectWebSocketTransport.IReconnectListener {
 
-    private final Executor executor;
+    private final Handler handler;
     private final List<ISessionListener> listeners = new ArrayList<>();
     private volatile Session session = null;
 
@@ -44,8 +46,10 @@ class WampSession {
                 }
             };
 
-    WampSession(@NonNull Executor executor) {
-        this.executor = executor;
+    private ReConnectWebSocketTransport transport = null;
+
+    WampSession(@NonNull Handler handler) {
+        this.handler = handler;
     }
 
     void unsubscribe(SubscribeRequest request) {
@@ -57,7 +61,9 @@ class WampSession {
             } else {
 
                 // 已订阅，取消订阅
-                request.subscription.unsubscribe();
+                try {
+                    request.subscription.unsubscribe();
+                } catch (Exception ignored) {}
                 request.subscription = null;
             }
         }
@@ -140,6 +146,11 @@ class WampSession {
             }
             session = null;
         }
+
+        if (transport != null) {
+            transport.reconnectListener = null;
+        }
+        transport = null;
     }
 
     boolean isConnected() {
@@ -171,13 +182,16 @@ class WampSession {
             pathBuilder.appendQueryParameter(Const.HTTP_HEADER_ENV, envId);
         String path = pathBuilder.build().toString();
 
-        Session session = new Session(executor);
+        Session session = new Session(new HandlerExecutor(handler));
         addListenersToSession(session);
         this.session = session;
 
         // 立刻起另一个 thread 执行网络连接，在网络连接前会执行参数的检查，如果参数检查失败会在
         // CompletableFuture 抛出异常；如果抛出异常，Session 和 Client 都要重新构建
-        Client client = new Client(session, path, Const.WAMP_REALM, executor);
+        transport = new ReConnectWebSocketTransport(path, handler);
+        transport.reconnectListener = this;
+        Client client = new Client(transport);
+        client.add(session, Const.WAMP_REALM);
         TransportOptions options = new TransportOptions();
         options.setAutoPingInterval(20);
         options.setAutoPingTimeout(30);
@@ -228,6 +242,14 @@ class WampSession {
             session.removeOnLeaveListener(listener);
             session.removeOnUserErrorListener(listener);
             session.removeOnReadyListener(listener);
+        }
+    }
+
+    @Override
+    public void onReconnect() {
+        SubscribeRequest[] requests = SessionManager.get().copyRequests();
+        for (SubscribeRequest request : requests) {
+            unsubscribe(request);
         }
     }
 }

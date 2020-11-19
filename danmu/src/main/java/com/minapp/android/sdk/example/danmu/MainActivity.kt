@@ -37,6 +37,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private val networkMonitor by lazy {
+        NetworkMonitor(applicationContext)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -92,6 +96,7 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         danmukaView.release()
+        networkMonitor.exit = true
     }
 
     private fun addDanmaku(record: Record) {

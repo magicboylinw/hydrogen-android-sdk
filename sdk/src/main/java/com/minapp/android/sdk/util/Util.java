@@ -1,8 +1,14 @@
 package com.minapp.android.sdk.util;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.accessibility.AccessibilityManager;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -23,6 +29,23 @@ public abstract class Util {
     private static final String[] POINTER_FEATURE = new String[]{
             Record.ID, Record.TABLE
     };
+
+    /**
+     * 网络开关已打开，并且连上了网络
+     * @param ctx
+     * @return
+     */
+    @SuppressLint("MissingPermission")
+    public static boolean isNetworkAvailable(Context ctx) {
+        try {
+            ConnectivityManager cm =
+                    (ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo info = cm.getActiveNetworkInfo();
+            return info != null && info.isAvailable();
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
     public static boolean isNullOrEmpty(String str) {
         if (str == null)
