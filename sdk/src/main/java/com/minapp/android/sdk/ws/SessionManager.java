@@ -118,9 +118,18 @@ public class SessionManager implements IWampSessionListener {
     WampSubscription subscribe(
             @NonNull Table table, @NonNull Query query, @NonNull SubscribeEvent event,
             @NonNull SubscribeCallback cb) {
-        SubscribeRequest request = new SubscribeRequest(table.getTableName(), query, event, cb);
+        final SubscribeRequest request = new SubscribeRequest(table.getTableName(), query, event, cb);
         requests.add(request);
-        requestInitSession();
+        worker.get().post(new Runnable() {
+            @Override
+            public void run() {
+                if (isConnected()) {
+                    session.get().subscribe(new SubscribeRequest[]{request});
+                } else {
+                    session.get().connect();
+                }
+            }
+        });
         return new WampSubscription(request, this);
     }
 
@@ -132,15 +141,6 @@ public class SessionManager implements IWampSessionListener {
 
     public void clearSubscribers() {
         removeRequest(copyRequests());
-    }
-
-    private void requestInitSession() {
-        worker.get().post(new Runnable() {
-            @Override
-            public void run() {
-                session.get().connect();
-            }
-        });
     }
 
 
@@ -173,9 +173,7 @@ public class SessionManager implements IWampSessionListener {
 
     @Override
     public void onReady(Session session) {
-        // wamp 建立连接后，逐个订阅
         this.session.get().subscribe(copyRequests());
-
         long sessionId = session != null ? session.getID() : -1;
         Log.d(WsConst.TAG, String.format("session(%s) onReady", sessionId));
     }

@@ -1,5 +1,6 @@
 package com.minapp.android.sdk.test.table
 
+import android.util.Log
 import com.minapp.android.sdk.BaaS
 import com.minapp.android.sdk.database.Record
 import com.minapp.android.sdk.database.query.Query

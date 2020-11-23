@@ -5,37 +5,109 @@ import com.minapp.android.sdk.Global
 import com.minapp.android.sdk.auth.Auth
 import com.minapp.android.sdk.database.Record
 import com.minapp.android.sdk.database.Table
-import com.minapp.android.sdk.database.query.Query
-import com.minapp.android.sdk.database.query.Where
 import com.minapp.android.sdk.exception.SessionMissingException
+import com.minapp.android.sdk.exception.UnauthorizedException
 import com.minapp.android.sdk.test.base.BaseAuthedTest
 import com.minapp.android.sdk.test.util.SimpleCondition
 import com.minapp.android.sdk.test.util.Util
+import com.minapp.android.sdk.test.util.where
 import com.minapp.android.sdk.util.BaseCallback
 import com.minapp.android.sdk.util.LazyProperty
 import com.minapp.android.sdk.ws.*
 import com.minapp.android.sdk.ws.exceptions.SubscribeErrorException
 import io.crossbar.autobahn.websocket.WebSocketConnection
 import io.crossbar.autobahn.websocket.interfaces.IWebSocketConnectionHandler
-import okhttp3.internal.wait
+import org.junit.After
 import org.junit.Assert
 import org.junit.Test
-import java.lang.reflect.Field
 import java.util.concurrent.CopyOnWriteArrayList
-import java.util.concurrent.Semaphore
+import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicReference
-import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.thread
 
 class WebSocketTest: BaseAuthedTest() {
 
     companion object {
         private const val TAG = "WebSocketTest"
+        private const val COL_NAME = "name"
     }
 
     private val cond by lazy { SimpleCondition() }
     private val table by lazy { Table("danmu") }
     private val sm by lazy { SessionManager.get() }
+
+    private val exception by lazy {
+        AtomicReference<Throwable>(null) }
+
+    private val event by lazy {
+        AtomicReference<SubscribeEventData>(null) }
+
+    private val subscriptions by lazy {
+        ArrayList<WampSubscription>()
+    }
+
+    private val nameAfter: String?
+        get() = event.get()?.after?.getString(COL_NAME)
+
+    private val nameBefore: String?
+        get() = event.get()?.before?.getString(COL_NAME)
+
+    @After
+    fun after() {
+        SessionManager.ENABLE_RECONNECT = true
+        subscriptions.clear()
+        sm.clearSubscribers()
+        cond.await()
+    }
+
+    /**
+     * 测试 create event
+     */
+    @Test
+    fun createEvent() {
+        val name = Util.randomString()
+        subscribeAndWait(nameEqualTo = name)
+
+        saveRecord(name = "$name${System.currentTimeMillis()}")
+        Assert.assertNull(nameAfter)
+
+        saveRecord(name = name, notifyOnSuccess = false)
+        Assert.assertTrue(nameAfter == name)
+    }
+
+    /**
+     * 测试 update event
+     */
+    @Test
+    fun updateEvent() {
+        val name = Util.randomString()
+        val nameUpdated = Util.randomString()
+        subscribeAndWait(nameEqualTo = nameUpdated, event = SubscribeEvent.UPDATE)
+
+        val record = saveRecord(name = name)
+        Assert.assertNull(event.get())
+
+        record.put(COL_NAME, nameUpdated)
+        saveRecord(record = record)
+        Assert.assertEquals(nameUpdated, nameAfter)
+        Assert.assertEquals(name, nameBefore)
+    }
+
+    /**
+     * 测试 delete event
+     */
+    @Test
+    fun deleteEvent() {
+        val name = Util.randomString()
+        subscribeAndWait(nameEqualTo = name, event = SubscribeEvent.DELETE)
+
+        val record = saveRecord(name = name)
+        Assert.assertNull(event.get())
+
+        deleteRecord(record)
+        Assert.assertEquals(name, nameBefore)
+    }
+
 
     /**
      * 一个简单的测试
@@ -59,9 +131,9 @@ class WebSocketTest: BaseAuthedTest() {
                     thread(start = true) {
                         try {
                             val record = table.createRecord()
-                            record.put("name", SubscribeEvent.CREATE.event)
+                            record.put(COL_NAME, SubscribeEvent.CREATE.event)
                             record.save()
-                            record.put("name", SubscribeEvent.UPDATE.event)
+                            record.put(COL_NAME, SubscribeEvent.UPDATE.event)
                             record.save()
                             record.delete()
                         } catch (e: Exception) {
@@ -79,11 +151,11 @@ class WebSocketTest: BaseAuthedTest() {
                 Log.d(TAG, "onEvent: ${event.event}")
                 when (event.event) {
                     SubscribeEvent.CREATE -> {
-                        updateList.add(event.after?.getString("name"))
+                        updateList.add(event.after?.getString(COL_NAME))
                     }
 
                     SubscribeEvent.UPDATE -> {
-                        updateList.add(event.after?.getString("name"))
+                        updateList.add(event.after?.getString(COL_NAME))
                     }
 
                     SubscribeEvent.DELETE -> {
@@ -116,29 +188,81 @@ class WebSocketTest: BaseAuthedTest() {
     }
 
     /**
+     * 测试多个订阅的情况
+     */
+    @Test
+    fun multiSubscriber() {
+        val init = AtomicInteger(0)
+        val event = AtomicInteger(0)
+        val onInit = {
+            init.incrementAndGet()
+            cond.signalAll()
+        }
+        val onEvent: (SubscribeEventData) -> Unit = {
+            event.incrementAndGet()
+        }
+
+        // 订阅一次
+        subscribeAndWait(
+            nameNotEqualTo = Util.randomString(),
+            onInit = onInit,
+            onEvent = onEvent)
+        Assert.assertEquals(1, init.get())
+
+        // 订阅两次
+        subscribeAndWait(
+            nameNotEqualTo = Util.randomString(),
+            onInit = onInit,
+            onEvent = onEvent)
+        Assert.assertEquals(2, init.get())
+
+        // 订阅三次
+        subscribeAndWait(
+            nameNotEqualTo = Util.randomString(),
+            onInit = onInit,
+            onEvent = onEvent)
+        Assert.assertEquals(3, init.get())
+        Assert.assertEquals(3, subscriptions.size)
+
+        // 收到三次订阅事件
+        saveRecord(name = Util.randomString(), notifyOnSuccess = false)
+        Assert.assertEquals(3, event.get())
+
+        // 移除一个订阅，收到两个订阅事件
+        subscriptions[0].unsubscribe()
+        event.set(0)
+        cond.await(millisecond = 1000)
+        saveRecord(name = Util.randomString(), notifyOnSuccess = false)
+        Assert.assertEquals(2, event.get())
+
+        // 再次移除一个订阅，收到一个订阅事件
+        subscriptions[1].unsubscribe()
+        event.set(0)
+        cond.await(millisecond = 1000)
+        saveRecord(name = Util.randomString(), notifyOnSuccess = false)
+        Assert.assertEquals(1, event.get())
+
+        // 移除全部订阅，不会收到订阅事件；而且自动释放 session
+        subscriptions[2].unsubscribe()
+        event.set(0)
+        cond.await(millisecond = 1000)
+        saveRecord(name = Util.randomString(), notifyOnSuccess = false)
+        Assert.assertEquals(0, event.get())
+        Assert.assertFalse(SessionManager.get().isConnected)
+    }
+
+
+    /**
      * 未登录的情况
      */
-    @Test(expected = SessionMissingException::class)
+    @Test
     fun unSignIn() {
-        Auth.logout()
-        var exception: Throwable? = null
-        table.subscribe(SubscribeEvent.CREATE, object : SubscribeCallback {
-            override fun onInit() {
-                cond.signalAll()
-            }
-
-            override fun onEvent(event: SubscribeEventData) {
-                cond.signalAll()
-            }
-
-            override fun onError(tr: Throwable) {
-                exception = tr
-                cond.signalAll()
-            }
-        })
-
-        cond.await()
-        throw exception ?: Exception("it should be SessionMissingException")
+        try {
+            Auth.logout()
+            subscribeAndWait(exceptedException = SessionMissingException::class.java)
+        } finally {
+            signIn()
+        }
     }
 
     /**
@@ -149,32 +273,16 @@ class WebSocketTest: BaseAuthedTest() {
      */
     @Test
     fun unsubscribeWhenOnError() {
-        Auth.logout()
-        Auth.signIn("000", "000", Long.MAX_VALUE)
+        try {
+            Auth.logout()
+            Auth.signIn("000", "000", Long.MAX_VALUE)
 
-        val throwable = AtomicReference<Throwable>(null)
-        val subscription = table.subscribe(SubscribeEvent.CREATE, object : SubscribeCallback {
-            override fun onInit() {
-                cond.signalAll()
-            }
-
-            override fun onEvent(event: SubscribeEventData) {
-                cond.signalAll()
-            }
-
-            override fun onError(tr: Throwable) {
-                throwable.set(tr)
-                cond.signalAll()
-            }
-        })
-
-        Log.d(TAG, "test thread await")
-        cond.await()
-        Assert.assertNotNull(throwable.get())
-
-        Log.d(TAG, "test thread wait 3s, enable request to be unsubscribed")
-        cond.await(millisecond = 3 * 1000)
-        Assert.assertFalse(subscription.alive())
+            subscribeAndWait(exceptedException = UnauthorizedException::class.java)
+            cond.await()
+            Assert.assertFalse(subscriptions.firstOrNull()?.alive() == true)
+        } finally {
+            signIn()
+        }
     }
 
     /**
@@ -182,30 +290,13 @@ class WebSocketTest: BaseAuthedTest() {
      */
     @Test
     fun autoDisconnect() {
-        sm.clearSubscribers()
-        cond.await(millisecond = 3000)
-
-        var initCount = 0
-        val cb = object : SubscribeCallback {
-            override fun onInit() {
-                initCount++
-                if (initCount == 3)
-                    cond.signalAll()
-            }
-
-            override fun onEvent(event: SubscribeEventData) {}
-            override fun onError(tr: Throwable) {}
-        }
-
-        val subscriptions = mutableListOf<WampSubscription>()
-        subscriptions.add(table.subscribe(SubscribeEvent.CREATE, cb))
-        subscriptions.add(table.subscribe(SubscribeEvent.DELETE, cb))
-        subscriptions.add(table.subscribe(SubscribeEvent.UPDATE, cb))
-        cond.await()
+        subscribeAndWait(event = SubscribeEvent.CREATE)
+        subscribeAndWait(event = SubscribeEvent.UPDATE)
+        subscribeAndWait(event = SubscribeEvent.DELETE)
 
         Assert.assertTrue(sm.isConnected)
         subscriptions.forEach { it.unsubscribe() }
-        cond.await(millisecond = 3000)
+        cond.await()
         Assert.assertFalse(sm.isConnected)
     }
 
@@ -214,24 +305,9 @@ class WebSocketTest: BaseAuthedTest() {
      */
     @Test
     fun invalidTable() {
-        val exception = AtomicReference<Throwable>(null)
-        Table(Util.randomString()).subscribe(SubscribeEvent.CREATE, object : SubscribeCallback {
-            override fun onInit() {
-                cond.signalAll()
-            }
-
-            override fun onEvent(event: SubscribeEventData) {
-                cond.signalAll()
-            }
-
-            override fun onError(tr: Throwable) {
-                exception.set(tr)
-                cond.signalAll()
-            }
-        })
-        cond.await()
-
-        Assert.assertTrue(exception.get() is SubscribeErrorException)
+        subscribeAndWait(
+            tableName = Util.randomString(),
+            exceptedException = SubscribeErrorException::class.java)
     }
 
     /**
@@ -242,73 +318,35 @@ class WebSocketTest: BaseAuthedTest() {
      */
     @Test
     fun reconnect() {
-        var exception: Throwable? = null
+
+        // disable reconnect 的情况
         SessionManager.ENABLE_RECONNECT = false
-        table.subscribe(SubscribeEvent.CREATE, object : SubscribeCallback {
-            override fun onInit() {
-                cond.signalAll()
-            }
-
-            override fun onEvent(event: SubscribeEventData) {}
-
-            override fun onError(tr: Throwable) {
-                exception = tr
-                cond.signalAll()
-            }
-        })
-
-        // 订阅成功
-        cond.await()
-        exception?.also { throw it }
+        subscribeAndWait()
 
         // 发送伪装的 CLOSE_CONNECTION_LOST，在 reconnect disable 的情况下会执行 onError
-        Global.postDelayed({ closeConnection() }, 1000)
+        postCloseConnection()
         cond.await()
-        Assert.assertNotNull(exception)
+        Assert.assertNotNull(exception.get())
+        exception.set(null)
 
         // 开启 reconnect 后重新订阅
         SessionManager.ENABLE_RECONNECT = true
-        exception = null
-        var record: Record? = null
-        table.subscribe(SubscribeEvent.CREATE, object : SubscribeCallback {
-            override fun onInit() {
-                cond.signalAll()
-            }
-
-            override fun onEvent(event: SubscribeEventData) {
-                record = event.after
-                cond.signalAll()
-            }
-
-            override fun onError(tr: Throwable) {
-                exception = tr
-                cond.signalAll()
-            }
-        })
-        cond.await()
-        exception?.also { throw it }
+        subscribeAndWait()
 
         // 断开网络，等待一会待它恢复，这时不会收到异常
-        closeConnection()
-        cond.await(millisecond = 3000)
-        Assert.assertNull(exception)
-        Assert.assertNull(record)
+        postCloseConnection()
+        cond.await()
+        Assert.assertNull(exception.get())
+        Assert.assertNull(event.get())
 
         // 执行 CURD，依然会收到订阅消息
         val content = Util.randomString()
-        table.createRecord()
-            .put("name", content)
-            .saveInBackground(object : BaseCallback<Record> {
-                override fun onSuccess(t: Record?) {}
-                override fun onFailure(e: Throwable?) {
-                    cond.signalAll()
-                }
-            })
-        cond.await()
+        saveRecord(name = content, notifyOnSuccess = false)
+        Assert.assertEquals(content, nameAfter)
+    }
 
-        Assert.assertNull(exception)
-        Assert.assertNotNull(record)
-        Assert.assertEquals(content, record?.getString("name"))
+    private fun postCloseConnection(delay: Long = 1000) {
+        Global.postDelayed({ closeConnection() }, delay)
     }
 
     private fun closeConnection() {
@@ -328,5 +366,96 @@ class WebSocketTest: BaseAuthedTest() {
             "onClose", Int::class.java, String::class.java)
             .apply { isAccessible = true }
         onClose.invoke(connection, IWebSocketConnectionHandler.CLOSE_CONNECTION_LOST, "")
+    }
+
+    private fun subscribeAndWait(
+        tableName: String? = null,
+        nameEqualTo: String? = null,
+        nameNotEqualTo: String? = null,
+        exceptedException: Class<*>? = null,
+        event: SubscribeEvent = SubscribeEvent.CREATE,
+        onInit: (() -> Unit)? = null,
+        onEvent: ((SubscribeEventData) -> Unit)? = null
+    ) {
+        val query = where {
+            if (nameEqualTo != null)
+                equalTo(COL_NAME, nameEqualTo)
+            else if (nameNotEqualTo != null)
+                notEqualTo(COL_NAME, nameNotEqualTo)
+        }
+        val table = if (tableName.isNullOrEmpty()) this.table else Table(tableName)
+        val subscription = table.subscribe(query, event, object : SubscribeCallback {
+            override fun onInit() {
+                if (onInit == null)
+                    cond.signalAll()
+                else
+                    onInit.invoke()
+            }
+
+            override fun onEvent(event: SubscribeEventData) {
+                if (onEvent == null) {
+                    this@WebSocketTest.event.set(event)
+                    cond.signalAll()
+                } else {
+                    onEvent.invoke(event)
+                }
+            }
+
+            override fun onError(tr: Throwable) {
+                exception.set(tr)
+                cond.signalAll()
+            }
+        })
+        subscriptions.add(subscription)
+        cond.await()
+
+        if (exceptedException == null)
+            Assert.assertNull(exception.get())
+        else
+            Assert.assertTrue(exception.get()?.javaClass == exceptedException)
+    }
+
+    private fun saveRecord(name: String, notifyOnSuccess: Boolean = true): Record {
+        val record = table.createRecord()
+        record.put(COL_NAME, name).saveInBackground(object : BaseCallback<Record> {
+            override fun onSuccess(t: Record?) {
+                if (notifyOnSuccess)
+                    cond.signalAll()
+            }
+
+            override fun onFailure(e: Throwable?) {
+                exception.set(e)
+                cond.signalAll()
+            }
+        })
+        cond.await()
+        Assert.assertNull(exception.get())
+        return record
+    }
+
+    private fun saveRecord(record: Record) {
+        record.saveInBackground(object : BaseCallback<Record> {
+            override fun onSuccess(t: Record?) {}
+
+            override fun onFailure(e: Throwable?) {
+                exception.set(e)
+                cond.signalAll()
+            }
+        })
+        cond.await()
+        Assert.assertNull(exception.get())
+    }
+
+    private fun deleteRecord(record: Record) {
+        record.deleteInBackground(object : BaseCallback<Record> {
+            override fun onSuccess(t: Record?) {}
+
+            override fun onFailure(e: Throwable?) {
+                exception.set(e)
+                cond.signalAll()
+            }
+        })
+        cond.await()
+        Assert.assertNull(exception.get())
     }
 }

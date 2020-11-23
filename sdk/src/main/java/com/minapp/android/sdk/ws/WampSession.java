@@ -154,7 +154,7 @@ class WampSession implements ReConnectWebSocketTransport.IReconnectListener {
     }
 
     boolean isConnected() {
-        return session != null;
+        return session != null && session.isConnected();
     }
 
     private void _connect() {

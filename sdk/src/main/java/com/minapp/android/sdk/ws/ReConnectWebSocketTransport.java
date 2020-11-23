@@ -3,8 +3,14 @@ package com.minapp.android.sdk.ws;
 import android.content.Context;
 import android.os.Handler;
 
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.minapp.android.sdk.Global;
 import com.minapp.android.sdk.util.Util;
+import com.minapp.android.sdk.ws.serializers.JsonArraySerializer;
+import com.minapp.android.sdk.ws.serializers.JsonElementSerializer;
+import com.minapp.android.sdk.ws.serializers.JsonNullSerializer;
+import com.minapp.android.sdk.ws.serializers.JsonObjectSerializer;
+import com.minapp.android.sdk.ws.serializers.JsonPrimitiveSerializer;
 
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -181,16 +187,32 @@ class ReConnectWebSocketTransport implements ITransport {
     }
 
     private ISerializer initializeSerializer(String negotiatedSerializer) throws Exception {
+        ISerializer serializer = null;
         switch (negotiatedSerializer) {
             case CBORSerializer.NAME:
-                return new CBORSerializer();
+                serializer = new CBORSerializer();
+                break;
+
             case JSONSerializer.NAME:
-                return new JSONSerializer();
+                serializer = new JSONSerializer();
+                break;
+
             case MessagePackSerializer.NAME:
-                return new MessagePackSerializer();
+                serializer = new MessagePackSerializer();
+                break;
+
             default:
                 throw new IllegalArgumentException("Unsupported serializer.");
         }
+
+        SimpleModule module = new SimpleModule("GSON");
+        module.addSerializer(new JsonPrimitiveSerializer());
+        module.addSerializer(new JsonNullSerializer());
+        module.addSerializer(new JsonObjectSerializer());
+        module.addSerializer(new JsonArraySerializer());
+        module.addSerializer(new JsonElementSerializer());
+        serializer.mapper.registerModule(module);
+        return serializer;
     }
 
     /**

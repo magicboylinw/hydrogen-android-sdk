@@ -8,7 +8,7 @@ class SimpleCondition {
     private val lock by lazy { ReentrantLock() }
     private val cond by lazy { lock.newCondition() }
 
-    fun await(millisecond: Long = 0) {
+    fun await(millisecond: Long = 5000) {
         try {
             lock.lock()
             if (millisecond <= 0)
