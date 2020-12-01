@@ -153,6 +153,10 @@ public class SessionManager implements IWampSessionListener {
     public void onDisconnect(Session session, boolean wasClean) {
         long sessionId = session != null ? session.getID() : -1;
         Log.d(WsConst.TAG, String.format("session(%s) onDisconnect", sessionId));
+
+        // reconnect 失败时，由于当前并没有建立连接，不会经过 onLeave 而是直接走向 onDisconnect
+        // 这里要兜底
+        removeRequest(copyRequests());
     }
 
 
@@ -202,10 +206,15 @@ public class SessionManager implements IWampSessionListener {
                 SessionManager.this.requests.removeAll(Lists.newArrayList(requests));
                 for (SubscribeRequest request : requests) {
                     session.get().unsubscribe(request);
+                    Log.d(WsConst.TAG, String.format(
+                            "remove SubscribeRequest(%s)", request.hashCode()));
                 }
 
-                if (SessionManager.this.requests.isEmpty())
+                if (SessionManager.this.requests.isEmpty()) {
+                    Log.d(WsConst.TAG,
+                            "disconnect WampSession because of SubscribeRequests is empty");
                     session.get().disconnect();
+                }
             }
         });
     }
