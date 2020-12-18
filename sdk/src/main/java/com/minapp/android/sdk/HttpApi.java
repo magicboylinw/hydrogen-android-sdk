@@ -380,7 +380,7 @@ public interface HttpApi {
      * @param body
      * @return
      */
-    @POST("hserve/v1/upload/")
+    @POST("hserve/v2.1/upload/")
     CheckedCall<UploadInfoResp> getUploadMeta(
             @Body UploadInfoReq body
     );
