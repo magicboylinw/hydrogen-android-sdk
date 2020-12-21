@@ -22,6 +22,7 @@ import okhttp3.RequestBody;
 import retrofit2.http.*;
 
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -266,7 +267,8 @@ public interface HttpApi {
     @POST("hserve/v2.1/table/{table_name}/record/")
     CheckedCall<Record> saveRecord(
             @Path("table_name") String tableName,
-            @Body Record body
+            @Body Record body,
+            @QueryMap Map<String, Object> query
     );
 
 
@@ -295,7 +297,8 @@ public interface HttpApi {
     CheckedCall<Record> updateRecord(
             @Path("table_name") String tableName,
             @Path("record_id") String recordId,
-            @Body Record body
+            @Body Record body,
+            @QueryMap Map<String, Object> query
     );
 
     /**

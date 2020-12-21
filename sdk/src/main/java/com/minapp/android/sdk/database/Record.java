@@ -86,15 +86,24 @@ public class Record {
 
 
     public Record save() throws Exception {
-        Database.save(this);
+        save(null);
+        return this;
+    }
+
+    public Record save(SaveOptions options) throws Exception {
+        Database.save(this, options);
         return this;
     }
 
     public void saveInBackground(@NonNull final BaseCallback<Record> callback) {
+        saveInBackground(null, callback);
+    }
+
+    public void saveInBackground(SaveOptions options, @NonNull final BaseCallback<Record> callback) {
         Util.inBackground(callback, new Callable<Record>() {
             @Override
             public Record call() throws Exception {
-                save();
+                save(options);
                 return Record.this;
             }
         });
