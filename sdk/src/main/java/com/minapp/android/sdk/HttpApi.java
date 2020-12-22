@@ -346,7 +346,7 @@ public interface HttpApi {
      * @param tableName
      * @return
      */
-    @GET("hserve/v2.2/table/{table_name}/record/")
+    @GET("hserve/v2.4/table/{table_name}/record/")
     CheckedCall<PagedListResponse<Record>> queryRecord(
             @Path("table_name") String tableName,
             @QueryMap Query query
