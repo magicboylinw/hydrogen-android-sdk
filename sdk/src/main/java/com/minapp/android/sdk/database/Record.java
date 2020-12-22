@@ -86,8 +86,7 @@ public class Record {
 
 
     public Record save() throws Exception {
-        save(null);
-        return this;
+        return save(null);
     }
 
     public Record save(SaveOptions options) throws Exception {
