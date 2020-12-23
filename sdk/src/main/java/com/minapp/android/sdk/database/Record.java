@@ -36,6 +36,7 @@ public class Record {
     public static final String APPEND_UNIQUE = "$append_unique";
     public static final String REMOVE = "$remove";
     public static final String UPDATE = "$update";
+    public static final String POP = "$pop";
 
 
     private @Nullable Table table;
@@ -232,6 +233,23 @@ public class Record {
 
     /*************************** 原子操作 ***********************************/
 
+    /**
+     * 从原数组 key 中删除最后一项
+     * @param key
+     * @return
+     */
+    public Record pop(@NonNull String key) {
+        return put(key, Util.singleMap(POP, 1));
+    }
+
+    /**
+     * 从原数组 key 中删除第一项
+     * @param key
+     * @return
+     */
+    public Record shift(@NonNull String key) {
+        return put(key, Util.singleMap(POP, -1));
+    }
 
     /**
      * 对数字类型的键进行增减操作
