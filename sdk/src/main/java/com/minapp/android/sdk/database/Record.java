@@ -282,7 +282,7 @@ public class Record {
      * @param update
      * @return
      */
-    public Record update(@NonNull String key, @NonNull Record update) {
+    public Record patchObject(@NonNull String key, @NonNull Record update) {
         return put(key, Util.singleMap(UPDATE, update));
     }
 
