@@ -50,7 +50,13 @@ public class JsonPrimitiveSerializer extends StdSerializer<JsonPrimitive> {
         } else if (number instanceof Byte) {
             gen.writeNumber(number.intValue());
         } else {
-            gen.writeNumber(number.doubleValue());
+            long vl = number.longValue();
+            double dv = number.doubleValue();
+            if (vl == dv) {
+                gen.writeNumber(vl);
+            } else {
+                gen.writeNumber(dv);
+            }
         }
     }
 }

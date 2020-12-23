@@ -5,6 +5,8 @@ import com.minapp.android.sdk.Global
 import com.minapp.android.sdk.auth.Auth
 import com.minapp.android.sdk.database.Record
 import com.minapp.android.sdk.database.Table
+import com.minapp.android.sdk.database.query.Query
+import com.minapp.android.sdk.database.query.Where
 import com.minapp.android.sdk.exception.SessionMissingException
 import com.minapp.android.sdk.exception.UnauthorizedException
 import com.minapp.android.sdk.test.base.BaseAuthedTest
@@ -30,6 +32,8 @@ class WebSocketTest: BaseAuthedTest() {
     companion object {
         private const val TAG = "WebSocketTest"
         private const val COL_NAME = "name"
+        private const val COL_INT = "int"
+        private const val COL_NUMBER = "number"
     }
 
     private val cond by lazy { SimpleCondition() }
@@ -58,6 +62,20 @@ class WebSocketTest: BaseAuthedTest() {
         subscriptions.clear()
         sm.clearSubscribers()
         cond.await()
+    }
+
+    @Test
+    fun subscribeIntTest() {
+        subscribeAndWait {
+            it.notEqualTo(COL_INT, 10)
+        }
+    }
+
+    @Test
+    fun subscribeNumberTest() {
+        subscribeAndWait {
+            it.notEqualTo(COL_NUMBER, 10.5646)
+        }
     }
 
     /**
@@ -375,13 +393,17 @@ class WebSocketTest: BaseAuthedTest() {
         exceptedException: Class<*>? = null,
         event: SubscribeEvent = SubscribeEvent.CREATE,
         onInit: (() -> Unit)? = null,
-        onEvent: ((SubscribeEventData) -> Unit)? = null
+        onEvent: ((SubscribeEventData) -> Unit)? = null,
+        where: ( Where ) -> Where = { it }
     ) {
-        val query = where {
+        val w = where.invoke(Where()).apply {
             if (nameEqualTo != null)
                 equalTo(COL_NAME, nameEqualTo)
             else if (nameNotEqualTo != null)
                 notEqualTo(COL_NAME, nameNotEqualTo)
+        }
+        val query = Query().apply {
+            put(w)
         }
         val table = if (tableName.isNullOrEmpty()) this.table else Table(tableName)
         val subscription = table.subscribe(query, event, object : SubscribeCallback {
