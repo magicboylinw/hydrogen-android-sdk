@@ -17,6 +17,7 @@ import com.minapp.android.sdk.database.query.Condition;
 import com.minapp.android.sdk.database.query.ConditionNode;
 import com.minapp.android.sdk.database.query.WithinCircle;
 import com.minapp.android.sdk.database.query.WithinRegion;
+import com.minapp.android.sdk.mock.HttpMockCallAdapterFactory;
 import com.minapp.android.sdk.typeadapter.*;
 import com.minapp.android.sdk.util.*;
 import okhttp3.OkHttpClient;
@@ -25,6 +26,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -41,6 +43,9 @@ public abstract class Global {
     private static Application APP = null;
     private static OkHttpClient CLIENT = null;
 
+    public static Executor getMainExecutor() {
+        return new HandlerExecutor(MAIN_HANDLER);
+    }
 
     public static @Nullable Application getApplication() {
         return APP;
@@ -65,6 +70,7 @@ public abstract class Global {
                     HTTP_API = new Retrofit.Builder()
                             .client(httpClient())
                             .addConverterFactory(GsonConverterFactory.create(gson()))
+                            .addCallAdapterFactory(new HttpMockCallAdapterFactory())
                             .addCallAdapterFactory(new CheckedCallAdapterFactory())
                             .baseUrl(Config.getEndpoint())
                             .build()

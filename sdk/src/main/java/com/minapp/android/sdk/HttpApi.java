@@ -6,6 +6,8 @@ import com.minapp.android.sdk.auth.model.*;
 import com.minapp.android.sdk.content.ContentCategory;
 import com.minapp.android.sdk.content.ContentGroup;
 import com.minapp.android.sdk.database.BatchResult;
+import com.minapp.android.sdk.mock.GetPushConfig;
+import com.minapp.android.sdk.mock.Mockable;
 import com.minapp.android.sdk.model.*;
 import com.minapp.android.sdk.storage.FileCategory;
 import com.minapp.android.sdk.content.Content;
@@ -19,6 +21,7 @@ import com.minapp.android.sdk.util.PagedListResponse;
 import com.minapp.android.sdk.wechat.WechatOrder;
 import com.minapp.android.sdk.wechat.WechatOrderResp;
 import okhttp3.RequestBody;
+import retrofit2.Call;
 import retrofit2.http.*;
 
 import java.util.List;
@@ -28,6 +31,16 @@ import java.util.List;
  * cloud.minapp.com 提供的 http api
  */
 public interface HttpApi {
+
+    /**
+     * 拿后台配置的消息推送配置
+     * @param vendor
+     * @return
+     */
+    @Mockable(GetPushConfig.class)
+    @GET("hserve/v2.1/push-config")
+    CheckedCall<PushConfig> getPushConfig(
+            @retrofit2.http.Query("vendor") String vendor);
 
     /**
      *

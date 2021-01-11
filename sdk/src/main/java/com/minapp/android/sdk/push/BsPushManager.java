@@ -2,22 +2,17 @@ package com.minapp.android.sdk.push;
 
 import android.content.Context;
 
+import androidx.annotation.AnyThread;
 import androidx.annotation.NonNull;
 
-import com.google.android.gms.tasks.OnCanceledListener;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.heytap.msp.push.HeytapPushManager;
-import com.heytap.msp.push.callback.ICallBackResultService;
 import com.heytap.msp.push.mode.ErrorCode;
 import com.huawei.hms.push.HmsMessaging;
 import com.meizu.cloud.pushsdk.PushManager;
 import com.minapp.android.sdk.Assert;
 import com.minapp.android.sdk.exception.PushDeviceUnsupportedException;
 import com.minapp.android.sdk.exception.TurnOnVivoPushException;
+import com.minapp.android.sdk.exception.UnknowDeviceVendorException;
 import com.minapp.android.sdk.util.BsLog;
 import com.vivo.push.IPushActionListener;
 import com.vivo.push.PushClient;
@@ -30,13 +25,20 @@ public class BsPushManager {
     static Class appReceiverClz = null;
 
 
+
+    /**
+     * 不涉及 ui 操作，一般在 worker 线程执行
+     * @param config
+     * @param ctx
+     */
+    @AnyThread
     public static void registerPush(@NonNull PushConfiguration config, @NonNull Context ctx) {
         Assert.notNull(config, "PushConfiguration");
         Assert.notNull(ctx, "Context");
 
         DeviceVendor vendor = DeviceVendor.get(ctx);
         if (vendor == null) {
-            throw new IllegalStateException("unknown device vendor");
+            throw new UnknowDeviceVendorException();
         }
 
         switch (vendor) {
@@ -134,6 +136,7 @@ public class BsPushManager {
 
     /**
      * 注册 VIVO 推送
+     * appId 和 appKey 是配置在 manifest.Application.MetaData 里
      * @param ctx
      */
     public static final void registerVivoPush(@NonNull Context ctx) {
@@ -163,6 +166,7 @@ public class BsPushManager {
 
     /**
      * 注册华为推送
+     * appId 和 appKey 是配置在 agc 配置文件里
      * @param ctx
      */
     public static final void registerHmsPush(@NonNull Context ctx) {
