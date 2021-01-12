@@ -2,7 +2,9 @@ package com.minapp.android.sdk.exception;
 
 import android.annotation.TargetApi;
 
-public class SdkException extends Exception {
+import java.io.IOException;
+
+public class SdkException extends IOException {
 
     private int code;
     private String msg;

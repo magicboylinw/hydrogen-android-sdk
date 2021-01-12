@@ -1,19 +1,17 @@
 package com.minapp.android.sdk.auth;
 
 import androidx.annotation.Nullable;
-import com.google.gson.JsonSyntaxException;
-import com.minapp.android.sdk.Global;
+
 import com.minapp.android.sdk.exception.EmptyResponseException;
 import com.minapp.android.sdk.exception.HttpException;
 import com.minapp.android.sdk.exception.SessionMissingException;
-import com.minapp.android.sdk.model.ErrorResp;
+import com.minapp.android.sdk.util.BaseCallAdapter;
+
 import okhttp3.Request;
-import okhttp3.ResponseBody;
 import retrofit2.*;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.concurrent.Executor;
 
@@ -23,46 +21,39 @@ public class CheckedCallAdapterFactory extends CallAdapter.Factory {
     @Nullable
     @Override
     public CallAdapter<?, ?> get(final Type returnType, Annotation[] annotations, final Retrofit retrofit) {
-
-        // retrofit method 的返回类型（外部类型，不是 body 的类型）
-        final Class returnClz = getRawType(returnType);
-
-        // http response body 的类型
-        final Type bodyType = returnType instanceof ParameterizedType ? getParameterUpperBound(0, (ParameterizedType) returnType) : null;
-        final Class bodyClz = bodyType != null ? getRawType(bodyType) : null;
-
-        if ((returnClz == Call.class || returnClz == CheckedCall.class) && bodyType != null) {
-            return new CallAdapter<Object, Object>() {
-                @Override
-                public Type responseType() {
-                    return bodyType;
-                }
-
-                @Override
-                public Object adapt(Call<Object> call) {
-                    return new CheckedCallImpl(call, retrofit.callbackExecutor(), returnClz == CheckedCall.class, bodyClz != null && bodyClz != Void.class);
-                }
-            };
-        }
-        return null;
+        return new CheckedCallAdapter(returnType, retrofit);
     }
 
-    private static class CheckedCallImpl implements CheckedCall {
+    private static class CheckedCallAdapter extends BaseCallAdapter {
+
+        private final Retrofit retrofit;
+
+        public CheckedCallAdapter(Type returnType, Retrofit retrofit) {
+            super(returnType);
+            this.retrofit = retrofit;
+        }
+
+        @Override
+        public Object adapt(Call call) {
+            return new CheckedCall(call, retrofit.callbackExecutor(),
+                    responseType() != null && responseType() != Void.class);
+        }
+    }
+
+    private static class CheckedCall implements Call {
 
         private Call realCall;
-        private boolean checked;
         private boolean hasBody;
         private Executor callbackExecutor;
 
-        public CheckedCallImpl(Call realCall, Executor callbackExecutor, boolean checked, boolean hasBody) {
+        public CheckedCall(Call realCall, Executor callbackExecutor, boolean hasBody) {
             this.realCall = realCall;
-            this.checked = checked;
             this.hasBody = hasBody;
             this.callbackExecutor = callbackExecutor;
         }
 
         @Override
-        public Response execute() throws IOException, HttpException, EmptyResponseException, SessionMissingException {
+        public Response execute() throws IOException {
             return postProcess(realCall, realCall.execute());
         }
 
@@ -110,18 +101,16 @@ public class CheckedCallAdapterFactory extends CallAdapter.Factory {
          * @throws HttpException
          * @throws EmptyResponseException
          */
-        private Response postProcess(Call call, Response response) throws IOException, HttpException, EmptyResponseException, SessionMissingException {
-            if (checked) {
-                if (!response.isSuccessful()) {
-                    if (response.code() == 401) {
-                        throw new SessionMissingException();
-                    } else {
-                        throw HttpException.valueOf(response);
-                    }
+        private Response postProcess(Call call, Response response) throws IOException {
+            if (!response.isSuccessful()) {
+                if (response.code() == 401) {
+                    throw new SessionMissingException();
+                } else {
+                    throw HttpException.valueOf(response);
                 }
-                if (hasBody && response.body() == null) {
-                    throw new EmptyResponseException();
-                }
+            }
+            if (hasBody && response.body() == null) {
+                throw new EmptyResponseException();
             }
             return response;
         }

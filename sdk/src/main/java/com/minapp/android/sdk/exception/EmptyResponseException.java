@@ -1,6 +1,8 @@
 package com.minapp.android.sdk.exception;
 
-public class EmptyResponseException extends Exception {
+import java.io.IOException;
+
+public class EmptyResponseException extends IOException {
 
     public static final String MSG = "http response body is empty";
 

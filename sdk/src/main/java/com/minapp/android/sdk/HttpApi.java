@@ -8,6 +8,7 @@ import com.minapp.android.sdk.content.ContentGroup;
 import com.minapp.android.sdk.database.BatchResult;
 import com.minapp.android.sdk.mock.GetPushConfig;
 import com.minapp.android.sdk.mock.Mockable;
+import com.minapp.android.sdk.mock.UploadPushMetaData;
 import com.minapp.android.sdk.model.*;
 import com.minapp.android.sdk.storage.FileCategory;
 import com.minapp.android.sdk.content.Content;
@@ -33,13 +34,22 @@ import java.util.List;
 public interface HttpApi {
 
     /**
+     * 上传推送相关的参数
+     * @param meta
+     * @return
+     */
+    @Mockable(UploadPushMetaData.class)
+    @POST("hserve/v2.1/upload_push_meta_data")
+    Call<Void> uploadPushMetaData(@Body PushMetaData meta);
+
+    /**
      * 拿后台配置的消息推送配置
      * @param vendor
      * @return
      */
     @Mockable(GetPushConfig.class)
     @GET("hserve/v2.1/push-config")
-    CheckedCall<PushConfig> getPushConfig(
+    Call<PushConfig> getPushConfig(
             @retrofit2.http.Query("vendor") String vendor);
 
     /**
@@ -53,7 +63,7 @@ public interface HttpApi {
      * @return
      */
     @POST("hserve/v2.1/sms-phone-verification/")
-    CheckedCall<Void> smsPhoneVerification(
+    Call<Void> smsPhoneVerification(
             @Body SmsPhoneVerificationRequest request
     );
 
@@ -64,7 +74,7 @@ public interface HttpApi {
      * @return
      */
     @POST("hserve/v2.3/idp/oauth/wechat-native/authenticate/")
-    CheckedCall<ThirdPartySignInResp> signInWithWechat(
+    Call<ThirdPartySignInResp> signInWithWechat(
             @Body ThirdPartySignInReq req
     );
 
@@ -74,7 +84,7 @@ public interface HttpApi {
      * @return
      */
     @POST("hserve/v2.3/idp/oauth/weibo-native/authenticate/")
-    CheckedCall<ThirdPartySignInResp> signInWithWeibo(
+    Call<ThirdPartySignInResp> signInWithWeibo(
             @Body ThirdPartySignInReq req
     );
 
@@ -84,7 +94,7 @@ public interface HttpApi {
      * @return
      */
     @POST("hserve/v2.3/idp/oauth/wechat-native/user-association/")
-    CheckedCall<ThirdPartySignInResp> associationWithWechat (
+    Call<ThirdPartySignInResp> associationWithWechat (
             @Body ThirdPartySignInReq req
     );
 
@@ -94,7 +104,7 @@ public interface HttpApi {
      * @return
      */
     @POST("hserve/v2.3/idp/oauth/weibo-native/user-association/")
-    CheckedCall<ThirdPartySignInResp> associationWithWeibo (
+    Call<ThirdPartySignInResp> associationWithWeibo (
             @Body ThirdPartySignInReq req
     );
 
@@ -103,7 +113,7 @@ public interface HttpApi {
      * @return
      */
     @GET("hserve/v2.2/server/time/")
-    CheckedCall<ServerDateResp> getServerDate();
+    Call<ServerDateResp> getServerDate();
 
 
     /********************************* pay api ****************************************/
@@ -114,7 +124,7 @@ public interface HttpApi {
      * @return
      */
     @POST("hserve/v2.0/idp/pay/order/")
-    CheckedCall<WechatOrderResp> requestWechatOrder(
+    Call<WechatOrderResp> requestWechatOrder(
             @Body WechatOrder req
     );
 
@@ -124,7 +134,7 @@ public interface HttpApi {
      * @return
      */
     @POST("hserve/v2.0/idp/pay/order/")
-    CheckedCall<AlipayOrderResp> requestAlipayOrder(
+    Call<AlipayOrderResp> requestAlipayOrder(
             @Body AlipayOrder req
     );
 
@@ -134,7 +144,7 @@ public interface HttpApi {
      * @return
      */
     @GET("hserve/v2.0/idp/pay/order/{transaction_no}/")
-    CheckedCall<OrderResp> getOrderInfo (
+    Call<OrderResp> getOrderInfo (
             @Path("transaction_no") String transactionNo
     );
 
@@ -147,7 +157,7 @@ public interface HttpApi {
      * @return
      */
     @POST("hserve/v1/cloud-function/job/")
-    CheckedCall<CloudFuncResp> invokeCloudFunc(
+    Call<CloudFuncResp> invokeCloudFunc(
             @Body CloudFuncReq req
     );
 
@@ -161,7 +171,7 @@ public interface HttpApi {
      * @return
      */
     @POST("hserve/v2.1/sms-verification-code/")
-    CheckedCall<StatusResp> sendSmsCode (
+    Call<StatusResp> sendSmsCode (
             @Body SendSmsCodeReq req
     );
 
@@ -171,7 +181,7 @@ public interface HttpApi {
      * @return
      */
     @POST("hserve/v1.8/sms-verification-code/verify/")
-    CheckedCall<StatusResp> verifySmsCode (
+    Call<StatusResp> verifySmsCode (
             @Body VerifySmsCodeReq req
     );
 
@@ -184,7 +194,7 @@ public interface HttpApi {
      * @return
      */
     @POST("hserve/v2.1/login/sms/")
-    CheckedCall<User> signInWithPhone(@Body SignInWithPhoneRequest req);
+    Call<User> signInWithPhone(@Body SignInWithPhoneRequest req);
 
     /**
      * 通过邮箱注册
@@ -192,7 +202,7 @@ public interface HttpApi {
      * @return
      */
     @POST("hserve/v2.0/register/email/")
-    CheckedCall<User> signUpWithEmail(
+    Call<User> signUpWithEmail(
             @Body SignUpInWithEmailReq body
     );
 
@@ -202,7 +212,7 @@ public interface HttpApi {
      * @return
      */
     @POST("hserve/v2.0/register/username/")
-    CheckedCall<User> signUpWithUsername(
+    Call<User> signUpWithUsername(
             @Body SignUpInWithUsernameReq body
     );
 
@@ -212,7 +222,7 @@ public interface HttpApi {
      * @return
      */
     @POST("hserve/v2.0/login/email/")
-    CheckedCall<User> signInWithEmail(
+    Call<User> signInWithEmail(
             @Body SignUpInWithEmailReq body
     );
 
@@ -222,7 +232,7 @@ public interface HttpApi {
      * @return
      */
     @POST("hserve/v2.0/login/username/")
-    CheckedCall<User> signInWithUsername(
+    Call<User> signInWithUsername(
             @Body SignUpInWithUsernameReq body
     );
 
@@ -231,7 +241,7 @@ public interface HttpApi {
      * @return
      */
     @POST("hserve/v2.0/login/anonymous/")
-    CheckedCall<User> signInAnonymous(
+    Call<User> signInAnonymous(
             @Body Object body
     );
 
@@ -241,7 +251,7 @@ public interface HttpApi {
      * @return
      */
     @POST("hserve/v2.0/user/email-verify/")
-    CheckedCall<BaseStatusResp> emailVerify(
+    Call<BaseStatusResp> emailVerify(
             @Body Object emptyBody
     );
 
@@ -252,7 +262,7 @@ public interface HttpApi {
      * @return
      */
     @PUT("hserve/v2.1/user/account/")
-    CheckedCall<UpdateUserResp> updateUser(
+    Call<UpdateUserResp> updateUser(
             @Body UpdateUserReq body
     );
 
@@ -263,7 +273,7 @@ public interface HttpApi {
      * @return
      */
     @POST("hserve/v2.0/user/password/reset/")
-    CheckedCall<BaseStatusResp> resetPwd(
+    Call<BaseStatusResp> resetPwd(
             @Body ResetPwdReq body
     );
 
@@ -277,7 +287,7 @@ public interface HttpApi {
      * @return
      */
     @POST("hserve/v2.1/table/{table_name}/record/")
-    CheckedCall<Record> saveRecord(
+    Call<Record> saveRecord(
             @Path("table_name") String tableName,
             @Body Record body
     );
@@ -290,7 +300,7 @@ public interface HttpApi {
      * @return
      */
     @POST("hserve/v2.1/table/{table_name}/record/")
-    CheckedCall<BatchResult> batchSaveRecord(
+    Call<BatchResult> batchSaveRecord(
             @Path("table_name") String tableName,
             @Body List<Record> body,
             @QueryMap Query query
@@ -305,7 +315,7 @@ public interface HttpApi {
      * @return
      */
     @PUT("hserve/v2.1/table/{table_name}/record/{record_id}/")
-    CheckedCall<Record> updateRecord(
+    Call<Record> updateRecord(
             @Path("table_name") String tableName,
             @Path("record_id") String recordId,
             @Body Record body
@@ -319,7 +329,7 @@ public interface HttpApi {
      * @return
      */
     @PUT("hserve/v2.2/table/{tableName}/record/")
-    CheckedCall<BatchResult> batchUpdate(
+    Call<BatchResult> batchUpdate(
             @Path("tableName") String tableName,
             @QueryMap Query query,
             @Body Record body
@@ -332,7 +342,7 @@ public interface HttpApi {
      * @return
      */
     @DELETE("hserve/v2.1/table/{table_name}/record/{record_id}/")
-    CheckedCall<Void> deleteRecord(
+    Call<Void> deleteRecord(
             @Path("table_name") String tableName,
             @Path("record_id") String recordId
     );
@@ -344,7 +354,7 @@ public interface HttpApi {
      * @return
      */
     @GET("hserve/v2.1/table/{table_name}/record/{record_id}/")
-    CheckedCall<Record> fetchRecord(
+    Call<Record> fetchRecord(
             @Path("table_name") String tableName,
             @Path("record_id") String recordId,
             @QueryMap Query query
@@ -357,7 +367,7 @@ public interface HttpApi {
      * @return
      */
     @GET("hserve/v2.2/table/{table_name}/record/")
-    CheckedCall<PagedListResponse<Record>> queryRecord(
+    Call<PagedListResponse<Record>> queryRecord(
             @Path("table_name") String tableName,
             @QueryMap Query query
     );
@@ -368,7 +378,7 @@ public interface HttpApi {
      * @return
      */
     @DELETE("hserve/v2.2/table/{tableName}/record/")
-    CheckedCall<BatchResult> batchDelete(
+    Call<BatchResult> batchDelete(
             @Path("tableName") String tableName,
             @QueryMap Query query
     );
@@ -380,7 +390,7 @@ public interface HttpApi {
      * @return
      */
     @GET("hserve/v1/bulk-operation/{id}/")
-    CheckedCall<BatchOperationResp> queryBatchOperation (
+    Call<BatchOperationResp> queryBatchOperation (
             @Path("id") int id
     );
 
@@ -394,17 +404,17 @@ public interface HttpApi {
      * @return
      */
     @POST("hserve/v1/upload/")
-    CheckedCall<UploadInfoResp> getUploadMeta(
+    Call<UploadInfoResp> getUploadMeta(
             @Body UploadInfoReq body
     );
 
     /**
      * 上传文件
-     * @param url {@link UploadInfoResp#uploadUrl}
+     * @param url {@link UploadInfoResp#getUploadUrl()}
      * @param body {@link Storage#uploadFile(String, byte[])}
      */
     @POST
-    CheckedCall<UploadResponse> uploadFile(
+    Call<UploadResponse> uploadFile(
             @Url String url,
             @Body RequestBody body
     );
@@ -415,7 +425,7 @@ public interface HttpApi {
      * @return
      */
     @GET("hserve/v2.1/uploaded-file/{file_id}/")
-    CheckedCall<CloudFile> file(
+    Call<CloudFile> file(
             @Path("file_id") String id
     );
 
@@ -425,7 +435,7 @@ public interface HttpApi {
      * @return
      */
     @GET("hserve/v2.2/uploaded-file/")
-    CheckedCall<PagedListResponse<CloudFile>> files(
+    Call<PagedListResponse<CloudFile>> files(
             @QueryMap Query query
     );
 
@@ -435,7 +445,7 @@ public interface HttpApi {
      * @return
      */
     @DELETE("hserve/v1.3/uploaded-file/{file_id}/")
-    CheckedCall<Void> deleteFile(
+    Call<Void> deleteFile(
             @Path("file_id") String id
     );
 
@@ -444,7 +454,7 @@ public interface HttpApi {
      * @return
      */
     @HTTP(method = "DELETE", path = "hserve/v1.3/uploaded-file/", hasBody = true)
-    CheckedCall<Void> deleteFiles(@Body BatchDeleteReq body);
+    Call<Void> deleteFiles(@Body BatchDeleteReq body);
 
 
 
@@ -457,13 +467,13 @@ public interface HttpApi {
      * @return
      */
     @GET("hserve/v1.3/file-category/{id}/")
-    CheckedCall<FileCategory> fileCategory(@Path("id") String id);
+    Call<FileCategory> fileCategory(@Path("id") String id);
 
     /**
      * 分类列表
      */
     @GET("hserve/v2.2/file-category/")
-    CheckedCall<PagedListResponse<FileCategory>> fileCategories(
+    Call<PagedListResponse<FileCategory>> fileCategories(
             @QueryMap Query query
     );
 
@@ -477,7 +487,7 @@ public interface HttpApi {
      * @return
      */
     @GET("hserve/v2.2/user/info/")
-    CheckedCall<PagedListResponse<User>> users(
+    Call<PagedListResponse<User>> users(
             @QueryMap Query query
     );
 
@@ -487,7 +497,7 @@ public interface HttpApi {
      * @return
      */
     @GET("hserve/v2.1/user/info/{id}/")
-    CheckedCall<User> user(
+    Call<User> user(
             @Path("id") String id
     );
 
@@ -497,7 +507,7 @@ public interface HttpApi {
      * @return
      */
     @PUT("/hserve/v2.1/user/info/")
-    CheckedCall<User> updateUserCustomField (
+    Call<User> updateUserCustomField (
             @Body User data
     );
 
@@ -510,7 +520,7 @@ public interface HttpApi {
      * @return
      */
     @GET("hserve/v2.2/content/detail/")
-    CheckedCall<PagedListResponse<Content>> contents(
+    Call<PagedListResponse<Content>> contents(
             @QueryMap Query query
     );
 
@@ -520,7 +530,7 @@ public interface HttpApi {
      * @return
      */
     @GET("hserve/v2.0/content/detail/{id}/")
-    CheckedCall<Content> content(
+    Call<Content> content(
             @Path("id") String id
     );
 
@@ -530,7 +540,7 @@ public interface HttpApi {
      * @return
      */
     @GET("/hserve/v2.2/content/group/")
-    CheckedCall<PagedListResponse<ContentGroup>> contentGroups(
+    Call<PagedListResponse<ContentGroup>> contentGroups(
             @QueryMap Query query
     );
 
@@ -540,7 +550,7 @@ public interface HttpApi {
      * @return
      */
     @GET("hserve/v2.2/content/category/")
-    CheckedCall<PagedListResponse<ContentCategory>> contentCategories(
+    Call<PagedListResponse<ContentCategory>> contentCategories(
             @QueryMap Query query
     );
 
@@ -550,7 +560,7 @@ public interface HttpApi {
      * @return
      */
     @GET("hserve/v1/content/category/{id}/")
-    CheckedCall<ContentCategory> contentCategory(
+    Call<ContentCategory> contentCategory(
             @Path("id") String id
     );
 

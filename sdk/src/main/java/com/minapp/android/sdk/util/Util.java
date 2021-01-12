@@ -1,5 +1,6 @@
 package com.minapp.android.sdk.util;
 
+import android.app.Application;
 import android.os.Looper;
 import android.util.Log;
 import androidx.annotation.NonNull;
@@ -31,13 +32,26 @@ public abstract class Util {
     };
 
     /**
+     * copy from cn.leancloud.AVInstallation#genInstallationId
+     * @return
+     */
+    public static @Nullable String genInstallationId() {
+        Application app = Global.getApplication();
+        if (app == null) return null;
+        String pkg = app.getPackageName();
+        String addition = UUID.randomUUID().toString();
+        return MD5.computeMD5(pkg + addition);
+    }
+
+
+    /**
      * copy from:
      * retrofit2.Utils#getParameterUpperBound(int, java.lang.reflect.ParameterizedType)
      * @param index
      * @param type
      * @return
      */
-    static Type getParameterUpperBound(int index, ParameterizedType type) {
+    public static Type getParameterUpperBound(int index, ParameterizedType type) {
         Type[] types = type.getActualTypeArguments();
         if (index < 0 || index >= types.length) {
             throw new IllegalArgumentException(

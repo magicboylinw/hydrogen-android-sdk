@@ -12,6 +12,7 @@ import com.minapp.android.sdk.Config;
 import com.minapp.android.sdk.Const;
 import com.minapp.android.sdk.Global;
 import com.minapp.android.sdk.HttpApi;
+import com.minapp.android.sdk.Persistence;
 import com.minapp.android.sdk.auth.model.*;
 import com.minapp.android.sdk.user.User;
 import com.minapp.android.sdk.user.Users;
@@ -48,14 +49,7 @@ public abstract class Auth {
      * 当 sdk 初始化时 {@link BaaS#init(String, Application)}，必须调用此方法初始化 auth 模块
      */
     public static void init() {
-        Global.post(new Runnable() {
-            @Override
-            public void run() {
-                synchronized (AUTH_INFO) {
-                    restoreAuthData();
-                }
-            }
-        });
+        restoreAuthData();
     }
 
 
@@ -346,7 +340,7 @@ public abstract class Auth {
      * 把登录信息持久化
      */
     static void storeAuthData() {
-        SharedPreferences sp = getGlobalSP();
+        SharedPreferences sp = Persistence.get();
         if (sp != null) {
             Boolean anonymous = (Boolean) AUTH_INFO.get(SIGN_IN_ANONYMOUS);
             Long expiresIn = (Long) AUTH_INFO.get(EXPIRES_IN);
@@ -363,22 +357,13 @@ public abstract class Auth {
      * 从持久化数据源中恢复登录信息
      */
     static void restoreAuthData() {
-        SharedPreferences sp = getGlobalSP();
+        SharedPreferences sp = Persistence.get();
         if (sp != null) {
             AUTH_INFO.put(TOKEN, sp.getString(TOKEN, null));
             AUTH_INFO.put(USER_ID, sp.getString(USER_ID, null));
             AUTH_INFO.put(SIGN_IN_ANONYMOUS, sp.getBoolean(SIGN_IN_ANONYMOUS, false));
             AUTH_INFO.put(EXPIRES_IN, sp.getLong(EXPIRES_IN, 0));
         }
-    }
-
-    static @Nullable SharedPreferences getGlobalSP() {
-        SharedPreferences sp = null;
-        Application app = Global.getApplication();
-        if (app != null) {
-            sp = app.getSharedPreferences(Const.SP_NAME, Context.MODE_PRIVATE);
-        }
-        return sp;
     }
 
 

@@ -23,4 +23,6 @@ public abstract class Const {
 
     public static final String WX_OAUTH_SCOPE = "snsapi_userinfo";
     public static final String WX_OAUTH_STATE = "wechat_sdk_demo_test";
+
+    public static final String PUSH_INSTALLATION_ID = "PUSH_INSTALLATION_ID";
 }

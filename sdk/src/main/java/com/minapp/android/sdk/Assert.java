@@ -1,8 +1,15 @@
 package com.minapp.android.sdk;
 
+import com.minapp.android.sdk.auth.Auth;
+import com.minapp.android.sdk.exception.SessionMissingException;
 import com.minapp.android.sdk.util.StringUtil;
 
 public abstract class Assert {
+
+    public static void signIn() throws SessionMissingException {
+        if (!Auth.signedIn())
+            throw new SessionMissingException();
+    }
 
     public static void notNullState(Object obj, String name) throws IllegalArgumentException {
         if (obj == null)

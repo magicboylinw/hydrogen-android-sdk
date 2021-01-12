@@ -25,7 +25,7 @@ public class BsHmsMessageService extends HmsMessageService {
             LOG.w("hms push token is empty");
             return;
         }
-        LOG.d("register hms success, token(%s)", token);
+        LOG.d("hms regId: %s", token);
     }
 
     /**

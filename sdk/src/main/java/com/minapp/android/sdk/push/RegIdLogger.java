@@ -8,15 +8,23 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.common.base.Strings;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.minapp.android.sdk.Const;
 import com.minapp.android.sdk.Global;
+import com.minapp.android.sdk.Persistence;
+import com.minapp.android.sdk.exception.EmptyResponseException;
+import com.minapp.android.sdk.model.PushMetaData;
 import com.minapp.android.sdk.util.BsLog;
+import com.minapp.android.sdk.util.Util;
 import com.vivo.push.PushClient;
 import com.xiaomi.mipush.sdk.MiPushClient;
 
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 
+import retrofit2.Response;
+
 /**
- * 打印各个渠道的 push regId
+ * 拿到各个渠道的 push regId 推送给后端
  */
 class RegIdLogger extends Thread {
 
@@ -39,25 +47,15 @@ class RegIdLogger extends Thread {
         while (!exit) {
             String regId = null;
             switch (vendor) {
+
                 case MI:
                     regId = MiPushClient.getRegId(ctx);
+                    BsPushManager.uploadPushMetaData(DeviceVendor.MI, regId);
                     break;
 
                 case VIVO:
                     regId = PushClient.getInstance(ctx).getRegId();
-                    break;
-
-                case FCM:
-                    FirebaseMessaging.getInstance().getToken()
-                            .addOnCompleteListener(new OnCompleteListener<String>() {
-                                @Override
-                                public void onComplete(@NonNull Task<String> task) {
-                                    if (task.isComplete() && task.isSuccessful()) {
-                                        log.d("fcm token: %s", task.getResult());
-                                    }
-                                }
-                            });
-                    exit = true;
+                    BsPushManager.uploadPushMetaData(DeviceVendor.VIVO, regId);
                     break;
 
                 default:
@@ -65,7 +63,7 @@ class RegIdLogger extends Thread {
             }
 
             if (!Strings.isNullOrEmpty(regId)) {
-                log.d("%s push regId: %s", vendor.name(), regId);
+                log.d("%s regId: %s", vendor.name(), regId);
                 ctxRef.clear();
                 ctxRef = null;
                 exit = true;

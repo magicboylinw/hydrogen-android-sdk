@@ -2,7 +2,6 @@ package com.minapp.android.sdk.mock;
 
 import com.google.common.collect.Collections2;
 import com.minapp.android.sdk.Global;
-import com.minapp.android.sdk.auth.CheckedCall;
 import com.minapp.android.sdk.auth.CheckedCallAdapterFactory;
 import com.minapp.android.sdk.util.BaseCallAdapter;
 import com.minapp.android.sdk.util.HandlerExecutor;
@@ -79,7 +78,7 @@ public class HttpMockCallAdapterFactory extends CallAdapter.Factory {
     }
 
 
-    private class RealMockCall implements CheckedCall {
+    private class RealMockCall implements Call {
 
         private final Call originCall;
         private final MockCall mock;

@@ -37,7 +37,8 @@ public class BsFlymeMessageReceiver extends MzPushMessageReceiver {
     public void onRegisterStatus(Context context, RegisterStatus status) {
         if (status == null) return;
         if (RegisterStatus.SUCCESS_CODE.equalsIgnoreCase(status.code)) {
-            log.d("flyme pushId: %s", status.getPushId());
+            log.d("flyme regId: %s", status.getPushId());
+            BsPushManager.uploadPushMetaData(DeviceVendor.FLYME, status.getPushId());
         } else {
             log.e(new FlymePushRegisterException(status));
         }

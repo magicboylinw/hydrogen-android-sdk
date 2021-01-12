@@ -9,7 +9,7 @@ import retrofit2.Response;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-public class HttpException extends RuntimeException {
+public class HttpException extends IOException {
 
     private final int code;
     private final String errorMsg;
