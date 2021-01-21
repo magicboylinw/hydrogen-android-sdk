@@ -1,10 +1,12 @@
 package com.minapp.android.example.wechat.pay.auth
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import com.minapp.android.example.wechat.pay.Const
+import com.minapp.android.example.wechat.pay.MainActivity
 import com.minapp.android.example.wechat.pay.R
 import com.minapp.android.example.wechat.pay.toast
 import com.minapp.android.sdk.auth.Auth
@@ -68,5 +70,8 @@ class AuthActivity : AppCompatActivity() {
         }
 
 
+        pay.setOnClickListener {
+            startActivity(Intent(this, MainActivity::class.java))
+        }
     }
 }

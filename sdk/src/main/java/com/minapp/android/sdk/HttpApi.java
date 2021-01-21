@@ -100,7 +100,7 @@ public interface HttpApi {
      * @param req
      * @return
      */
-    @POST("hserve/v2.0/idp/pay/order/")
+    @POST("hserve/v2.2/idp/pay/order/")
     CheckedCall<WechatOrderResp> requestWechatOrder(
             @Body WechatOrder req
     );
@@ -110,7 +110,7 @@ public interface HttpApi {
      * @param req
      * @return
      */
-    @POST("hserve/v2.0/idp/pay/order/")
+    @POST("hserve/v2.2/idp/pay/order/")
     CheckedCall<AlipayOrderResp> requestAlipayOrder(
             @Body AlipayOrder req
     );

@@ -54,4 +54,11 @@
             app:layout_constraintTop_toBottomOf="@id/emailSignIn"
             android:text="绑定微信"
         />
+    <Button
+        android:id="@+id/pay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/associationWechat"
+        android:text="打开支付页面"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>
